@@ -1,0 +1,74 @@
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+        exclude: '\.lock.*'
+    -   id: debug-statements
+
+-   repo: https://github.com/pdm-project/pdm
+    rev: 2.10.1
+    hooks:
+    -   id: pdm-export
+        args: ['-o', 'requirements.txt', '--without-hashes']
+        files: ^pdm.lock$
+
+-   repo: https://github.com/pdm-project/pdm
+    rev: 2.10.1
+    hooks:
+    -   id: pdm-lock-check
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.291
+    hooks:
+    -   id: ruff
+        args: ['--fix', '--exit-non-zero-on-fix']
+
+-   repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+    -   id: black
+
+-   repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+    -   id: isort
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v1.5.1'
+    hooks:
+    -   id: mypy
+        additional_dependencies: [types-python-dateutil]
+
+-   repo: local
+    hooks:
+      -   id: pytest
+          name: pytest
+          stages: [ commit ]
+          language: system
+          entry: pdm run pytest
+          types: [ python ]
+          verbose: true
+          pass_filenames: false
+          always_run: true
+
+      -   id: coverage
+          name: coverage
+          entry: pdm run coverage
+          types: [ python ]
+          language: system
+          pass_filenames: false
+          always_run: true
+
+      -   id: coverage-report
+          name: coverage report
+          entry: pdm run coverage-report-ci
+          verbose: true
+          types: [ python ]
+          language: system
+          pass_filenames: false
+          always_run: true

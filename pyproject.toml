@@ -1,0 +1,73 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "alexmudrak", email = "tiit.learn@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.pdm.scripts]
+_.env_file = ".env"
+init = "pre-commit install"
+dev = ""
+prod = ""
+manager = ""
+coverage = "coverage run --branch -m pytest tests"
+coverage-report = "coverage report --include=backend/** --show-missing"
+coverage-report-html = "coverage html --include=backend/**"
+# coverage-report-ci = "coverage report --include=backend/** --show-missing --fail-under=80"
+coverage-report-ci = "coverage report --include=backend/** --show-missing"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "coverage>=7.3.2",
+]
+[tool.black]
+line-length = 79
+
+[tool.isort]
+line_length = 79
+profile = "black"
+
+[tool.ruff]
+line-length = 79
+fixable = ["ALL"]
+unfixable = []
+
+[tool.coverage.report]
+exclude_lines= ["pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "raise Exception",
+    "if __name__ == .__main__.:"]
+
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/frontend/*",
+    "*/migrations/*",
+    "*/src/core/*",
+    "*/src/manage.py",
+    ]
+
+[tool.coverage.run]
+source = ["backend"]
+
+omit = [
+    "*/.virtualenvs/*",
+    "*/virtualenvs/*",
+    "*/tests/*",
+    "*/.local/*",
+    "*/__init__.py",
+    "*/ui/*",
+    "*/migrations/*",
+    ]
+
+[tool.pytest.ini_options]
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+norecursedirs = ["database"]
