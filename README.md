@@ -3,4 +3,6 @@
 | Backent | Frontend |
 |---------|----------|
 | FastAPI | NextJS |
-| PostgreSQL | Material UI  |
+| PostgreSQL | Material UI |
+| SqlModel / SqlAlchemy | Tailwind CSS |
+| Alembic |  |

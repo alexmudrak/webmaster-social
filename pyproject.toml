@@ -5,7 +5,14 @@ description = ""
 authors = [
     {name = "alexmudrak", email = "tiit.learn@gmail.com"},
 ]
-dependencies = []
+dependencies = [
+    "fastapi>=0.105.0",
+    "uvicorn>=0.24.0.post1",
+    "asyncpg>=0.29.0",
+    "sqlmodel>=0.0.14",
+    "alembic>=1.13.0",
+    "pydantic-settings>=2.1.0",
+]
 requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
@@ -16,6 +23,8 @@ init = "pre-commit install"
 dev = ""
 prod = ""
 manager = ""
+migrate = "alembic revision --autogenerate"
+migrate_apply = "alembic upgrade head"
 coverage = "coverage run --branch -m pytest tests"
 coverage-report = "coverage report --include=backend/** --show-missing"
 coverage-report-html = "coverage html --include=backend/**"
