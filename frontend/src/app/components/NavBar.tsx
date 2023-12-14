@@ -1,12 +1,12 @@
-"use client"
+'use client'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import AppBar from '@mui/material/AppBar'
 import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
-import Fade from '@mui/material/Fade';
+import Fade from '@mui/material/Fade'
 import IconButton from '@mui/material/IconButton'
-import Paper from '@mui/material/Paper';
-import Popper from '@mui/material/Popper';
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
@@ -15,18 +15,18 @@ import * as React from 'react'
 import AppDrawer from './Drawer'
 
 export default function NavBar() {
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-    const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  )
+  const [open, setOpen] = React.useState(false)
 
-    const handleClick =
-    () =>
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-      setOpen((prev) => !prev);
-    };
+  const handleClick = () => (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+    setOpen((prev) => !prev)
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
-    <Popper
+      <Popper
         sx={{ zIndex: 1200 }}
         open={open}
         anchorEl={anchorEl}
@@ -41,7 +41,6 @@ export default function NavBar() {
               <Typography sx={{ p: 2 }}>Notification message 3.</Typography>
               <Typography sx={{ p: 2 }}>Notification message 4.</Typography>
             </Paper>
-
           </Fade>
         )}
       </Popper>
@@ -63,11 +62,10 @@ export default function NavBar() {
             color='inherit'
             onClick={handleClick()}
           >
-            <Badge badgeContent={4} color='error' >
+            <Badge badgeContent={4} color='error'>
               <NotificationsIcon />
             </Badge>
           </IconButton>
-
         </Toolbar>
       </AppBar>
     </Box>
