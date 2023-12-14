@@ -7,27 +7,18 @@
   "extends": [
     "next",
     "prettier",
-    "'plugin:@next/next/recommended',",
+    "plugin:@next/next/recommended",
     "eslint:recommended",
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended"
+    "next/core-web-vitals"
   ],
   "ignorePatterns": ["dist", ".eslintrc.cjs"],
   "parser": "@typescript-eslint/parser",
   "plugins": [
-    "react-refresh",
     "import",
     "simple-import-sort",
     "unused-imports"
   ],
   "rules": {
-    "react-refresh/only-export-components": [
-      "warn",
-      {
-        "allowConstantExport": true
-      }
-    ],
     "import/order": [
       "error",
       {
