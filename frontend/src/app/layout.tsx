@@ -1,9 +1,11 @@
+import './globals.css'
+
+import Container from '@mui/material/Container'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
+import * as React from 'react'
+
 import NavBar from './components/NavBar'
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +23,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <NavBar />
-        <Container maxWidth='sm'>{children}</Container>
+        <Container>{children}</Container>
       </body>
     </html>
   )
