@@ -63,12 +63,3 @@ repos:
           language: system
           pass_filenames: false
           always_run: true
-
-      -   id: coverage-report
-          name: coverage report
-          entry: pdm run coverage-report-ci
-          verbose: true
-          types: [ python ]
-          language: system
-          pass_filenames: false
-          always_run: true
