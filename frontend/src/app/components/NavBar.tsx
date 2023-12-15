@@ -9,7 +9,6 @@ import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import Link from 'next/link'
 import * as React from 'react'
 
 import AppDrawer from './Drawer'
@@ -52,8 +51,17 @@ export default function NavBar() {
       >
         <Toolbar>
           <AppDrawer />
-          <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-            <Link href='/'>Webmaster Social</Link>
+          <Typography
+            variant='h6'
+            href='/'
+            component='a'
+            sx={{
+              flexGrow: 1,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            Webmaster Social
           </Typography>
 
           <IconButton

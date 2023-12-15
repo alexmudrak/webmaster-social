@@ -1,5 +1,3 @@
-import './globals.css'
-
 import Container from '@mui/material/Container'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
