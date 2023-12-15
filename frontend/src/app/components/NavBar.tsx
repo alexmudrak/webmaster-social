@@ -59,6 +59,7 @@ export default function NavBar() {
               flexGrow: 1,
               color: 'inherit',
               textDecoration: 'none',
+              marginLeft: 2
             }}
           >
             Webmaster Social

@@ -82,7 +82,7 @@ export default function AppDrawer() {
           onClick={toggleDrawer(true)}
           sx={{ ...(state && { display: 'none' }) }}
         >
-          <MenuIcon sx={{ marginRight: 2 }} />
+          <MenuIcon />
         </IconButton>
         <Drawer anchor='left' open={state} onClose={toggleDrawer(false)}>
           {menu()}
