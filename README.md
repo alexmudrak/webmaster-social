@@ -4,5 +4,5 @@
 |---------|----------|
 | FastAPI | NextJS |
 | PostgreSQL | Material UI |
-| SqlModel / SqlAlchemy | Tailwind CSS |
+| SqlModel / SqlAlchemy |  |
 | Alembic |  |
