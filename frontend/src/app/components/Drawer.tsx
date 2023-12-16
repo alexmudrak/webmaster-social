@@ -1,5 +1,6 @@
 'use client'
 import DashboardIcon from '@mui/icons-material/Dashboard'
+import LayersIcon from '@mui/icons-material/Layers'
 import MenuIcon from '@mui/icons-material/Menu'
 import SettingsIcon from '@mui/icons-material/Settings'
 import TocIcon from '@mui/icons-material/Toc'
@@ -44,6 +45,14 @@ export default function AppDrawer() {
               <DashboardIcon />
             </ListItemIcon>
             <ListItemText primary='Dashboard' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key='publishedPages' disablePadding>
+          <ListItemButton component='a' href='/'>
+            <ListItemIcon>
+              <LayersIcon />
+            </ListItemIcon>
+            <ListItemText primary='Published pages' />
           </ListItemButton>
         </ListItem>
       </List>
