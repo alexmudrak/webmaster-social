@@ -55,7 +55,12 @@ export default function Page() {
             alignItems: 'center'
           }}
         >
-          <Typography variant='h4'>Active projects</Typography>
+          <Typography
+            variant='h4'
+            sx={{ borderBottom: 1, borderColor: 'divider' }}
+          >
+            Active projects
+          </Typography>
           <IconButton
             onClick={handleAddProject}
             color='primary'
@@ -76,7 +81,12 @@ export default function Page() {
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Typography variant='h4'>Available networks</Typography>
+        <Typography
+          variant='h4'
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
+          Available networks
+        </Typography>
         <Grid container spacing={2}>
           <SocialAppSettings title='Mock social network 1' />
           <SocialAppSettings title='Mock social network 2' />

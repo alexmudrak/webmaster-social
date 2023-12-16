@@ -41,7 +41,7 @@ export default function SocialOne({ title }: SocialOneProps) {
       </div>
 
       <Divider sx={{ marginY: 2 }} />
-      
+
       <Stack
         sx={{
           width: '100%'
