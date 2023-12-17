@@ -33,6 +33,7 @@ export default function RunStatusAppDetail() {
           <CheckCircleIcon color='success' />
         </ListItemIcon>
       </ListItem>
+
       <Divider variant='inset' component='li' />
 
       <ListItem alignItems='flex-start'>
@@ -56,6 +57,7 @@ export default function RunStatusAppDetail() {
           <ErrorIcon color='error' />
         </ListItemIcon>
       </ListItem>
+
       <Divider variant='inset' component='li' />
 
       <ListItem alignItems='flex-start'>

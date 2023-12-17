@@ -48,7 +48,7 @@ export default function AppDrawer() {
           </ListItemButton>
         </ListItem>
         <ListItem key='publishedPages' disablePadding>
-          <ListItemButton component='a' href='/'>
+          <ListItemButton component='a' href='/published-pages'>
             <ListItemIcon>
               <LayersIcon />
             </ListItemIcon>

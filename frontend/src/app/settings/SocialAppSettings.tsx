@@ -15,16 +15,15 @@ interface SocialAppSettingsProps {
   title: string
 }
 
-type SwitchStates = { [key: string]: boolean };
+type SwitchStates = { [key: string]: boolean }
+
+const switchData: { label: string; id: string }[] = [
+  { label: '{project_name_1}', id: 'project1' },
+  { label: '{project_name_2}', id: 'project2' },
+  { label: '{project_name_3}', id: 'project3' }
+]
 
 export default function SocialAppSettings({ title }: SocialAppSettingsProps) {
-  // Just Mock Data
-  const switchData: { label: string; id: string }[] = [
-    { label: '{project_name_1}', id: 'project1' },
-    { label: '{project_name_2}', id: 'project2' },
-    { label: '{project_name_3}', id: 'project3' }
-  ]
-
   const [openSocialAppModal, setOpenSocialAppModal] = React.useState(false)
 
   const handleSocialAppModalOpen = () => setOpenSocialAppModal(true)
@@ -32,10 +31,10 @@ export default function SocialAppSettings({ title }: SocialAppSettingsProps) {
 
   const [switchStates, setSwitchStates] = React.useState<SwitchStates>(
     switchData.reduce((acc, switchItem) => {
-      acc[switchItem.id] = false;
-      return acc;
+      acc[switchItem.id] = false
+      return acc
     }, {} as SwitchStates)
-  );
+  )
 
   const handleChange =
     (id: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +49,10 @@ export default function SocialAppSettings({ title }: SocialAppSettingsProps) {
       <Card>
         <CardHeader
           action={
-            <IconButton aria-label='settings' onClick={handleSocialAppModalOpen}>
+            <IconButton
+              aria-label='settings'
+              onClick={handleSocialAppModalOpen}
+            >
               <SettingsIcon />
             </IconButton>
           }
