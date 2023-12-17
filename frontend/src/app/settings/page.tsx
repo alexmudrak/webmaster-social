@@ -1,5 +1,6 @@
 'use client'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { Divider } from '@mui/material'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Tab from '@mui/material/Tab'
@@ -37,7 +38,7 @@ export default function Page() {
 
   return (
     <>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -47,6 +48,9 @@ export default function Page() {
           <Tab label='Publishing networks' {...a11yProps(1)} />
         </Tabs>
       </Box>
+
+      <Divider sx={{ my: 1.5 }} />
+
       <TabPanel value={value} index={0}>
         <div
           style={{
@@ -55,12 +59,7 @@ export default function Page() {
             alignItems: 'center'
           }}
         >
-          <Typography
-            variant='h4'
-            sx={{ borderBottom: 1, borderColor: 'divider' }}
-          >
-            Active projects
-          </Typography>
+          <Typography variant='h4'>Active projects</Typography>
           <IconButton
             onClick={handleAddProject}
             color='primary'
@@ -69,6 +68,9 @@ export default function Page() {
             <AddCircleIcon fontSize='large' />
           </IconButton>
         </div>
+
+        <Divider sx={{ my: 1.5 }} />
+
         <Grid container spacing={2}>
           <ProjectAppSettings title='Mock project 1' />
           <ProjectAppSettings title='Mock project 2' />
@@ -83,10 +85,12 @@ export default function Page() {
       <TabPanel value={value} index={1}>
         <Typography
           variant='h4'
-          sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
           Available networks
         </Typography>
+
+        <Divider sx={{ my: 1.5 }} />
+
         <Grid container spacing={2}>
           <SocialAppSettings title='Mock social network 1' />
           <SocialAppSettings title='Mock social network 2' />

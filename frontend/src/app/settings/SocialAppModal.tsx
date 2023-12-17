@@ -1,4 +1,5 @@
 'use client'
+import { Divider } from '@mui/material'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Tab from '@mui/material/Tab'
@@ -33,7 +34,7 @@ export default function SocialAppModal({
       aria-describedby='modal-social-description'
     >
       <Box sx={modalStyle}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box>
           <Tabs
             value={valueTab}
             onChange={handleChangeTab}
@@ -45,6 +46,8 @@ export default function SocialAppModal({
             <Tab label='Project 3' {...a11yProps(3)} />
           </Tabs>
         </Box>
+
+        <Divider sx={{ my: 1.5 }} />
 
         <TabPanel value={valueTab} index={0}>
           <SocialOne title={`General settings for '${title}'`} />

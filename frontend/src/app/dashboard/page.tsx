@@ -1,4 +1,5 @@
 'use client'
+import { Divider } from '@mui/material'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -18,11 +19,13 @@ export default function Page() {
   return (
     <Container maxWidth='xl' sx={{ marginTop: 2 }}>
       <Typography
-        sx={{ borderBottom: 1, borderColor: 'divider' }}
         variant='h4'
       >
         Overview
       </Typography>
+
+      <Divider sx={{ my: 1.5 }} />
+
       <Box sx={{ margin: 2 }}>
         <Grid container spacing={2}>
           <OverviewApp />
@@ -32,11 +35,13 @@ export default function Page() {
       </Box>
 
       <Typography
-        sx={{ borderBottom: 1, borderColor: 'divider' }}
         variant='h4'
       >
         Run status
       </Typography>
+
+      <Divider sx={{ my: 1.5 }} />
+
       <Box sx={{ margin: 2 }}>
         <RunStatusApp
           panel='panel_1'
