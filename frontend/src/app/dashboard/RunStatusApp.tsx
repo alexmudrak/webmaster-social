@@ -7,14 +7,22 @@ import * as React from 'react'
 
 import RunStatusAppDetail from './RunStatusAppDetail'
 
-export default function RunStatusApp({ panel, expanded, handleChange }) {
+interface RunStatusAppProps {
+  panel: string
+  expanded: string | false
+  handleChange: (
+    _panel: string
+  ) => (_event: React.SyntheticEvent, _isExpanded: boolean) => void
+}
 
+export default function RunStatusApp({
+  panel,
+  expanded,
+  handleChange
+}: RunStatusAppProps) {
   return (
     <>
-      <Accordion
-        expanded={expanded === panel}
-        onChange={handleChange(panel)}
-      >
+      <Accordion expanded={expanded === panel} onChange={handleChange(panel)}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1bh-content'
