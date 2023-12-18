@@ -2,7 +2,7 @@
 
 | Backent | Frontend |
 |---------|----------|
-| FastAPI | NextJS |
+| FastAPI | NextJS / React |
 | PostgreSQL | Material UI |
 | SqlModel / SqlAlchemy |  |
 | Alembic |  |

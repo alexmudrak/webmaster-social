@@ -20,7 +20,7 @@ license = {text = "MIT"}
 [tool.pdm.scripts]
 _.env_file = ".env"
 init = "pre-commit install"
-dev = ""
+dev = "uvicorn main:app --reload"
 prod = ""
 manager = ""
 migrate = "alembic revision --autogenerate"
