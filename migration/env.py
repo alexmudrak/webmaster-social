@@ -9,10 +9,10 @@ from sqlmodel import SQLModel
 
 from backend.core import settings as appConfig
 from backend.models.dashboard_data import DashboardData
-from backend.models.project import Projects
+from backend.models.project import Project
 from backend.models.settings import Settings
 
-_ = Projects, Settings, DashboardData
+_ = Project, Settings, DashboardData
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
