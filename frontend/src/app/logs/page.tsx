@@ -8,7 +8,6 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Paper from '@mui/material/Paper'
-import { useTheme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -31,7 +30,6 @@ interface TablePaginationActionsProps {
 }
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
-  const theme = useTheme()
   const { count, page, rowsPerPage, onPageChange } = props
 
   const handleFirstPageButtonClick = (
