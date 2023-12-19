@@ -5,30 +5,42 @@ on:
       - '*'
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_DB: ${{ vars.APP_DB_NAME }}
+      POSTGRES_USER: ${{ vars.APP_DB_USER }}
+      POSTGRES_PASSWORD: ${{ vars.APP_DB_PASS }}
+      TEST_DB_HOST: ${{ vars.APP_DB_HOST }}
+      TEST_DB_PORT: ${{ vars.APP_DB_PORT }}
+      TEST_DB_NAME: ${{ vars.APP_TEST_DB_NAME }}
+      TEST_DB_USER: ${{ vars.APP_DB_USER }}
+      TEST_DB_PASSWORD: ${{ vars.APP_DB_PASS }}
+      PYTHONPATH: ${{ vars.PYTHONPATH }}
+
     services:
       postgres:
         image: postgres:15.4
         env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ vars.APP_DB_NAME }}
+          POSTGRES_USER: ${{ vars.APP_DB_USER }}
+          POSTGRES_PASSWORD: ${{ vars.APP_DB_PASS }}
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
+      - name: Create additional database
+        run: |
+          psql -h localhost -U ${{ vars.APP_DB_USER }} -d ${{ vars.APP_DB_PASS }} -c "CREATE DATABASE ${{ vars.APP_TEST_DB_NAME }};"
+
       - name: Checkout code
         uses: actions/checkout@v4.1.0
-
-      - name: Injecting env vars
-        run: |
-          echo "${{ secrets.ENV_SECRETS }}" >> .env
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v3
