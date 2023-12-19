@@ -1,16 +1,15 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import Field as PydanticField
 from pydantic import HttpUrl
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
 class ProjectBase(SQLModel):
-    name: str = PydanticField(..., title="Project Name")
-    url: str = PydanticField(..., title="Project URL")
-    active: Optional[bool] = PydanticField(None, title="Active Status")
+    name: str = Field(..., title="Project Name")
+    url: str = Field(..., title="Project URL")
+    active: Optional[bool] = Field(None, title="Active Status")
 
 
 class Project(ProjectBase, table=True):
