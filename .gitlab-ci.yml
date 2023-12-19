@@ -16,6 +16,12 @@ variables:
   POSTGRES_PASSWORD: "$APP_DB_PASS"
   POSTGRES_HOST_AUTH_METHOD: trust
 
+  TEST_DB_HOST: "$APP_DB_HOST"
+  TEST_DB_PORT: "$APP_DB_PORT"
+  TEST_DB_NAME: "$APP_TEST_DB_NAME"
+  TEST_DB_USER: "$APP_DB_USER"
+  TEST_DB_PASSWORD: "$APP_DB_PASS"
+
 lint-format-tests:
   stage: test
   script:
@@ -25,6 +31,12 @@ lint-format-tests:
   - export PATH=/root/.local/bin:$PATH
   - pdm install --dev
   - apt-get install -y postgresql-client
+  - echo "POSTGRES_HOST - $APP_DB_HOST"
+  - echo "POSTGRES_USER - $APP_DB_USER"
+  - echo "POSTGRES_DB - $APP_DB_NAME"
+  - echo "TEST_DB_NAME - $APP_TEST_DB_NAME"
+  - psql --version
+  - psql --host=$APP_DB_HOST --username=$APP_DB_USER --dbname=$APP_DB_NAME -c "CREATE DATABASE $APP_TEST_DB_NAME;"
   - pip install pre-commit
   - pre-commit run --all-files
 
