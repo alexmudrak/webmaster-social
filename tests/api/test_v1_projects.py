@@ -1,55 +1,99 @@
 import pytest
-from core.database import get_session
-from httpx import AsyncClient
-from main import app
-from sqlalchemy.ext.asyncio.engine import AsyncEngine
-from sqlalchemy.ext.asyncio.session import async_sessionmaker
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.ext.asyncio.session import AsyncSession
-
-DATABASE_URL = (
-    "postgresql+asyncpg://wmhelper:wmhelperdbpass@localhost/wmsocial_test"
-)
 
 
-async def session_test():
-    engine = AsyncEngine(
-        create_engine(
-            DATABASE_URL,
-            echo=True,
-            future=True,
+@pytest.mark.asyncio()
+async def test_get_all_projects(async_client):
+    async with async_client as client:
+        response = await client.get("/projects/")
+
+        assert response.status_code == 200
+        assert len(response.json()) == 0
+
+
+@pytest.mark.asyncio()
+async def test_get_project_detail(async_client, exist_project):
+    exist_object = await exist_project
+    async with async_client as client:
+        response = await client.get(f"/projects/{exist_object.id}")
+
+        assert response.status_code == 200
+        assert response.json()["name"] == exist_object.name
+        assert response.json()["url"] == exist_object.url
+        assert response.json()["active"] == exist_object.active
+
+
+@pytest.mark.asyncio()
+async def test_not_found_project(async_client):
+    async with async_client as client:
+        response = await client.get("/projects/1")
+
+        assert response.status_code == 404
+
+
+@pytest.mark.asyncio()
+async def test_create_project(async_client):
+    payload = {
+        "name": "new test",
+        "url": "https://new-test.com/",
+        "active": True,
+    }
+    async with async_client as client:
+        response = await client.post("/projects/", json=payload)
+
+        assert response.status_code == 201
+        assert response.json()["name"] == payload["name"]
+        assert response.json()["url"] == payload["url"]
+        assert response.json()["active"] == payload["active"]
+
+
+@pytest.mark.asyncio()
+async def test_create_duplicate_project(async_client):
+    payload = {
+        "name": "new test",
+        "url": "https://new-test.com/",
+        "active": True,
+    }
+    async with async_client as client:
+        await client.post("/projects/", json=payload)
+        response = await client.post("/projects/", json=payload)
+
+        assert response.status_code == 409
+
+
+@pytest.mark.asyncio()
+async def test_update_project(async_client):
+    payload = {
+        "name": "new test",
+        "url": "https://new-test.com/",
+        "active": True,
+    }
+    new_payload = {
+        "name": "updated test",
+        "url": "https://updated-test.com/",
+        "active": False,
+    }
+    async with async_client as client:
+        new_project = await client.post("/projects/", json=payload)
+        response = await client.patch(
+            f"/projects/{new_project.json()['id']}", json=new_payload
         )
-    )
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
 
-    async_session = async_sessionmaker(
-        engine,
-        class_=AsyncSession,
-        expire_on_commit=False,
-    )
-    async with async_session() as session:
-        await session.begin()
-        yield session
-        await session.rollback()
+        assert response.status_code == 200
 
 
-@pytest.fixture()
-async def client_fixture():
-    app.dependency_overrides[get_session] = session_test
+@pytest.mark.asyncio()
+async def test_delete_project(async_client):
+    payload = {
+        "name": "new test",
+        "url": "https://new-test.com/",
+        "active": True,
+    }
+    async with async_client as client:
+        new_project = await client.post("/projects/", json=payload)
+        response = await client.delete(f"/projects/{new_project.json()['id']}")
+        check_response = await client.get(
+            f"/projects/{new_project.json()['id']}"
+        )
 
-    async with AsyncClient(app=app, base_url="http://test") as async_client:
-        yield async_client
-
-    app.dependency_overrides.clear()
-
-
-@pytest.mark.asyncio
-async def test_get_all_projects(client_fixture):
-    payload = {"name": "mock", "url": "https://example.com", "active": True}
-    client = await client_fixture.__anext__()
-    response = await client.post("/projects/", json=payload)
-
-    response = await client.get("/projects/")
-    assert response.status_code == 200
-    assert len(response.json()) == 1
+        assert response.status_code == 200
+        assert check_response.status_code == 404

@@ -27,7 +27,7 @@ manager = ""
 migrate = "alembic revision --autogenerate"
 migrate_apply = "alembic upgrade head"
 # coverage = "pytest --cov=backend tests/ --cov-fail-under=80"
-coverage = "pytest --cov=backend tests/"
+coverage = "pytest --cov=backend tests/ -vvv"
 coverage-report-html = "pytest --cov=backend --cov-report=html tests/"
 
 [tool.pdm.dev-dependencies]

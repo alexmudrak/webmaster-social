@@ -50,16 +50,8 @@ repos:
           name: pytest
           stages: [ commit ]
           language: system
-          entry: pdm run pytest
-          types: [ python ]
-          verbose: true
-          pass_filenames: false
-          always_run: true
-
-      -   id: coverage
-          name: coverage
           entry: pdm run coverage
           types: [ python ]
-          language: system
+          verbose: true
           pass_filenames: false
           always_run: true
