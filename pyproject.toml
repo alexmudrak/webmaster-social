@@ -12,6 +12,7 @@ dependencies = [
     "sqlmodel>=0.0.14",
     "alembic>=1.13.0",
     "pydantic-settings>=2.1.0",
+    "httpx>=0.25.2",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -33,7 +34,14 @@ coverage-report-html = "pytest --cov=backend --cov-report=html tests/"
 dev = [
     "pytest>=7.4.3",
     "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.2",
 ]
+
+[tool.pyright]
+executionEnvironments = [
+  { root = "./", extraPaths = [ "backend" ]  }
+]
+
 [tool.black]
 line-length = 79
 
