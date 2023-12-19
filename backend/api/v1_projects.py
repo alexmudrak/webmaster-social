@@ -1,6 +1,6 @@
 from controllers.project_controller import ProjectController
 from core.database import get_session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from models.project import Project, ProjectCreate, ProjectUpdate
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -37,6 +37,7 @@ async def get_project_by_id(
     "/",
     summary="Create new project",
     response_model=Project,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_project(
     project_data: ProjectCreate,

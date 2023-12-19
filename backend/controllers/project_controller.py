@@ -12,8 +12,8 @@ class ProjectController:
 
     async def get_all_objects(self) -> list[Project]:
         query = select(Project)
-        result = await self.session.execute(query)
-        projects = result.scalars().all()
+        result = await self.session.exec(query)
+        projects = result.all()
         return list(projects)
 
     async def get_object(self, object_id: int) -> Project:
@@ -26,13 +26,13 @@ class ProjectController:
         if not object_data.url:
             raise HTTPException(status_code=400, detail="Invalid URL provided")
 
-        existing_project = await self.session.execute(
+        existing_project = await self.session.exec(
             select(Project).where(
                 (Project.name == object_data.name)
                 & (Project.url == str(object_data.url))
             )
         )
-        existing_project = existing_project.fetchone()
+        existing_project = existing_project.one_or_none()
 
         if existing_project:
             raise HTTPException(
@@ -60,11 +60,13 @@ class ProjectController:
             raise HTTPException(status_code=400, detail="Invalid URL provided")
 
         project = await self.session.get(Project, object_id)
+
         if not project:
             raise HTTPException(status_code=404, detail="Project not found")
 
-        project.update(object_data.dict(exclude_unset=True))
+        project.name = object_data.name
         project.url = str(object_data.url)
+        project.active = object_data.active
         project.updated = datetime.utcnow()
 
         await self.session.commit()
