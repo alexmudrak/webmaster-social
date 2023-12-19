@@ -2,19 +2,19 @@ import pytest
 
 
 @pytest.mark.asyncio()
-async def test_get_all_projects(async_client):
+async def test_get_all_projects_v1(async_client):
     async with async_client as client:
-        response = await client.get("/projects/")
+        response = await client.get("/api/v1/projects/")
 
         assert response.status_code == 200
         assert len(response.json()) == 0
 
 
 @pytest.mark.asyncio()
-async def test_get_project_detail(async_client, exist_project):
+async def test_get_project_detail_v1(async_client, exist_project):
     exist_object = await exist_project
     async with async_client as client:
-        response = await client.get(f"/projects/{exist_object.id}")
+        response = await client.get(f"/api/v1/projects/{exist_object.id}")
 
         assert response.status_code == 200
         assert response.json()["name"] == exist_object.name
@@ -23,22 +23,22 @@ async def test_get_project_detail(async_client, exist_project):
 
 
 @pytest.mark.asyncio()
-async def test_not_found_project(async_client):
+async def test_not_found_project_v1(async_client):
     async with async_client as client:
-        response = await client.get("/projects/1")
+        response = await client.get("/api/v1/projects/1")
 
         assert response.status_code == 404
 
 
 @pytest.mark.asyncio()
-async def test_create_project(async_client):
+async def test_create_project_v1(async_client):
     payload = {
         "name": "new test",
         "url": "https://new-test.com/",
         "active": True,
     }
     async with async_client as client:
-        response = await client.post("/projects/", json=payload)
+        response = await client.post("/api/v1/projects/", json=payload)
 
         assert response.status_code == 201
         assert response.json()["name"] == payload["name"]
@@ -47,21 +47,21 @@ async def test_create_project(async_client):
 
 
 @pytest.mark.asyncio()
-async def test_create_duplicate_project(async_client):
+async def test_create_duplicate_project_v1(async_client):
     payload = {
         "name": "new test",
         "url": "https://new-test.com/",
         "active": True,
     }
     async with async_client as client:
-        await client.post("/projects/", json=payload)
-        response = await client.post("/projects/", json=payload)
+        await client.post("/api/v1/projects/", json=payload)
+        response = await client.post("/api/v1/projects/", json=payload)
 
         assert response.status_code == 409
 
 
 @pytest.mark.asyncio()
-async def test_update_project(async_client):
+async def test_update_project_v1(async_client):
     payload = {
         "name": "new test",
         "url": "https://new-test.com/",
@@ -73,26 +73,28 @@ async def test_update_project(async_client):
         "active": False,
     }
     async with async_client as client:
-        new_project = await client.post("/projects/", json=payload)
+        new_project = await client.post("/api/v1/projects/", json=payload)
         response = await client.patch(
-            f"/projects/{new_project.json()['id']}", json=new_payload
+            f"/api/v1/projects/{new_project.json()['id']}", json=new_payload
         )
 
         assert response.status_code == 200
 
 
 @pytest.mark.asyncio()
-async def test_delete_project(async_client):
+async def test_delete_project_v1(async_client):
     payload = {
         "name": "new test",
         "url": "https://new-test.com/",
         "active": True,
     }
     async with async_client as client:
-        new_project = await client.post("/projects/", json=payload)
-        response = await client.delete(f"/projects/{new_project.json()['id']}")
+        new_project = await client.post("/api/v1/projects/", json=payload)
+        response = await client.delete(
+            f"/api/v1/projects/{new_project.json()['id']}"
+        )
         check_response = await client.get(
-            f"/projects/{new_project.json()['id']}"
+            f"/api/v1/projects/{new_project.json()['id']}"
         )
 
         assert response.status_code == 200

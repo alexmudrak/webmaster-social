@@ -4,10 +4,15 @@ from api.v1_settings import router as settings_router
 from fastapi import FastAPI
 
 app = FastAPI()
-app.include_router(settings_router)
-app.include_router(projects_router)
-app.include_router(dashboards_router)
 
+v1_endpoints = [
+    dashboards_router,
+    projects_router,
+    settings_router,
+]
+
+for endpoint in v1_endpoints:
+    app.include_router(endpoint, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn
