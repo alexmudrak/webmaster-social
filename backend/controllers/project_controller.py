@@ -14,28 +14,28 @@ class ProjectController:
     async def get_all_objects(self) -> list[Project]:
         query = select(Project)
         result = await self.session.exec(query)
-        projects = result.all()
-        return list(projects)
+        objects = result.all()
+        return list(objects)
 
     async def get_object(self, object_id: int) -> Project:
-        project = await self.session.get(Project, object_id)
-        if not project:
+        db_object = await self.session.get(Project, object_id)
+        if not db_object:
             raise HTTPException(status_code=404, detail="Project not found")
-        return project
+        return db_object
 
     async def create_object(self, object_data: ProjectCreate) -> Project:
         if not object_data.url:
             raise HTTPException(status_code=400, detail="Invalid URL provided")
 
-        existing_project = await self.session.exec(
+        existing_object = await self.session.exec(
             select(Project).where(
                 (Project.name == object_data.name)
                 & (Project.url == str(object_data.url))
             )
         )
-        existing_project = existing_project.unique().one_or_none()
+        existing_object = existing_object.unique().one_or_none()
 
-        if existing_project:
+        if existing_object:
             raise HTTPException(
                 status_code=409,
                 detail=(
@@ -44,15 +44,15 @@ class ProjectController:
                 ),
             )
 
-        project = Project(
+        db_object = Project(
             name=object_data.name,
             url=str(object_data.url),
             active=object_data.active,
         )
-        self.session.add(project)
+        self.session.add(db_object)
         await self.session.commit()
-        await self.session.refresh(project)
-        return project
+        await self.session.refresh(db_object)
+        return db_object
 
     async def update_object(
         self, object_id: int, object_data: ProjectUpdate
@@ -60,25 +60,25 @@ class ProjectController:
         if not object_data.url:
             raise HTTPException(status_code=400, detail="Invalid URL provided")
 
-        project = await self.session.get(Project, object_id)
+        db_object = await self.session.get(Project, object_id)
 
-        if not project:
+        if not db_object:
             raise HTTPException(status_code=404, detail="Project not found")
 
-        project.name = object_data.name
-        project.url = str(object_data.url)
-        project.active = object_data.active
-        project.updated = datetime.utcnow()
+        db_object.name = object_data.name
+        db_object.url = str(object_data.url)
+        db_object.active = object_data.active
+        db_object.updated = datetime.utcnow()
 
         await self.session.commit()
-        await self.session.refresh(project)
-        return project
+        await self.session.refresh(db_object)
+        return db_object
 
     async def delete_object(self, object_id: int) -> dict[str, str]:
-        project = await self.session.get(Project, object_id)
-        if not project:
+        db_object = await self.session.get(Project, object_id)
+        if not db_object:
             raise HTTPException(status_code=404, detail="Project not found")
 
-        await self.session.delete(project)
+        await self.session.delete(db_object)
         await self.session.commit()
         return {"message": f"Project `{object_id}` was deleted"}
