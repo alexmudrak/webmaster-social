@@ -27,7 +27,7 @@ async def get_all_settings(
 
 
 @router.get(
-    "/{setting_id}",
+    "/{object_id}",
     summary="Get setting by ID",
     response_model=SettingReadWithProject,
 )
@@ -52,7 +52,7 @@ async def create_object(
 
 
 @router.patch(
-    "/{project_id}",
+    "/{object_id}",
     summary="Update setting by ID",
     response_model=SettingRead,
 )
@@ -65,7 +65,7 @@ async def update_object(
 
 
 @router.delete(
-    "/{setting_id}",
+    "/{object_id}",
     summary="Delete setting by ID",
 )
 async def delete_object(
