@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, status
 from models.project import Project
 from schemas.project_schema import (
     ProjectCreate,
+    ProjectRead,
     ProjectReadWithSettings,
     ProjectUpdate,
 )
@@ -18,7 +19,7 @@ router = APIRouter(
 @router.get(
     "/",
     summary="Get all projects",
-    response_model=list[Project],
+    response_model=list[ProjectRead],
 )
 async def get_all_projects(
     session: AsyncSession = Depends(get_session),
@@ -27,52 +28,52 @@ async def get_all_projects(
 
 
 @router.get(
-    "/{project_id}",
+    "/{object_id}",
     summary="Get project by ID",
     response_model=ProjectReadWithSettings,
 )
 async def get_project_by_id(
-    project_id: int,
+    object_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    return await ProjectController(session).get_object(project_id)
+    return await ProjectController(session).get_object(object_id)
 
 
 @router.post(
     "/",
     summary="Create new project",
-    response_model=Project,
+    response_model=ProjectRead,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_project(
-    project_data: ProjectCreate,
+    object_data: ProjectCreate,
     session: AsyncSession = Depends(get_session),
 ):
-    return await ProjectController(session).create_object(project_data)
+    return await ProjectController(session).create_object(object_data)
 
 
 @router.patch(
-    "/{project_id}",
+    "/{object_id}",
     summary="Update project by ID",
     response_model=Project,
 )
 async def update_project(
-    project_id: int,
-    project_data: ProjectUpdate,
+    object_id: int,
+    object_data: ProjectUpdate,
     session: AsyncSession = Depends(get_session),
 ):
     return await ProjectController(session).update_object(
-        project_id,
-        project_data,
+        object_id,
+        object_data,
     )
 
 
 @router.delete(
-    "/{project_id}",
+    "/{object_id}",
     summary="Delete project by ID",
 )
 async def delete_project(
-    project_id: int,
+    object_id: int,
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, str]:
-    return await ProjectController(session).delete_object(project_id)
+    return await ProjectController(session).delete_object(object_id)

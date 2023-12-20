@@ -14,7 +14,7 @@ class ProjectUpdate(ProjectCreate):
 
 
 class ProjectRead(ProjectBase):
-    pass
+    id: int
 
 
 class ProjectReadWithSettings(ProjectRead):
