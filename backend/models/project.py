@@ -1,9 +1,8 @@
-from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
-from pydantic import HttpUrl
+from models.mixins import BaseTimestampMixin
 from sqlalchemy import UniqueConstraint
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class ProjectBase(SQLModel):
@@ -12,18 +11,14 @@ class ProjectBase(SQLModel):
     active: Optional[bool] = Field(None, title="Active Status")
 
 
-class Project(ProjectBase, table=True):
-    # type: ignore
+class Project(ProjectBase, BaseTimestampMixin, table=True):
     id: int = Field(default=None, nullable=False, primary_key=True)
-    created: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    updated: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    setting: List["Setting"] = Relationship(
+        back_populates="project",
+        sa_relationship_kwargs={"lazy": "joined"},
+    )
 
-    __table_args__ = (UniqueConstraint("name", "url", name="unique_name_url"),)
-
-
-class ProjectCreate(ProjectBase):
-    url: HttpUrl
-
-
-class ProjectUpdate(ProjectCreate):
-    pass
+    __table_args__ = (
+        UniqueConstraint("name", "url", name="unique_name_url"),
+        {"extend_existing": True},
+    )

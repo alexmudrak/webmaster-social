@@ -1,8 +1,8 @@
-from datetime import datetime
 from typing import Optional
 
+from models.mixins import BaseTimestampMixin
 from sqlalchemy import Column, UniqueConstraint
-from sqlmodel import JSON, Field, SQLModel
+from sqlmodel import JSON, Field, Relationship, SQLModel
 
 
 class SettingBase(SQLModel):
@@ -11,23 +11,19 @@ class SettingBase(SQLModel):
     project_id: Optional[int] = Field(
         default=None, nullable=True, foreign_key="project.id"
     )
-    active: Optional[bool] = Field(None, title="Active Status")
-
-
-class Setting(SettingBase, table=True):
-    # type: ignore
-    id: int = Field(default=None, nullable=False, primary_key=True)
-    created: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    updated: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint("name", "project_id", name="unique_name_project"),
+    active: Optional[bool] = Field(
+        default=True, nullable=False, title="Active Status"
     )
 
 
-class SettingCreate(SettingBase):
-    pass
+class Setting(SettingBase, BaseTimestampMixin, table=True):
+    id: int = Field(default=None, nullable=False, primary_key=True)
+    project: Optional["Project"] = Relationship(
+        back_populates="setting",
+        sa_relationship_kwargs={"lazy": "joined"},
+    )
 
-
-class SettingUpdate(SettingCreate):
-    pass
+    __tableargs__ = (
+        UniqueConstraint("name", "project_id", name="unique_name_project"),
+        {"extend_existing": True},
+    )

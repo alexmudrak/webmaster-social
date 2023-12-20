@@ -10,7 +10,7 @@ from sqlmodel import SQLModel
 from backend.core import settings as appConfig
 from backend.models.dashboard_data import DashboardData
 from backend.models.project import Project
-from backend.models.settings import Setting
+from backend.models.setting import Setting
 
 _ = Project, Setting, DashboardData
 
