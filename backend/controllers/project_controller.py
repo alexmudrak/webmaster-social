@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from fastapi import HTTPException
-from models.project import Project, ProjectCreate, ProjectUpdate
+from models.project import Project
+from schemas.project_schema import ProjectCreate, ProjectUpdate
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -32,7 +33,7 @@ class ProjectController:
                 & (Project.url == str(object_data.url))
             )
         )
-        existing_project = existing_project.one_or_none()
+        existing_project = existing_project.unique().one_or_none()
 
         if existing_project:
             raise HTTPException(

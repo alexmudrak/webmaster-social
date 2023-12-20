@@ -1,7 +1,12 @@
 from controllers.project_controller import ProjectController
 from core.database import get_session
 from fastapi import APIRouter, Depends, status
-from models.project import Project, ProjectCreate, ProjectUpdate
+from models.project import Project
+from schemas.project_schema import (
+    ProjectCreate,
+    ProjectReadWithSettings,
+    ProjectUpdate,
+)
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 router = APIRouter(
@@ -24,7 +29,7 @@ async def get_all_projects(
 @router.get(
     "/{project_id}",
     summary="Get project by ID",
-    response_model=Project,
+    response_model=ProjectReadWithSettings,
 )
 async def get_project_by_id(
     project_id: int,
