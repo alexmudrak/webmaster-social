@@ -14,7 +14,7 @@ class ProjectController:
     async def get_all_objects(self) -> list[Project]:
         query = select(Project)
         result = await self.session.exec(query)
-        objects = result.all()
+        objects = result.unique().all()
         return list(objects)
 
     async def get_object(self, object_id: int) -> Project:
