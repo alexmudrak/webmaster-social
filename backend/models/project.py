@@ -1,8 +1,11 @@
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from models.mixins import BaseTimestampMixin
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from models.setting import Setting
 
 
 class ProjectBase(SQLModel):
@@ -12,6 +15,7 @@ class ProjectBase(SQLModel):
 
 
 class Project(ProjectBase, BaseTimestampMixin, table=True):
+    # type: ignore
     id: int = Field(default=None, nullable=False, primary_key=True)
     setting: List["Setting"] = Relationship(
         back_populates="project",
