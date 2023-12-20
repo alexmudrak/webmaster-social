@@ -24,6 +24,7 @@ variables:
 
 lint-format-tests:
   stage: test
+  image: python:3.11
   script:
   - apt-get update -qy
   - apt-get install -y python3.11
