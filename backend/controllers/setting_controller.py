@@ -14,7 +14,7 @@ class SettingController:
     async def get_all_objects(self) -> list[Setting]:
         query = select(Setting)
         result = await self.session.exec(query)
-        db_objects = result.all()
+        db_objects = result.unique().all()
         return list(db_objects)
 
     async def get_object(self, object_id: int) -> Setting:
