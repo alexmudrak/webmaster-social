@@ -47,7 +47,18 @@ class ProjectController:
         db_object = Project(
             name=object_data.name,
             url=str(object_data.url),
+            parse_material_id_element=(object_data.parse_material_id_element),
+            parse_material_body_element=(
+                object_data.parse_material_body_element
+            ),
+            parse_material_img_element=(
+                object_data.parse_material_img_element
+            ),
+            parse_material_url_element=(
+                object_data.parse_material_url_element
+            ),
             active=object_data.active,
+            updated=datetime.utcnow(),
         )
         self.session.add(db_object)
         await self.session.commit()
@@ -69,6 +80,25 @@ class ProjectController:
         db_object.url = str(object_data.url)
         db_object.active = object_data.active
         db_object.updated = datetime.utcnow()
+
+        if object_data.parse_material_id_element:
+            db_object.parse_material_id_element = (
+                object_data.parse_material_id_element
+            )
+        if object_data.parse_material_body_element:
+            db_object.parse_material_body_element = (
+                object_data.parse_material_body_element
+            )
+
+        if object_data.parse_material_img_element:
+            db_object.parse_material_img_element = (
+                object_data.parse_material_img_element
+            )
+
+        if object_data.parse_material_url_element:
+            db_object.parse_material_url_element = (
+                object_data.parse_material_url_element
+            )
 
         await self.session.commit()
         await self.session.refresh(db_object)
