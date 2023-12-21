@@ -1,15 +1,6 @@
 stages:
 - test
 
-services:
-- name: postgres:15.4
-
-include:
-- template: Security/SAST.gitlab-ci.yml
-- template: Security/Secret-Detection.gitlab-ci.yml
-- template: Security/Dependency-Scanning.gitlab-ci.yml
-- template: Jobs/Code-Quality.gitlab-ci.yml
-
 variables:
   POSTGRES_DB: "$APP_DB_NAME"
   POSTGRES_USER: "$APP_DB_USER"
@@ -21,6 +12,15 @@ variables:
   TEST_DB_NAME: "$APP_TEST_DB_NAME"
   TEST_DB_USER: "$APP_DB_USER"
   TEST_DB_PASSWORD: "$APP_DB_PASS"
+
+include:
+- template: Security/SAST.gitlab-ci.yml
+- template: Security/Secret-Detection.gitlab-ci.yml
+- template: Security/Dependency-Scanning.gitlab-ci.yml
+- template: Jobs/Code-Quality.gitlab-ci.yml
+
+services:
+  - name: postgres:15.4
 
 lint-format-tests:
   stage: test
@@ -40,5 +40,4 @@ sast:
   stage: test
 
 code_quality:
-  stage: test
   services:

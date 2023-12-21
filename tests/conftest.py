@@ -7,6 +7,7 @@ from core.database import get_session
 from httpx import AsyncClient
 from main import app
 from models.project import Project
+from models.setting import Setting
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.ext.asyncio.session import async_sessionmaker
@@ -85,13 +86,46 @@ async def async_client(async_db: AsyncSession) -> AsyncClient:
 
 @pytest.fixture()
 async def exist_project(async_db: AsyncSession) -> Project:
-    example = Project(
+    db_object = Project(
         name="test",
         url="https://test.com",
         active=True,
     )
     db = async_db
-    db.add(example)
+    db.add(db_object)
     await db.commit()
-    await db.refresh(example)
-    return example
+    await db.refresh(db_object)
+    return db_object
+
+
+@pytest.fixture()
+async def exist_setting_with_project(
+    async_db: AsyncSession, exist_project: Project
+) -> Setting:
+    project = await exist_project
+
+    db_object = Setting(
+        name="test setting",
+        project_id=project.id,
+        settings={"prop 1": 1, "prop 2": 2},
+        active=True,
+    )
+    db = async_db
+    db.add(db_object)
+    await db.commit()
+    await db.refresh(db_object)
+    return db_object
+
+
+@pytest.fixture()
+async def exist_setting_without_project(async_db: AsyncSession) -> Setting:
+    db_object = Setting(
+        name="test setting",
+        settings={"prop 1": 1, "prop 2": 2},
+        active=True,
+    )
+    db = async_db
+    db.add(db_object)
+    await db.commit()
+    await db.refresh(db_object)
+    return db_object

@@ -23,7 +23,7 @@ router = APIRouter(
 async def get_all_settings(
     session: AsyncSession = Depends(get_session),
 ):
-    return SettingController(session).get_all_objects()
+    return await SettingController(session).get_all_objects()
 
 
 @router.get(
@@ -35,7 +35,7 @@ async def get_object_by_id(
     object_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    return SettingController(session).get_object(object_id)
+    return await SettingController(session).get_object(object_id)
 
 
 @router.post(
@@ -48,7 +48,7 @@ async def create_object(
     object_data: SettingCreate,
     session: AsyncSession = Depends(get_session),
 ):
-    return SettingController(session).create_object(object_data)
+    return await SettingController(session).create_object(object_data)
 
 
 @router.patch(
@@ -61,7 +61,9 @@ async def update_object(
     object_data: SettingUpdate,
     session: AsyncSession = Depends(get_session),
 ):
-    return SettingController(session).update_object(object_id, object_data)
+    return await SettingController(session).update_object(
+        object_id, object_data
+    )
 
 
 @router.delete(
@@ -72,4 +74,4 @@ async def delete_object(
     object_id: int,
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, str]:
-    return SettingController(session).delete_object(object_id)
+    return await SettingController(session).delete_object(object_id)

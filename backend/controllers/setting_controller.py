@@ -14,7 +14,7 @@ class SettingController:
     async def get_all_objects(self) -> list[Setting]:
         query = select(Setting)
         result = await self.session.exec(query)
-        db_objects = result.all()
+        db_objects = result.unique().all()
         return list(db_objects)
 
     async def get_object(self, object_id: int) -> Setting:
@@ -27,7 +27,7 @@ class SettingController:
         existing_object = await self.session.exec(
             select(Setting).where(
                 (Setting.name == object_data.name)
-                & (Setting.project_id == str(object_data.project_id))
+                & (Setting.project_id == object_data.project_id)
             )
         )
         existing_object = existing_object.unique().one_or_none()
@@ -47,9 +47,9 @@ class SettingController:
             project_id=object_data.project_id,
             active=object_data.active,
         )
-        self.session.add(object)
+        self.session.add(db_object)
         await self.session.commit()
-        await self.session.refresh(object)
+        await self.session.refresh(db_object)
         return db_object
 
     async def update_object(
@@ -77,4 +77,4 @@ class SettingController:
 
         await self.session.delete(db_object)
         await self.session.commit()
-        return {"message": f"Setting`{object_id}` was deleted"}
+        return {"message": f"Setting `{object_id}` was deleted"}
