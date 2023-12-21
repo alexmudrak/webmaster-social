@@ -13,7 +13,7 @@ class SettingUpdate(SettingCreate):
 
 
 class SettingRead(SettingBase):
-    pass
+    id: int
 
 
 class SettingReadWithProject(SettingRead):
