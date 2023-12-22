@@ -1,6 +1,8 @@
 import pytest
 
 
+# TODO: Add ENDPOINT to global variable
+# TODO: Add tests for check available keys
 @pytest.mark.asyncio()
 async def test_get_all_projects_v1(async_client):
     async with async_client as client:

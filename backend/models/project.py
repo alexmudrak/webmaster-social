@@ -1,23 +1,40 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
 
 from models.mixins import BaseTimestampMixin
-from sqlalchemy import UniqueConstraint
-from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import Column, UniqueConstraint
+from sqlmodel import JSON, Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from models.article import Article
     from models.setting import Setting
 
 
 class ProjectBase(SQLModel):
     name: str = Field(..., title="Project Name")
-    url: str = Field(..., title="Project URL")
-    active: Optional[bool] = Field(None, title="Active Status")
+    url: str = Field(
+        ..., title="The URL of the project where the articles are published."
+    )
+    active: bool = Field(default=True, title="Active Status")
+    parse_type: str = Field(default="html", nullable=False)
+    parse_last_article_count: int = Field(default=10, nullable=False)
+    parse_article_url_element: dict = Field(
+        default=dict(), sa_column=Column(JSON)
+    )
+    parse_article_img_element: dict = Field(
+        default=dict(), sa_column=Column(JSON)
+    )
+    parse_article_body_element: dict = Field(
+        default=dict(), sa_column=Column(JSON)
+    )
 
 
 class Project(ProjectBase, BaseTimestampMixin, table=True):
     # type: ignore
-    id: int = Field(default=None, nullable=False, primary_key=True)
-    setting: List["Setting"] = Relationship(
+    networks_setting: List["Setting"] = Relationship(
+        back_populates="project",
+        sa_relationship_kwargs={"lazy": "joined"},
+    )
+    articles: List["Article"] = Relationship(
         back_populates="project",
         sa_relationship_kwargs={"lazy": "joined"},
     )

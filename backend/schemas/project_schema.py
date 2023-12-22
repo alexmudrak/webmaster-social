@@ -18,4 +18,4 @@ class ProjectRead(ProjectBase):
 
 
 class ProjectReadWithSettings(ProjectRead):
-    setting: List[SettingBase] = []
+    networks_setting: List[SettingBase] = []
