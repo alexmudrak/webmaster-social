@@ -27,7 +27,7 @@ class ArticleHtmlParser:
         soup = bs(html, "html.parser")
         parse_result = soup.find_all(
             element["selector"],
-            attrs=element["attr"],
+            attrs=element["attrs"],
         )
         # Decode all CloudFlare encoded mails
         for parse_item in parse_result:
@@ -121,7 +121,8 @@ class ParserController:
         client: AsyncClient,
         project: Project,
         urls: list[str],
-    ) -> None:
+    ) -> list[Article]:
+        articles = []
         for url in urls:
             # Getting elements of article from each url
             response = await client.get(url)
@@ -130,20 +131,25 @@ class ParserController:
             self.session.add(article)
             await self.session.commit()
             await self.session.refresh(article)
+            articles.append(article)
 
         # TODO: Add implementation of sending notification about added articles
         # TODO: SAVE to DB log
         print(f"DONE! Added - {len(urls)}")
+        return articles
 
-    async def collect_by_html(self, project: Project) -> None:
+    async def collect_by_html(self, project: Project) -> list[Article]:
         # TODO: Add documentation
         async with await get_request_client() as client:
             # Get unique Urls to article
             urls_to_add = await self.get_unique_urls(client, project)
             # Parse and Store article to DB
-            await self.add_articles_to_db(client, project, urls_to_add)
+            articles = await self.add_articles_to_db(
+                client, project, urls_to_add
+            )
+        return articles
 
-    async def collect_data(self, project_id: int) -> Project:
+    async def collect_data(self, project_id: int) -> list[Article]:
         # TODO: Add documentation
         db_project = await self.session.get(Project, project_id)
 
@@ -151,8 +157,9 @@ class ParserController:
             raise HTTPException(status_code=404, detail="Project not found")
 
         # TODO: Add logger
+        articles = []
         if db_project.parse_type == "html":
-            await self.collect_by_html(db_project)
+            articles.extend(await self.collect_by_html(db_project))
         else:
             raise HTTPException(
                 status_code=status.HTTP_501_NOT_IMPLEMENTED,
@@ -160,4 +167,4 @@ class ParserController:
             )
         # TODO: Add logger
         print(f"Task done - for project id: {project_id}")
-        return db_project
+        return articles
