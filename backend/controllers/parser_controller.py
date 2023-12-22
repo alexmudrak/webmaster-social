@@ -14,7 +14,7 @@ from utils.url_handler import get_correct_url
 
 
 class ArticleHtmlParser:
-    def __init__(self, response: Response, project: Project):
+    def __init__(self, response: Response, project: Project) -> None:
         self.page = response
         self.project = project
         self.title: str | None = None
@@ -45,7 +45,7 @@ class ArticleHtmlParser:
         self.title = soup.title.string if soup.title else None
 
     async def get_img(self):
-        images: ResultSet = await self.parse_data(
+        images = await self.parse_data(
             self.page.text, self.project.parse_article_img_element
         )
         if images:
@@ -55,7 +55,7 @@ class ArticleHtmlParser:
             self.img_url = image_link
 
     async def get_body(self):
-        body: ResultSet = await self.parse_data(
+        body = await self.parse_data(
             self.page.text, self.project.parse_article_body_element
         )
         body_string = " ".join([e.text for e in body])
@@ -80,73 +80,85 @@ class ArticleHtmlParser:
 
 
 class ParserController:
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
     async def collect_urls_by_html(
-        self, client: AsyncClient, object: Project
+        self, client: AsyncClient, project: Project
     ) -> list[str]:
         # TODO: Add documentation
-        aggregate_url = object.url
-        urls = []
+        aggregate_url = project.url
         response = await client.get(aggregate_url)
         results = await ArticleHtmlParser.parse_data(
-            response.text, object.parse_article_url_element
+            response.text, project.parse_article_url_element
         )
 
-        for result in results:
-            url = await get_correct_url(object.url, result["href"])
-            urls.append(url)
+        urls = [
+            await get_correct_url(project.url, result["href"])
+            for result in results
+        ]
 
         return urls
 
-    async def collect_by_html(self, object: Project) -> None:
+    async def get_unique_urls(
+        self, client: AsyncClient, project: Project
+    ) -> list[str]:
         # TODO: Add documentation
-        client = await get_request_client()
+        # Collect all urls from aggregate page
+        urls = await self.collect_urls_by_html(client, project)
+        # TODO: Add info about collecting urls
+        urls_in_db = await self.session.exec(
+            select(Article.url).where(Article.url.in_(urls))
+        )
+        urls_in_db_result = urls_in_db.unique().all()
 
-        try:
-            # Collect all urls from aggregate page
-            urls: list[str] = await self.collect_urls_by_html(client, object)
-            # TODO: Add info about collecting urls
-            urls_in_db = await self.session.exec(
-                select(Article.url).where(Article.url.in_(urls))
-            )
-            urls_in_db_result = urls_in_db.unique().all()
+        # Return only unique Urls
+        return list(set(urls) - set(urls_in_db_result))
 
-            # Get only unique Urls
-            urls = list(set(urls) - set(urls_in_db_result))
+    async def add_articles_to_db(
+        # TODO: Add documentation
+        self,
+        client: AsyncClient,
+        project: Project,
+        urls: list[str],
+    ) -> None:
+        for url in urls:
+            # Getting elements of article from each url
+            response = await client.get(url)
+            article = await ArticleHtmlParser(response, project).get_article
 
-            for url in urls:
-                # Getting elements of article from each url
-                response = await client.get(url)
-                article = await ArticleHtmlParser(response, object).get_article
-
-                self.session.add(article)
-                await self.session.commit()
-                await self.session.refresh(article)
-        finally:
-            await client.aclose()
+            self.session.add(article)
+            await self.session.commit()
+            await self.session.refresh(article)
 
         # TODO: Add implementation of sending notification about added articles
         # TODO: SAVE to DB log
         print(f"DONE! Added - {len(urls)}")
 
-    async def collect_data(self, object_id: int) -> Project:
+    async def collect_by_html(self, project: Project) -> None:
         # TODO: Add documentation
-        db_object = await self.session.get(Project, object_id)
+        client = await get_request_client()
+        try:
+            urls_to_add = await self.get_unique_urls(client, project)
+            await self.add_articles_to_db(client, project, urls_to_add)
+        finally:
+            await client.aclose()
 
-        if not db_object:
+    async def collect_data(self, project_id: int) -> Project:
+        # TODO: Add documentation
+        db_project = await self.session.get(Project, project_id)
+
+        if not db_project:
             raise HTTPException(status_code=404, detail="Project not found")
 
-        match db_object.parse_type:
-            # TODO: Add logger
-            case "html":
-                await self.collect_by_html(db_object)
-            case _:
-                raise HTTPException(
-                    status_code=status.HTTP_501_NOT_IMPLEMENTED,
-                    detail="This parse type is not implemented yet.",
-                )
         # TODO: Add logger
-        print(f"Task done - for project id: {object_id}")
-        return db_object
+        if db_project.parse_type == "html":
+            await self.collect_by_html(db_project)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_501_NOT_IMPLEMENTED,
+                detail="This parse type is not implemented yet.",
+            )
+        # TODO: Add logger
+        print(f"Task done - for project id: {project_id}")
+        return db_project
