@@ -137,12 +137,11 @@ class ParserController:
 
     async def collect_by_html(self, project: Project) -> None:
         # TODO: Add documentation
-        client = await get_request_client()
-        try:
+        async with await get_request_client() as client:
+            # Get unique Urls to article
             urls_to_add = await self.get_unique_urls(client, project)
+            # Parse and Store article to DB
             await self.add_articles_to_db(client, project, urls_to_add)
-        finally:
-            await client.aclose()
 
     async def collect_data(self, project_id: int) -> Project:
         # TODO: Add documentation
