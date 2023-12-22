@@ -21,7 +21,6 @@ class SettingBase(SQLModel):
 
 class Setting(SettingBase, BaseTimestampMixin, table=True):
     # type: ignore
-    id: int = Field(default=None, nullable=False, primary_key=True)
     project: Optional["Project"] = Relationship(
         back_populates="networks_setting",
         sa_relationship_kwargs={"lazy": "joined"},

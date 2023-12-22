@@ -29,7 +29,6 @@ class ProjectBase(SQLModel):
 
 class Project(ProjectBase, BaseTimestampMixin, table=True):
     # type: ignore
-    id: int = Field(default=None, nullable=False, primary_key=True)
     networks_setting: List["Setting"] = Relationship(
         back_populates="project",
         sa_relationship_kwargs={"lazy": "joined"},
