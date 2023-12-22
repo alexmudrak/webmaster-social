@@ -5,6 +5,7 @@ from sqlalchemy import Column, UniqueConstraint
 from sqlmodel import JSON, Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from models.article import Article
     from models.setting import Setting
 
 
@@ -30,6 +31,10 @@ class ProjectBase(SQLModel):
 class Project(ProjectBase, BaseTimestampMixin, table=True):
     # type: ignore
     networks_setting: List["Setting"] = Relationship(
+        back_populates="project",
+        sa_relationship_kwargs={"lazy": "joined"},
+    )
+    articles: List["Article"] = Relationship(
         back_populates="project",
         sa_relationship_kwargs={"lazy": "joined"},
     )

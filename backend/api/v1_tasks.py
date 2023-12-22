@@ -11,13 +11,16 @@ router = APIRouter(
 
 
 @router.post(
-    "/",
+    "/collect-articles/{project_id}",
     summary="Run collect task.",
     response_model=TaskResponse,
 )
 async def run_collect_task(
+    project_id: int,
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_session),
 ):
-    background_tasks.add_task(ParserController(session).collect_data, 1)
+    background_tasks.add_task(
+        ParserController(session).collect_data, project_id
+    )
     return TaskResponse(task_type="collect_data", status="success")
