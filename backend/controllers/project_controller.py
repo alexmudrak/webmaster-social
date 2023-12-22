@@ -47,11 +47,9 @@ class ProjectController:
         db_object = Project(
             name=object_data.name,
             url=str(object_data.url),
-            parse_article_body_element=(
-                object_data.parse_article_body_element
-            ),
-            parse_article_img_element=(object_data.parse_article_img_element),
-            parse_article_url_element=(object_data.parse_article_url_element),
+            parse_article_body_element=object_data.parse_article_body_element,
+            parse_article_img_element=object_data.parse_article_img_element,
+            parse_article_url_element=object_data.parse_article_url_element,
             active=object_data.active,
             updated=datetime.utcnow(),
         )
