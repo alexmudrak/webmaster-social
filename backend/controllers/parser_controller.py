@@ -14,6 +14,7 @@ from utils.url_handler import get_correct_url
 
 
 class ArticleHtmlParser:
+    # TODO: Move to service
     def __init__(self, response: Response, project: Project) -> None:
         self.page = response
         self.project = project
@@ -86,6 +87,7 @@ class ParserController:
     async def collect_urls_by_html(
         self, client: AsyncClient, project: Project
     ) -> list[str]:
+        # TODO: refactor: maybe should move to service class
         # TODO: Add documentation
         aggregate_url = project.url
         response = await client.get(aggregate_url)
