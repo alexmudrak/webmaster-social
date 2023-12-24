@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from fastapi import HTTPException
 from models.article import Article
 from models.publish_article_status import PublishArticleStatus
 from models.setting import Setting
@@ -32,9 +33,7 @@ class SocialNetworksController:
                     and_(
                         func.count(distinct(PublishArticleStatus.setting_id))
                         >= networks_count,
-                        func.bool_or(
-                            PublishArticleStatus.publish_status == "ERROR"
-                        ),
+                        func.bool_or(PublishArticleStatus.status == "ERROR"),
                     ),
                 )
             )
@@ -62,11 +61,22 @@ class SocialNetworksController:
         )
         article = await self.get_article(project_id, len(networks_config))
 
-        # TODO: Send article to available social networks
-        # TODO: Save SendingModel result to DB
+        if not article:
+            raise HTTPException(
+                status_code=404, detail="Articles for publishing not found"
+            )
+
+        done_status = [
+            publish.setting_id
+            for publish in article.published
+            if publish.status == "DONE"
+        ]
 
         async with await get_request_client() as client:
             for network_config in networks_config:
-                await send_to_network(
-                    self.session, client, network_config, article
-                )
+                # Need to check status for network config
+                if network_config.id not in done_status:
+                    # TODO: Save SendingModel result to DB
+                    await send_to_network(
+                        self.session, client, network_config, article
+                    )
