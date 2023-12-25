@@ -19,6 +19,11 @@ class SocialNetworkAbstract(ABC):
         self.config = config
         self.article = article
 
+    @staticmethod
+    @abstractmethod
+    async def config_validation():
+        raise NotImplementedError
+
     @abstractmethod
     async def auth(self):
         raise NotImplementedError
