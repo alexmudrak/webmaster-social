@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from core.database import get_or_create
 from fastapi import HTTPException
 from models.article import Article
 from models.publish_article_status import PublishArticleStatus
@@ -33,6 +34,9 @@ class SocialNetworksController:
                     and_(
                         func.count(distinct(PublishArticleStatus.setting_id))
                         >= networks_count,
+                        # TODO: Perhaps get this value max `try_count` from
+                        # project config for network
+                        func.every(PublishArticleStatus.try_count < 3),
                         func.bool_or(PublishArticleStatus.status == "ERROR"),
                     ),
                 )
@@ -56,9 +60,7 @@ class SocialNetworksController:
     async def send_article(self, project_id: int):
         # TODO: Add documentation
 
-        networks_config: list[Setting] = await self.get_networks_config(
-            project_id
-        )
+        networks_config = await self.get_networks_config(project_id)
         article = await self.get_article(project_id, len(networks_config))
 
         if not article:
@@ -70,13 +72,35 @@ class SocialNetworksController:
             publish.setting_id
             for publish in article.published
             if publish.status == "DONE"
+            or (publish.status == "ERROR" and publish.try_count >= 3)
         ]
 
         async with await get_request_client() as client:
             for network_config in networks_config:
                 # Need to check status for network config
                 if network_config.id not in done_status:
-                    # TODO: Save SendingModel result to DB
-                    await send_to_network(
-                        self.session, client, network_config, article
+                    publish_status = await get_or_create(
+                        self.session,
+                        PublishArticleStatus,
+                        article_id=article.id,
+                        setting_id=network_config.id,
                     )
+
+                    try:
+                        publish_status.status = "PENDING"
+                        publish_status.status_text = None
+                        publish_status.try_count += 1
+                        self.session.add(publish_status)
+                        await self.session.commit()
+
+                        await send_to_network(
+                            self.session, client, network_config, article
+                        )
+                        publish_status.status = "DONE"
+                    except Exception as error:
+                        # TODO: Add logger
+                        publish_status.status = "ERROR"
+                        publish_status.status_text = str(error)
+                    finally:
+                        self.session.add(publish_status)
+                        await self.session.commit()

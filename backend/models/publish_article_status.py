@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 from models.mixins import BaseTimestampMixin
 from sqlalchemy import UniqueConstraint
@@ -13,6 +13,8 @@ class PublishArticleStatusBase(SQLModel):
     article_id: int = Field(nullable=False, foreign_key="article.id")
     setting_id: int = Field(nullable=False, foreign_key="setting.id")
     status: str = Field(nullable=False, default="PENDING")
+    status_text: Optional[str] = Field(nullable=True, default=None)
+    try_count: int = Field(nullable=False, default=0)
 
 
 class PublishArticleStatus(

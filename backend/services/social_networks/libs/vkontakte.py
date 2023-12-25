@@ -8,8 +8,9 @@ class VkontakteLib(SocialNetworkAbstract):
     async def get_config(self):
         pass
 
-    async def post(self):
+    async def prepare_post(self):
         pass
 
-    async def prepare_post(self):
+    async def post(self):
+        await self.prepare_post()
         pass

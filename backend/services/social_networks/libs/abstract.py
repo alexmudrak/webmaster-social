@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from httpx import AsyncClient
 from models.article import Article
+from models.setting import Setting
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
@@ -10,9 +11,13 @@ class SocialNetworkAbstract(ABC):
         self,
         session: AsyncSession,
         client: AsyncClient,
+        config: Setting,
+        article: Article,
     ):
         self.session = session
         self.client = client
+        self.config = config
+        self.article = article
 
     @abstractmethod
     async def auth(self):
@@ -23,7 +28,7 @@ class SocialNetworkAbstract(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def post(self, article: Article):
+    async def post(self):
         raise NotImplementedError
 
     @abstractmethod
