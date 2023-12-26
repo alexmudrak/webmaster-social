@@ -41,6 +41,7 @@ class SettingController:
                 ),
             )
 
+        # TODO: Add config validation
         db_object = Setting(
             name=object_data.name,
             settings=object_data.settings,
@@ -59,6 +60,8 @@ class SettingController:
 
         if not db_object:
             raise HTTPException(status_code=404, detail="Setting not found")
+        # TODO: Add config validation
+        # TODO: Add condition to check value
 
         db_object.name = object_data.name
         db_object.settings = object_data.settings
