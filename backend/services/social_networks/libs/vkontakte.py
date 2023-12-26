@@ -4,11 +4,12 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 
 class VkontakteLib(SocialNetworkAbstract):
+    api_version = 5.199
     endpoint = "https://api.vk.com/method/wall.post"
     auth_enpoint = (
         "https://oauth.vk.com/authorize?client_id=%s&display=page"
         "&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,wall"
-        "&response_type=token&v=5.199&state=123456"
+        f"&response_type=token&v={api_version}&state=123456"
     )
 
     @staticmethod
@@ -16,7 +17,7 @@ class VkontakteLib(SocialNetworkAbstract):
         if not isinstance(settings, dict):
             raise ValueError("Invalid config format")
 
-        required_keys = ["app_id", "owner_id", "access_token"]
+        required_keys = ["app_id", "group_id", "access_token"]
 
         for key in required_keys:
             if key not in settings:
@@ -27,11 +28,15 @@ class VkontakteLib(SocialNetworkAbstract):
         raise NotImplementedError
 
     async def get_config(self) -> dict:
+        if not isinstance(self.config.settings, dict):
+            # TODO: Add logger
+            raise ValueError("Invalid config format")
+
         config = {
-            "owner_id": self.config.settings.get("owner_id"),
+            "owner_id": self.config.settings.get("group_id"),
             "access_token": self.config.settings.get("access_token"),
             "from_group": 1,
-            "v": 5.199,
+            "v": self.api_version,
         }
         return config
 
