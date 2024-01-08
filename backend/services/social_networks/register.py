@@ -5,6 +5,7 @@ from models.article import Article
 from models.setting import Setting
 from services.social_networks.libs.abstract import SocialNetworkAbstract
 from services.social_networks.libs.facebook import FacebookLib
+from services.social_networks.libs.twitter import TwitterLib
 from services.social_networks.libs.vkontakte import VkontakteLib
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -13,6 +14,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 NETWORK_REGISTER: Dict[str, Type[SocialNetworkAbstract]] = {
     "vkontakte": VkontakteLib,
     "facebook": FacebookLib,
+    "twitter": TwitterLib,
 }
 
 
