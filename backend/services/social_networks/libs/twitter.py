@@ -1,6 +1,5 @@
 from typing import Any
 
-import httpx
 from authlib.integrations.requests_client import OAuth2Session
 from services.social_networks.libs.abstract import SocialNetworkAbstract
 
@@ -44,7 +43,7 @@ class TwitterLib(SocialNetworkAbstract):
         }
         return config
 
-    async def get_client(self, config: dict) -> OAuth2Session:
+    async def get_oauth_client(self, config: dict) -> OAuth2Session:
         # TODO: Add async session
         return OAuth2Session(
             client_id=config["client_id"],
@@ -82,11 +81,11 @@ class TwitterLib(SocialNetworkAbstract):
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
-        client = await self.get_client(config)
+        client = await self.get_oauth_client(config)
         token = await self.get_updated_token(client, config)
         message = await self.prepare_post()
 
-        response = httpx.post(
+        response = await self.client.post(
             self.tweet_endpoint,
             json={"text": message["message"]},
             headers={
