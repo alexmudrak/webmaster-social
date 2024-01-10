@@ -7,14 +7,16 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 from services.social_networks.libs.facebook import FacebookLib
 from services.social_networks.libs.twitter import TwitterLib
 from services.social_networks.libs.vkontakte import VkontakteLib
+from services.social_networks.libs.instagram import InstagramLib
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 # After implementing a new social network library
 # it needs to be added to the registry
 NETWORK_REGISTER: Dict[str, Type[SocialNetworkAbstract]] = {
-    "vkontakte": VkontakteLib,
-    "facebook": FacebookLib,
-    "twitter": TwitterLib,
+    # "vkontakte": VkontakteLib,
+    # "facebook": FacebookLib,
+    # "twitter": TwitterLib,
+    "instagram": InstagramLib,
 }
 
 
