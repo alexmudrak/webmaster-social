@@ -55,6 +55,7 @@ class FacebookLib(SocialNetworkAbstract):
         response = await self.client.post(
             self.endpoint % (config.get("page_id")),
             data=data,
+            timeout=30,
         )
 
         if response.status_code != 200 or response.json().get("error"):

@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import hmac
 import json
@@ -16,12 +17,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 class InstagramLib(SocialNetworkAbstract):
     post_endpoint = "https://i.instagram.com/api/v1/media/configure/?"
-    login_prefill_endpoint = (
-        "https://i.instagram.com/api/v1/accounts/get_prefill_candidates/"
-    )
-    login_endpoint = "https://i.instagram.com/api/v1/accounts/login/"
     upload_photo_endpoint = "https://i.instagram.com/rupload_igphoto/"
-    auth_endpoint = ""
     request_headers = {
         "X-IG-App-Locale": "en_US",
         "X-IG-Device-Locale": "en_US",
@@ -32,7 +28,9 @@ class InstagramLib(SocialNetworkAbstract):
         "X-IG-Bandwidth-TotalBytes-B": str(random.randint(500000, 900000)),
         "X-IG-Bandwidth-TotalTime-MS": str(random.randint(50, 150)),
         "X-IG-Prefetch-Request": "foreground",
-        "X-Bloks-Version-Id": "0a3ae4c88248863609c67e278f34af44673cff300bc76add965a9fb036bd3ca3",
+        "X-Bloks-Version-Id": (
+            "0a3ae4c88248863609c67e278f34af44673cff300bc76add965a9fb036bd3ca3"
+        ),
         "X-IG-WWW-Claim": "0",
         "X-MID": "XkAyKQABAAHizpYQvHzNeBo4E9nm",
         "X-Bloks-Is-Layout-RTL": "false",
@@ -64,7 +62,9 @@ class InstagramLib(SocialNetworkAbstract):
             if key not in settings:
                 raise ValueError(f"Missing required key: {key}")
 
-    async def generate_signature(self, data: str) -> str:
+    async def generate_signature(self, data) -> str:
+        # TODO: Add documentation
+        # TODO: Need to refactor
         body = (
             hmac.new(
                 self.ig_sig_key.encode("utf-8"),
@@ -83,15 +83,20 @@ class InstagramLib(SocialNetworkAbstract):
         method: str,
         url: str,
         headers: dict | None = None,
-        data: dict | bytes | None = None,
+        data: str | dict | bytes | None = None,
         login_data: dict | None = None,
         cookies: dict | None = None,
-        signature: bool = False,
+        signature: bool = True,
     ) -> Response:
+        # TODO: Add documentation
+        # TODO: Need to refactor
         headers = headers or self.request_headers
 
         if login_data:
             headers["User-Agent"] = login_data["user_agent"]
+
+        if signature:
+            data = await self.generate_signature(json.dumps(data))
 
         match method:
             case "POST":
@@ -233,6 +238,7 @@ class InstagramLib(SocialNetworkAbstract):
         return img
 
     async def prepare_image(self) -> Image.Image:
+        # TODO: Add documentation
         img_url = self.article.img_url
         response = await self.send_request(method="GET", url=img_url)
         image_bytes = BytesIO(response.content)
@@ -240,7 +246,10 @@ class InstagramLib(SocialNetworkAbstract):
         image = await self.resize_image(image)
         return image
 
-    async def upload_image(self, image: Image.Image, cookies: dict) -> Response:
+    async def upload_image(
+        self, image: Image.Image, cookies: dict
+    ) -> Response:
+        # TODO: Add documentation
         tmp_bytes = BytesIO()
         image.save(tmp_bytes, "JPEG")
 
@@ -251,12 +260,22 @@ class InstagramLib(SocialNetworkAbstract):
         waterfall_id = str(uuid.uuid4())
 
         image_params = {
-            "retry_context": '{"num_step_auto_retry":0,"num_reupload":0,"num_step_manual_retry":0}',
+            "retry_context": json.dumps(
+                {
+                    "num_step_auto_retry": 0,
+                    "num_reupload": 0,
+                    "num_step_manual_retry": 0,
+                }
+            ),
             "media_type": "1",
             "xsharing_user_ids": "[]",
             "upload_id": image_id,
             "image_compression": json.dumps(
-                {"lib_name": "moz", "lib_version": "3.1.m", "quality": "80"}
+                {
+                    "lib_name": "moz",
+                    "lib_version": "3.1.m",
+                    "quality": "80",
+                }
             ),
         }
         image_request_headers = {
@@ -279,21 +298,68 @@ class InstagramLib(SocialNetworkAbstract):
         )
         return response
 
-    async def publish_post(self):
-        pass
+    async def publish_post(
+        self,
+        image: Image.Image,
+        image_id: str,
+        post: dict,
+        login_data: dict,
+        cookies: dict,
+    ) -> Response:
+        # TODO: Add documentation
+        # TODO: Need to refactor
+        width, height = image.size
+        data = {
+            "media_folder": "Instagram",
+            "source_type": 4,
+            "caption": post.get("message"),
+            "upload_id": image_id,
+            "device": login_data.get("device_settings"),
+            "edits": {
+                "crop_original_size": [width * 1.0, height * 1.0],
+                "crop_center": [0.0, 0.0],
+                "crop_zoom": 1.0,
+            },
+            "extra": {"source_width": width, "source_height": height},
+            "_uuid": login_data.get("uuid"),
+            "_uid": cookies.get("ds_user_id"),
+            "_csrftoken": cookies.get("csrftoken"),
+        }
+        response = await self.send_request(
+            method="POST",
+            url=self.post_endpoint,
+            data=data,
+            login_data=login_data,
+            cookies=cookies,
+        )
+        return response
 
     async def post(self):
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
-        message = await self.prepare_post()
+        post = await self.prepare_post()
         image = await self.prepare_image()
         login_data = await self.prepare_login_data(config)
         cookies = await self.get_cookies(login_data)
 
         upload_photo_response = await self.upload_image(image, cookies)
-        breakpoint()
-        response = await self.publish_post()
+        if upload_photo_response.status_code != 200:
+            raise ValueError(
+                f"Can not upload image. {upload_photo_response.content}"
+            )
+
+        image_id = upload_photo_response.json().get("upload_id")
+
+        await asyncio.sleep(3)
+
+        response = await self.publish_post(
+            image=image,
+            image_id=image_id,
+            post=post,
+            login_data=login_data,
+            cookies=cookies,
+        )
 
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
