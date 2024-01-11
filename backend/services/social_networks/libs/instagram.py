@@ -56,7 +56,7 @@ class InstagramLib(SocialNetworkAbstract):
         if not isinstance(settings, dict):
             raise ValueError("Invalid config format")
 
-        required_keys = ["username", "password", "cookie"]
+        required_keys = ["username", "password", "cookies"]
 
         for key in required_keys:
             if key not in settings:
@@ -126,7 +126,7 @@ class InstagramLib(SocialNetworkAbstract):
         config = {
             "username": self.config.settings.get("username"),
             "password": self.config.settings.get("password"),
-            "cookie": self.config.settings.get("cookie"),
+            "cookies": self.config.settings.get("cookies"),
         }
         return config
 
@@ -165,7 +165,7 @@ class InstagramLib(SocialNetworkAbstract):
 
         # TODO: Add to dataclass
         login_data = {
-            "cookies": config.get("cookie"),
+            "cookies": config.get("cookies"),
             "username": config.get("username"),
             "password": config.get("password"),
             "device_settings": device_settings,
