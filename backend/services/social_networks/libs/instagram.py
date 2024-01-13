@@ -86,7 +86,7 @@ class InstagramLib(SocialNetworkAbstract):
         data: str | dict | bytes | None = None,
         login_data: dict | None = None,
         cookies: dict | None = None,
-        signature: bool = True,
+        signature: bool = False,
     ) -> Response:
         # TODO: Add documentation
         # TODO: Need to refactor
@@ -331,6 +331,7 @@ class InstagramLib(SocialNetworkAbstract):
             data=data,
             login_data=login_data,
             cookies=cookies,
+            signature=True,
         )
         return response
 
@@ -348,7 +349,6 @@ class InstagramLib(SocialNetworkAbstract):
             raise ValueError(
                 f"Can not upload image. {upload_photo_response.content}"
             )
-
         image_id = upload_photo_response.json().get("upload_id")
 
         await asyncio.sleep(3)
