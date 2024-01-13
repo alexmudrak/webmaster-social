@@ -5,7 +5,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 
 class LinkedinLib(SocialNetworkAbstract):
-    post_endpoint = "https://api.linkedin.com/v2/shares"
+    post_endpoint = "https://api.linkedin.com/v2/ugcPosts"
     auth_enpoint = ""
 
     @staticmethod
@@ -45,22 +45,27 @@ class LinkedinLib(SocialNetworkAbstract):
         title = self.article.title
         message = self.article.body[:200]
         link = self.article.url
-        image_link = self.article.image_link
 
         post = {
-            "content": {
-                "contentEntities": [
-                    {
-                        "entityLocation": link,
-                        "thumbnails": [{"resolvedUrl": image_link}],
-                    }
-                ],
-                "title": title[:100],
+            "author": "urn:li:person:" + config["user_id"],
+            "lifecycleState": "PUBLISHED",
+            "specificContent": {
+                "com.linkedin.ugc.ShareContent": {
+                    "shareCommentary": {"text": message},
+                    "shareMediaCategory": "ARTICLE",
+                    "media": [
+                        {
+                            "status": "READY",
+                            "description": {"text": message},
+                            "originalUrl": link,
+                            "title": {"text": title},
+                        }
+                    ],
+                }
             },
-            "distribution": {"linkedInDistributionTarget": {}},
-            "owner": "urn:li:person:" + config["user_id"],
-            "subject": "\n\n",
-            "text": {"text": message},
+            "visibility": {
+                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+            },
         }
         return post
 
@@ -70,15 +75,19 @@ class LinkedinLib(SocialNetworkAbstract):
         config = await self.get_config()
         message = await self.prepare_post(config)
 
-        headers = {"Authorization": "Bearer " + config["access_token"]}
+        headers = {
+            "X-Restli-Protocol-Version": "2.0.0",
+            "Authorization": "Bearer " + config["access_token"],
+            "Content-Type": "application/json",
+        }
 
         data = json.dumps(message).encode("utf-8")
 
         response = await self.client.post(
             self.post_endpoint,
-            data=data,
+            content=data,
             headers=headers,
         )
 
-        if response.status_code != 200 or response.json().get("error"):
+        if response.status_code != 201 or response.json().get("error"):
             raise ValueError(response.text)
