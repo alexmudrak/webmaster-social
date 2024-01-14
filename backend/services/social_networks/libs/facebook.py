@@ -6,7 +6,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 class FacebookLib(SocialNetworkAbstract):
     api_version = "v18.0"
     endpoint = f"https://graph.facebook.com/{api_version}/%s/feed"
-    auth_enpoint = ""
+    auth_endpoint = ""
 
     @staticmethod
     async def config_validation(settings: Any):

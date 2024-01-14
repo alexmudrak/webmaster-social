@@ -6,7 +6,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 class LinkedinLib(SocialNetworkAbstract):
     post_endpoint = "https://api.linkedin.com/v2/ugcPosts"
-    auth_enpoint = ""
+    auth_endpoint = ""
 
     @staticmethod
     async def config_validation(settings: Any):

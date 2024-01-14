@@ -6,7 +6,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 class VkontakteLib(SocialNetworkAbstract):
     api_version = 5.199
     endpoint = "https://api.vk.com/method/wall.post"
-    auth_enpoint = (
+    auth_endpoint = (
         "https://oauth.vk.com/authorize?client_id=%s&display=page"
         "&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,wall"
         f"&response_type=token&v={api_version}&state=123456"

@@ -7,7 +7,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 class PinterestLib(SocialNetworkAbstract):
     post_endpoint = "https://www.pinterest.com/resource/PinResource/create/"
-    auth_enpoint = ""
+    auth_endpoint = ""
     headers = {
         "Referer": "https://www.pinterest.com/",
         "X-Requested-With": "XMLHttpRequest",
