@@ -8,6 +8,7 @@ from services.social_networks.libs.facebook import FacebookLib
 from services.social_networks.libs.instagram import InstagramLib
 from services.social_networks.libs.linkedin import LinkedinLib
 from services.social_networks.libs.pinterest import PinterestLib
+from services.social_networks.libs.reddit import RedditLib
 from services.social_networks.libs.twitter import TwitterLib
 from services.social_networks.libs.vkontakte import VkontakteLib
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -19,6 +20,7 @@ NETWORK_REGISTER: Dict[str, Type[SocialNetworkAbstract]] = {
     "instagram": InstagramLib,
     "linkedin": LinkedinLib,
     "pinterest": PinterestLib,
+    "reddit": RedditLib,
     "twitter": TwitterLib,
     "vkontakte": VkontakteLib,
 }
