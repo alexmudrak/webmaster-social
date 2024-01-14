@@ -5,14 +5,16 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 class RedditLib(SocialNetworkAbstract):
     POST_ENDPOINT = "https://oauth.reddit.com/api/submit/"
+    TOKEN_ENDPOINT = "https://www.reddit.com/api/v1/access_token"
     AUTH_ENDPOINT = ""
 
+    REQUEST_HEADERS = {"User-Agent": "MyAPI/0.0.1"}
     REQUIRED_CONFIG_KEYS = {
         "client_id",
         "client_secret",
-        "username",
-        "password",
+        "redirect_url",
         "sub_reddit",
+        "refresh_token",
     }
 
     async def auth(self):
@@ -49,24 +51,48 @@ class RedditLib(SocialNetworkAbstract):
         }
         return post
 
+    async def get_access_token(self, config: dict) -> str:
+        refresh_token = config["refresh_token"]
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        }
+
+        auth = (config["client_id"], config["client_secret"])
+
+        response = await self.client.post(
+            RedditLib.TOKEN_ENDPOINT,
+            data=data,
+            headers=RedditLib.REQUEST_HEADERS,
+            auth=auth,
+        )
+        if (
+            response.status_code != 200
+            or "access_token" not in response.json()
+        ):
+            raise ValueError("Can't get access_token and refresh_token")
+
+        return response.json()["access_token"]
+
     async def post(self):
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
         message = await self.prepare_post()
+        access_token = await self.get_access_token(config)
 
-        headers = {}
+        headers = RedditLib.REQUEST_HEADERS
+        headers.update(
+            {
+                "Authorization": f"bearer {access_token}",
+            }
+        )
+
         data = {
-            "api_type": "json",
             "kind": "self",
-            "nsfw": False,
-            "resubmit": True,
-            "richtext_json": ...,
-            "sendreplies": True,
-            "spoiler": False,
             "sr": config["sub_reddit"],
             "title": message["title"],
-            "validate_on_submit": True,
+            "text": message["content"],
         }
 
         response = await self.client.post(
@@ -75,5 +101,5 @@ class RedditLib(SocialNetworkAbstract):
             headers=headers,
         )
 
-        if response.status_code != 201 or response.json().get("error"):
+        if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
