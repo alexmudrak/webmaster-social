@@ -93,11 +93,9 @@ class SocialNetworksController:
                         self.session.add(publish_status)
                         await self.session.commit()
 
-                        # TODO: Delete when complete
-                        if network_config.name:
-                            await send_to_network(
-                                self.session, client, network_config, article
-                            )
+                        await send_to_network(
+                            self.session, client, network_config, article
+                        )
                         publish_status.status = "DONE"
                     except Exception as error:
                         # TODO: Add logger
