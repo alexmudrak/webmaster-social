@@ -96,6 +96,7 @@ class SocialNetworksController:
                         await send_to_network(
                             self.session, client, network_config, article
                         )
+
                         publish_status.status = "DONE"
                     except Exception as error:
                         # TODO: Add logger
