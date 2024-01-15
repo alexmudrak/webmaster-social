@@ -5,6 +5,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 class FacebookLib(SocialNetworkAbstract):
     api_version = "v18.0"
+    # TODO: Change format style to `.format`
     endpoint = f"https://graph.facebook.com/{api_version}/%s/feed"
     auth_endpoint = ""
 

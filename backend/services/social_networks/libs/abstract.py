@@ -19,6 +19,8 @@ class SocialNetworkAbstract(ABC):
         self.config = config
         self.article = article
 
+    # TODO: Need to refactor and merge to `get_config`
+    # TODO: Change to self method
     @staticmethod
     @abstractmethod
     async def config_validation():
