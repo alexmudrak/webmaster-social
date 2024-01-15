@@ -7,6 +7,7 @@ from services.social_networks.libs.abstract import SocialNetworkAbstract
 from services.social_networks.libs.facebook import FacebookLib
 from services.social_networks.libs.instagram import InstagramLib
 from services.social_networks.libs.linkedin import LinkedinLib
+from services.social_networks.libs.medium import MediumLib
 from services.social_networks.libs.pinterest import PinterestLib
 from services.social_networks.libs.reddit import RedditLib
 from services.social_networks.libs.twitter import TwitterLib
@@ -19,6 +20,7 @@ NETWORK_REGISTER: Dict[str, Type[SocialNetworkAbstract]] = {
     "facebook": FacebookLib,
     "instagram": InstagramLib,
     "linkedin": LinkedinLib,
+    "medium": MediumLib,
     "pinterest": PinterestLib,
     "reddit": RedditLib,
     "twitter": TwitterLib,
