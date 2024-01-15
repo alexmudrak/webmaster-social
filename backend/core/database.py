@@ -1,7 +1,7 @@
 from core.settings import Settings
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.ext.asyncio.session import async_sessionmaker
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel, and_, create_engine, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 engine = AsyncEngine(
@@ -33,3 +33,25 @@ async def get_session():
             raise
         finally:
             await session.close()
+
+
+async def get_or_create(session: AsyncSession, model, **kwargs):
+    instance = await session.exec(
+        select(model).where(
+            and_(
+                *(
+                    getattr(model, key) == value
+                    for key, value in kwargs.items()
+                )
+            )
+        )
+    )
+    instance = instance.unique().first()
+
+    if instance:
+        return instance
+    else:
+        new_instance = model(**kwargs)
+        session.add(new_instance)
+        await session.commit()
+        return new_instance

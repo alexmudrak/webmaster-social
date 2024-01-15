@@ -10,9 +10,10 @@ from sqlmodel import SQLModel
 from backend.core import settings as appConfig
 from backend.models.article import Article
 from backend.models.project import Project
+from backend.models.publish_article_status import PublishArticleStatus
 from backend.models.setting import Setting
 
-_ = Project, Setting, Article
+_ = Project, Setting, Article, PublishArticleStatus
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

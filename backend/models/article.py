@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from models.mixins import BaseTimestampMixin
 from sqlalchemy import UniqueConstraint
@@ -6,6 +6,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
     from models.project import Project
+    from models.publish_article_status import PublishArticleStatus
 
 
 class ArticleBase(SQLModel):
@@ -22,6 +23,10 @@ class Article(ArticleBase, BaseTimestampMixin, table=True):
     # type: ignore
     project: Optional["Project"] = Relationship(
         back_populates="articles",
+        sa_relationship_kwargs={"lazy": "joined"},
+    )
+    published: List["PublishArticleStatus"] = Relationship(
+        back_populates="article",
         sa_relationship_kwargs={"lazy": "joined"},
     )
 

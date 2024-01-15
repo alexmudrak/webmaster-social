@@ -1,0 +1,106 @@
+import json
+from typing import Any
+from urllib import parse
+
+from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+
+class PinterestLib(SocialNetworkAbstract):
+    post_endpoint = "https://www.pinterest.com/resource/PinResource/create/"
+    auth_endpoint = ""
+    headers = {
+        "Referer": "https://www.pinterest.com/",
+        "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+        ),
+    }
+
+    @staticmethod
+    async def config_validation(settings: Any):
+        if not isinstance(settings, dict):
+            raise ValueError("Invalid config format")
+
+        required_keys = ["cookies", "board_id"]
+
+        for key in required_keys:
+            if key not in settings:
+                raise ValueError(f"Missing required key: {key}")
+
+    async def auth(self):
+        # TODO: Add implementation
+        raise NotImplementedError
+
+    async def get_config(self) -> dict:
+        if not isinstance(self.config.settings, dict):
+            # TODO: Add logger
+            raise ValueError("Invalid config format")
+
+        config = {
+            "board_id": self.config.settings.get("board_id"),
+            "cookies": self.config.settings.get("cookies"),
+        }
+        return config
+
+    async def prepare_post(self) -> dict:
+        message = self.article.body[:200]
+        link = self.article.url
+
+        post = {
+            "image": self.article.img_url,
+            "title": self.article.title,
+            "message": message,
+            "link": link,
+        }
+        return post
+
+    async def data_encode(self, query: str | dict) -> str:
+        if isinstance(query, str):
+            query = parse.quote_plus(query)
+        else:
+            query = parse.urlencode(query)
+
+        query = query.replace("+", "%20")
+        return query
+
+    async def post(self):
+        await self.config_validation(self.config.settings)
+
+        config = await self.get_config()
+        post = await self.prepare_post()
+
+        headers = self.headers
+        headers.update(
+            {"X-CSRFToken": config["cookies"].get("csrftoken")},
+        )
+
+        data_options = {
+            "board_id": config["board_id"],
+            "image_url": post["image"],
+            "description": post["message"],
+            "link": post["link"],
+            "scrape_metric": {"source": "www_url_scrape"},
+            "method": "scraped",
+            "title": post["title"],
+            "section": None,
+        }
+        encoded_source_url = await self.data_encode(post["image"])
+        data = await self.data_encode(
+            {
+                "source_url": f"/pin/find/?url={encoded_source_url}",
+                "data": json.dumps({"options": data_options, "context": None}),
+            }
+        )
+
+        response = await self.client.post(
+            self.post_endpoint,
+            content=data,
+            headers=headers,
+            cookies=config["cookies"],
+        )
+
+        if response.status_code != 200 or response.json().get("error"):
+            raise ValueError(response.text)

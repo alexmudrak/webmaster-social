@@ -69,6 +69,8 @@ class ProjectController:
         if not db_object:
             raise HTTPException(status_code=404, detail="Project not found")
 
+        # TODO: Add condition to check value
+
         db_object.name = object_data.name
         db_object.url = str(object_data.url)
         db_object.active = object_data.active
