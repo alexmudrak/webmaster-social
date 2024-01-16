@@ -21,7 +21,7 @@ class ArticleBase(SQLModel):
 
 class Article(ArticleBase, BaseTimestampMixin, table=True):
     # type: ignore
-    project: Optional["Project"] = Relationship(
+    project: "Project" = Relationship(
         back_populates="articles",
         sa_relationship_kwargs={"lazy": "joined"},
     )

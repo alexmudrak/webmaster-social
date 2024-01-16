@@ -53,5 +53,4 @@ async def send_to_network(
     )
 
     # Start send to network
-    # TODO: Prepare article for publishing
     await network_object.post()

@@ -5,6 +5,10 @@ from fastapi import HTTPException
 from models.article import Article
 from models.publish_article_status import PublishArticleStatus
 from models.setting import Setting
+from services.notification.notification_service import (
+    NotificationData,
+    NotificationSender,
+)
 from services.social_networks.register import send_to_network
 from sqlmodel import and_, distinct, func, or_, select, text
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -21,6 +25,7 @@ class SocialNetworksController:
         networks_count: int,
     ) -> Optional[Article]:
         # TODO: Add documentation
+        # TODO: Need to refactoring
         query = (
             select(Article)
             .where(Article.project_id == project_id)
@@ -68,15 +73,18 @@ class SocialNetworksController:
                 status_code=404, detail="Articles for publishing not found"
             )
 
-        done_status = [
+        done_status = {
             publish.setting_id
             for publish in article.published
             if publish.status == "DONE"
             or (publish.status == "ERROR" and publish.try_count >= 3)
-        ]
+        }
+
+        results = {}
 
         async with await get_request_client() as client:
             for network_config in networks_config:
+                # TODO: Add logger
                 # Need to check status for network config
                 if network_config.id not in done_status:
                     publish_status = await get_or_create(
@@ -85,14 +93,14 @@ class SocialNetworksController:
                         article_id=article.id,
                         setting_id=network_config.id,
                     )
+                    publish_status.status = "PENDING"
+                    publish_status.status_text = None
+                    publish_status.try_count += 1
+
+                    await self.session.commit()
 
                     try:
-                        publish_status.status = "PENDING"
-                        publish_status.status_text = None
-                        publish_status.try_count += 1
-                        self.session.add(publish_status)
-                        await self.session.commit()
-
+                        # TODO: Add logger
                         await send_to_network(
                             self.session, client, network_config, article
                         )
@@ -103,5 +111,14 @@ class SocialNetworksController:
                         publish_status.status = "ERROR"
                         publish_status.status_text = str(error)
                     finally:
-                        self.session.add(publish_status)
                         await self.session.commit()
+                        results[network_config.name] = publish_status
+        # Send notification
+        result_data = NotificationData(
+            project_name=article.project.name,
+            article_title=article.title,
+            article_url=article.url,
+            publish_statuses=results,
+        )
+
+        await NotificationSender().send_message(result_data)
