@@ -5,6 +5,10 @@ from fastapi import HTTPException
 from models.article import Article
 from models.publish_article_status import PublishArticleStatus
 from models.setting import Setting
+from services.notification.notification_service import (
+    NotificationData,
+    NotificationSender,
+)
 from services.social_networks.register import send_to_network
 from sqlmodel import and_, distinct, func, or_, select, text
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -109,3 +113,12 @@ class SocialNetworksController:
                     finally:
                         await self.session.commit()
                         results[network_config.name] = publish_status
+        # Send notification
+        result_data = NotificationData(
+            project_name=article.project.name,
+            article_title=article.title,
+            article_url=article.url,
+            publish_statuses=results,
+        )
+
+        await NotificationSender().send_message(result_data)
