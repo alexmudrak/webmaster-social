@@ -25,12 +25,14 @@ async def run_collect_task(
         ParserController(session).collect_data, project_id
     )
 
-    return TaskResponse(task_type="collect_data", status="success")
+    return TaskResponse(
+        task_type="collect_data", networks="", status="success"
+    )
 
 
 @router.post(
     "/send-article/{project_id}",
-    summary="Send collected article to social newtworks task.",
+    summary="Send collected article to all social networks task.",
     response_model=TaskResponse,
 )
 async def send_article_task(
@@ -42,4 +44,28 @@ async def send_article_task(
         SocialNetworksController(session).send_article_to_networks, project_id
     )
 
-    return TaskResponse(task_type="send_article", status="success")
+    return TaskResponse(
+        task_type="send_article", networks="all", status="success"
+    )
+
+
+@router.post(
+    "/send-article/{project_id}/{network_name}",
+    summary="Send collected article to single social network task.",
+    response_model=TaskResponse,
+)
+async def send_singel_article_task(
+    project_id: int,
+    network_name: str,
+    background_tasks: BackgroundTasks,
+    session: AsyncSession = Depends(get_session),
+):
+    background_tasks.add_task(
+        SocialNetworksController(session).send_article_to_networks,
+        project_id,
+        network_name,
+    )
+
+    return TaskResponse(
+        task_type="send_article", networks=network_name, status="success"
+    )
