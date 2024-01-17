@@ -1,9 +1,9 @@
 import asyncio
-from typing import List, Optional
+from typing import Coroutine, List, Optional
 
 from core.database import get_or_create, get_session_context
 from core.logger import get_logger
-from fastapi import HTTPException
+from httpx import AsyncClient
 from models.article import Article
 from models.publish_article_status import PublishArticleStatus
 from models.setting import Setting
@@ -68,10 +68,10 @@ class SocialNetworksController:
 
     async def send_to_single_network(
         self,
-        client,
-        network_config,
-        article,
-    ):
+        client: AsyncClient,
+        network_config: Setting,
+        article: Article,
+    ) -> tuple[str, str]:
         # Need to check status for network config
         # Active or not Active
         logger.info(
@@ -123,45 +123,105 @@ class SocialNetworksController:
 
         return network_config.name, publish_status
 
-    async def send_article_to_networks(self, project_id: int):
-        # TODO: Add documentation
-        networks_config = await self.get_networks_config(project_id)
-        article = await self.get_article(project_id, len(networks_config))
+    async def get_setting_by_name(
+        self,
+        networks_config: list[Setting],
+        network_name: str | None,
+    ) -> Optional[Setting]:
+        return next(
+            (
+                setting
+                for setting in networks_config
+                if setting.name == network_name
+            ),
+            None,
+        )
 
-        if not article:
-            raise HTTPException(
-                status_code=404, detail="Articles for publishing not found"
-            )
-
-        done_status = {
+    def get_done_status(self, article: Article) -> set[int | None]:
+        return {
             publish.setting_id
             for publish in article.published
             if publish.status == "DONE"
             or (publish.status == "ERROR" and publish.try_count >= 3)
         }
 
-        async with await get_request_client() as client:
-            tasks = []
-            for network_config in networks_config:
-                if network_config.id not in done_status:
-                    task = self.send_to_single_network(
-                        client,
-                        network_config,
-                        article,
-                    )
-                    tasks.append(task)
+    def create_network_tasks(
+        self,
+        network_name: str | None,
+        setting_exists: Optional[Setting],
+        networks_config: list[Setting],
+        done_status: set[int | None],
+        client: AsyncClient,
+        article: Article,
+    ) -> list[Coroutine]:
+        tasks = []
+        if not network_name:
+            tasks = [
+                self.send_to_single_network(client, network_config, article)
+                for network_config in networks_config
+                if network_config.id not in done_status
+            ]
+        elif setting_exists:
+            tasks.append(
+                self.send_to_single_network(client, setting_exists, article)
+            )
 
-            results_list = await asyncio.gather(*tasks)
-            results = {name: status for name, status in results_list}
+        return tasks
 
-        await self.session.close()
-
-        # Send notification
+    async def send_notification(
+        self, article: Article, results: dict[str, PublishArticleStatus]
+    ):
         result_data = NotificationData(
             project_name=article.project.name,
             article_title=article.title,
             article_url=article.url,
             publish_statuses=results,
         )
-
         await NotificationSender().send_message(result_data)
+
+    async def send_article_to_networks(
+        self,
+        project_id: int,
+        network_name: str | None = None,
+    ):
+        # TODO: Add documentation
+        try:
+            networks_config = await self.get_networks_config(project_id)
+            article = await self.get_article(project_id, len(networks_config))
+
+            setting_exists = await self.get_setting_by_name(
+                networks_config,
+                network_name,
+            )
+
+            if network_name and not setting_exists:
+                logger.error(
+                    f"Network config for `{network_name}` "
+                    f"of Project `{project_id}` not found"
+                )
+                return
+
+            if not article:
+                logger.error("Articles for publishing not found")
+                return
+
+            done_status = self.get_done_status(article)
+
+            async with await get_request_client() as client:
+                tasks = self.create_network_tasks(
+                    network_name,
+                    setting_exists,
+                    networks_config,
+                    done_status,
+                    client,
+                    article,
+                )
+                results_list = await asyncio.gather(*tasks)
+                results = {name: status for name, status in results_list}
+
+            await self.session.close()
+
+            if results and article:
+                await self.send_notification(article, results)
+        finally:
+            await self.session.close()
