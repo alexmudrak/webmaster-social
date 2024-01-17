@@ -25,12 +25,14 @@ async def run_collect_task(
         ParserController(session).collect_data, project_id
     )
 
-    return TaskResponse(task_type="collect_data", status="success")
+    return TaskResponse(
+        task_type="collect_data", networks="", status="success"
+    )
 
 
 @router.post(
     "/send-article/{project_id}",
-    summary="Send collected article to social newtworks task.",
+    summary="Send collected article to all social networks task.",
     response_model=TaskResponse,
 )
 async def send_article_task(
