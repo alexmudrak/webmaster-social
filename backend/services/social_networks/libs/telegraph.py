@@ -1,7 +1,10 @@
 import json
 from typing import Any
 
+from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+logger = get_logger(__name__)
 
 
 class TelegraphLib(SocialNetworkAbstract):
@@ -27,7 +30,6 @@ class TelegraphLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict[str, Any]:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         return {
@@ -67,10 +69,25 @@ class TelegraphLib(SocialNetworkAbstract):
             }
         )
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.client.post(
             self.POST_ENDPOINT,
             data=message,
         )
 
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
+
         if response.json().get("ok") is False:
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )

@@ -1,6 +1,9 @@
 from typing import Any
 
+from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+logger = get_logger(__name__)
 
 
 class VkontakteLib(SocialNetworkAbstract):
@@ -29,7 +32,6 @@ class VkontakteLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         config = {
@@ -58,7 +60,22 @@ class VkontakteLib(SocialNetworkAbstract):
 
         data = {**message, **config}
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.client.post(self.endpoint, data=data)
+
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
 
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )

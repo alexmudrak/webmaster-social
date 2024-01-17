@@ -1,8 +1,11 @@
 import json
 from typing import Any
 
+from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
 from utils.string_handler import escape_markdown
+
+logger = get_logger(__name__)
 
 
 class TelegramGroupLib(SocialNetworkAbstract):
@@ -28,7 +31,6 @@ class TelegramGroupLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict[str, Any]:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         return {
@@ -75,10 +77,25 @@ class TelegramGroupLib(SocialNetworkAbstract):
             ),
         }
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.client.post(
             self.POST_ENDPOINT.format(access_token=config["access_token"]),
             data=data,
         )
 
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
+
         if response.json().get("ok") is False:
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
