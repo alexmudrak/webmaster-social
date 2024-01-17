@@ -54,4 +54,5 @@ async def get_or_create(session: AsyncSession, model, **kwargs):
         new_instance = model(**kwargs)
         session.add(new_instance)
         await session.commit()
+
         return new_instance

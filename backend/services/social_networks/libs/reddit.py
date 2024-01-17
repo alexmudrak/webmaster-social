@@ -101,5 +101,5 @@ class RedditLib(SocialNetworkAbstract):
             headers=headers,
         )
 
-        if response.status_code != 200 or response.json().get("error"):
+        if not response.json().get("success"):
             raise ValueError(response.text)

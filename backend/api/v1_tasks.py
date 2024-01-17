@@ -24,6 +24,7 @@ async def run_collect_task(
     background_tasks.add_task(
         ParserController(session).collect_data, project_id
     )
+
     return TaskResponse(task_type="collect_data", status="success")
 
 
@@ -37,11 +38,8 @@ async def send_article_task(
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_session),
 ):
-    # TODO: Add documentation
-    # TODO: Uncomment when complete
-    # background_tasks.add_task(
-    #     ParserController(session).collect_data, project_id
-    # )
+    background_tasks.add_task(
+        SocialNetworksController(session).send_article_to_networks, project_id
+    )
 
-    await SocialNetworksController(session).send_article(project_id)
     return TaskResponse(task_type="send_article", status="success")

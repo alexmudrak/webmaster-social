@@ -1,9 +1,11 @@
+import logging
 import os
 
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    LOG_LEVEL: str | int = os.getenv("LOG_LEVEL", logging.INFO)
     DB_HOST: str = os.getenv("DB_HOST", "")
     DB_PORT: int = int(os.getenv("DB_PORT", 5432))
     DB_NAME: str = os.getenv("DB_NAME", "")
