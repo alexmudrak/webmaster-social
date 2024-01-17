@@ -1,7 +1,10 @@
 from typing import Any
 
 from authlib.integrations.requests_client import OAuth2Session
+from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+logger = get_logger(__name__)
 
 
 class TwitterLib(SocialNetworkAbstract):
@@ -32,7 +35,6 @@ class TwitterLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         config = {
@@ -85,6 +87,11 @@ class TwitterLib(SocialNetworkAbstract):
         token = await self.get_updated_token(client, config)
         message = await self.prepare_post()
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.client.post(
             self.tweet_endpoint,
             json={"text": message["message"]},
@@ -94,5 +101,15 @@ class TwitterLib(SocialNetworkAbstract):
             },
         )
 
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
+
         if response.status_code != 201 or response.json().get("error"):
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )

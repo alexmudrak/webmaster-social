@@ -10,9 +10,12 @@ from math import ceil
 from typing import Any
 from urllib import parse
 
+from core.logger import get_logger
 from httpx import Response
 from PIL import Image
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+logger = get_logger(__name__)
 
 
 class InstagramLib(SocialNetworkAbstract):
@@ -120,7 +123,6 @@ class InstagramLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         config = {
@@ -353,6 +355,11 @@ class InstagramLib(SocialNetworkAbstract):
 
         await asyncio.sleep(3)
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.publish_post(
             image=image,
             image_id=image_id,
@@ -361,5 +368,15 @@ class InstagramLib(SocialNetworkAbstract):
             cookies=cookies,
         )
 
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
+
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )

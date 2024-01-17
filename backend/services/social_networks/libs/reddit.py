@@ -1,6 +1,9 @@
 from typing import Any
 
+from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+logger = get_logger(__name__)
 
 
 class RedditLib(SocialNetworkAbstract):
@@ -32,7 +35,6 @@ class RedditLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict[str, Any]:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         return {
@@ -95,11 +97,26 @@ class RedditLib(SocialNetworkAbstract):
             "text": message["content"],
         }
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.client.post(
             RedditLib.POST_ENDPOINT,
             data=data,
             headers=headers,
         )
 
-        if response.status_code != 200 or response.json().get("error"):
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
+
+        if not response.json().get("success"):
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )

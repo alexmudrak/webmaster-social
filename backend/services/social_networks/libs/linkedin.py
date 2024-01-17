@@ -1,7 +1,10 @@
 import json
 from typing import Any
 
+from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+
+logger = get_logger(__name__)
 
 
 class LinkedinLib(SocialNetworkAbstract):
@@ -30,7 +33,6 @@ class LinkedinLib(SocialNetworkAbstract):
 
     async def get_config(self) -> dict:
         if not isinstance(self.config.settings, dict):
-            # TODO: Add logger
             raise ValueError("Invalid config format")
 
         config = {
@@ -83,11 +85,26 @@ class LinkedinLib(SocialNetworkAbstract):
 
         data = json.dumps(message).encode("utf-8")
 
+        logger.info(
+            f"Try to send article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )
+
         response = await self.client.post(
             self.post_endpoint,
             content=data,
             headers=headers,
         )
 
+        logger.debug(
+            f"Response for sent article - {self.article.title} for "
+            f"{self.article.project.id}. {response.text}"
+        )
+
         if response.status_code != 201 or response.json().get("error"):
             raise ValueError(response.text)
+
+        logger.info(
+            f"Success sent article - {self.article.title} for "
+            f"{self.article.project.id}"
+        )

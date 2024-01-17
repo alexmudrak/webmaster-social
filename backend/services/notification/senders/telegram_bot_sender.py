@@ -1,9 +1,12 @@
+from core.logger import get_logger
 from services.notification.notification_data import NotificationData
 from services.notification.senders.abstract_sender import (
     AbstractNotificationSender,
 )
 from utils.request_client import get_request_client
 from utils.string_handler import escape_markdown
+
+logger = get_logger(__name__)
 
 
 class TelegramBotSender(AbstractNotificationSender):
@@ -40,5 +43,4 @@ class TelegramBotSender(AbstractNotificationSender):
                 url=self.post_endpoint.format(token=self.token),
                 data=data,
             )
-            # TODO: Add logger for response
-            print(response.json())
+            logger.debug(response.json())

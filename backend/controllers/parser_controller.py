@@ -2,6 +2,7 @@ import re
 
 from bs4 import BeautifulSoup as bs
 from bs4 import ResultSet
+from core.logger import get_logger
 from fastapi import HTTPException, status
 from httpx import AsyncClient, Response
 from models.article import Article
@@ -11,6 +12,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from utils.cloudflare_handler import cloudflare_decode_email
 from utils.request_client import get_request_client
 from utils.url_handler import get_correct_url
+
+logger = get_logger(__name__)
 
 
 class ArticleHtmlParser:
@@ -136,8 +139,8 @@ class ParserController:
             articles.append(article)
 
         # TODO: Add implementation of sending notification about added articles
-        # TODO: SAVE to DB log
-        print(f"DONE! Added - {len(urls)}")
+        logger.debug(f"Articles from {project.name} added - {len(articles)}")
+
         return articles
 
     async def collect_by_html(self, project: Project) -> list[Article]:
@@ -158,15 +161,27 @@ class ParserController:
         if not db_project:
             raise HTTPException(status_code=404, detail="Project not found")
 
-        # TODO: Add logger
+        parse_type = db_project.parse_type
+        logger.info(f"Start `{parse_type}` parse articles - {db_project.name}")
+
         articles = []
-        if db_project.parse_type == "html":
-            articles.extend(await self.collect_by_html(db_project))
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_501_NOT_IMPLEMENTED,
-                detail="This parse type is not implemented yet.",
-            )
-        # TODO: Add logger
-        print(f"Task done - for project id: {project_id}")
+        match parse_type:
+            case "html":
+                articles.extend(await self.collect_by_html(db_project))
+            case _:
+                logger.error(
+                    f"Parse type `{parse_type}` for "
+                    f"{db_project.name} - Not Implemented."
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_501_NOT_IMPLEMENTED,
+                    detail="This parse type is not implemented yet.",
+                )
+        logger.info(
+            f"Finish `{parse_type}` parse articles - {db_project.name}"
+        )
+        logger.debug(
+            f"Results `{parse_type}` parse articles - "
+            f"{db_project.name} - {articles}"
+        )
         return articles
