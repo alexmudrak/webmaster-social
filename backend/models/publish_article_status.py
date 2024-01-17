@@ -30,6 +30,7 @@ class PublishArticleStatus(
         sa_relationship_kwargs={"lazy": "joined"},
     )
 
+    __tablename__ = "publish_article_status"
     __table_args__ = (
         UniqueConstraint(
             "article_id", "setting_id", name="unique_article_setting"
