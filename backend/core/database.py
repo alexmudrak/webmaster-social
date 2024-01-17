@@ -1,13 +1,17 @@
+from contextlib import asynccontextmanager
+
 from core.settings import Settings
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.ext.asyncio.session import async_sessionmaker
 from sqlmodel import SQLModel, and_, create_engine, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+SETTING = Settings()
+
 engine = AsyncEngine(
     create_engine(
-        Settings().DB_URL,
-        echo=True,
+        SETTING.DB_URL,
+        echo=SETTING.LOG_LEVEL == "DEBUG",
         future=True,
     )
 )
@@ -22,6 +26,19 @@ async_session = async_sessionmaker(
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
+
+
+@asynccontextmanager
+async def get_session_context():
+    # TODO: Need to refactor with `get_session`
+    async with async_session() as session:
+        try:
+            yield session
+        except:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 
 
 async def get_session():
