@@ -49,7 +49,7 @@ class MediumLib(SocialNetworkAbstract):
         }
         return post
 
-    async def post(self):
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
@@ -85,7 +85,10 @@ class MediumLib(SocialNetworkAbstract):
         if response.status_code != 201 or response.json().get("error"):
             raise ValueError(response.text)
 
+        url = response.json().get("data", {}).get("url")
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url
