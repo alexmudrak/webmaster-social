@@ -4,6 +4,7 @@ from urllib import parse
 
 from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+from utils.string_handler import truncate_text
 
 logger = get_logger(__name__)
 
@@ -21,6 +22,8 @@ class PinterestLib(SocialNetworkAbstract):
             "(KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
         ),
     }
+
+    max_message_length = 200
 
     @staticmethod
     async def config_validation(settings: Any):
@@ -48,7 +51,7 @@ class PinterestLib(SocialNetworkAbstract):
         return config
 
     async def prepare_post(self) -> dict:
-        message = self.article.body[:200]
+        message = truncate_text(self.article.body, self.max_message_length)
         link = self.article.url
 
         post = {

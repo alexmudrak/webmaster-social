@@ -3,7 +3,7 @@ from typing import Any
 
 from core.logger import get_logger
 from services.social_networks.libs.abstract import SocialNetworkAbstract
-from utils.string_handler import escape_markdown
+from utils.string_handler import escape_markdown, truncate_text
 
 logger = get_logger(__name__)
 
@@ -16,6 +16,7 @@ class TelegramGroupLib(SocialNetworkAbstract):
         "group_id",
         "access_token",
     }
+    MAX_MESSAGE_LENGTH = 200
 
     async def auth(self):
         # TODO: Add implementation
@@ -39,8 +40,10 @@ class TelegramGroupLib(SocialNetworkAbstract):
         }
 
     async def prepare_post(self) -> dict[str, Any]:
-        title = await escape_markdown(self.article.title)
-        message = await escape_markdown(self.article.body[:200])
+        title = escape_markdown(self.article.title)
+        message = escape_markdown(
+            truncate_text(self.article.body, self.MAX_MESSAGE_LENGTH)
+        )
         link = self.article.url
 
         post = {

@@ -16,10 +16,10 @@ class TelegramBotSender(AbstractNotificationSender):
         self.post_endpoint = "https://api.telegram.org/bot{token}/sendMessage"
 
     async def send(self, message: NotificationData):
-        project_name = await escape_markdown(message.project_name)
-        article_title = await escape_markdown(message.article_title)
-        article_url = await escape_markdown(message.article_url)
-        published_status = await escape_markdown(message.message)
+        project_name = escape_markdown(message.project_name)
+        article_title = escape_markdown(message.article_title)
+        article_url = escape_markdown(message.article_url)
+        published_status = escape_markdown(message.message)
         published_status_count = (
             f"✅ *DONE*: {message.done_status_count} / "
             f"🛑 *FAIL*: {message.fail_status_count}"

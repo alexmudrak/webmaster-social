@@ -14,6 +14,7 @@ from core.logger import get_logger
 from httpx import Response
 from PIL import Image
 from services.social_networks.libs.abstract import SocialNetworkAbstract
+from utils.string_handler import truncate_text
 
 logger = get_logger(__name__)
 
@@ -53,6 +54,8 @@ class InstagramLib(SocialNetworkAbstract):
         "a86109795736d73c9a94172cd9b736917d7d94ca61c9101164894b3f0d43bef4"
     )
     sig_key_version = "4"
+
+    max_message_length = 200
 
     @staticmethod
     async def config_validation(settings: Any):
@@ -134,7 +137,7 @@ class InstagramLib(SocialNetworkAbstract):
 
     async def prepare_post(self) -> dict:
         title = self.article.title
-        message = self.article.body[:200]
+        message = truncate_text(self.article.body, self.max_message_length)
         link = self.article.url
 
         post = {
