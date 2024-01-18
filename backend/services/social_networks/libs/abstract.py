@@ -41,3 +41,7 @@ class SocialNetworkAbstract(ABC):
     @abstractmethod
     async def prepare_post(self):
         raise NotImplementedError
+
+    @abstractmethod
+    async def extract_url(self):
+        raise NotImplementedError

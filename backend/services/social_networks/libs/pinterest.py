@@ -74,6 +74,12 @@ class PinterestLib(SocialNetworkAbstract):
         query = query.replace("+", "%20")
         return query
 
+    async def extract_url(self, json: dict) -> str:
+        pin_id = (
+            json.get("resource_response", {}).get("data", {}).get("id", "")
+        )
+        return self.pin_url.format(pin_id=pin_id)
+
     async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
@@ -123,8 +129,7 @@ class PinterestLib(SocialNetworkAbstract):
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
 
-        pin_id = response.json().get("resource_response")["data"]["id"]
-        url = self.pin_url.format(pin_id=pin_id)
+        url = await self.extract_url(response.json())
 
         logger.info(
             f"Success sent article - {self.article.title} for "

@@ -53,7 +53,7 @@ class TelegramGroupLib(SocialNetworkAbstract):
         }
         return post
 
-    def extract_url(self, json: dict) -> str:
+    async def extract_url(self, json: dict) -> str:
         result = json.get("result", {})
         message_id = result.get("message_id")
         chat = result.get("chat", {})
@@ -112,7 +112,7 @@ class TelegramGroupLib(SocialNetworkAbstract):
         if response.json().get("ok") is False:
             raise ValueError(response.text)
 
-        url = self.extract_url(response.json())
+        url = await self.extract_url(response.json())
 
         logger.info(
             f"Success sent article - {self.article.title} for "

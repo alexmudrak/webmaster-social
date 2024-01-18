@@ -76,7 +76,7 @@ class RedditLib(SocialNetworkAbstract):
 
         return response.json()["access_token"]
 
-    def extract_url(self, json: dict) -> str:
+    async def extract_url(self, json: dict) -> str:
         for item in json.get("jquery", []):
             if (
                 isinstance(item[-1], list)
@@ -126,7 +126,7 @@ class RedditLib(SocialNetworkAbstract):
         if not response.json().get("success"):
             raise ValueError(response.text)
 
-        url = self.extract_url(response.json())
+        url = await self.extract_url(response.json())
 
         logger.info(
             f"Success sent article - {self.article.title} for "

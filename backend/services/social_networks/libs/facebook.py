@@ -50,6 +50,9 @@ class FacebookLib(SocialNetworkAbstract):
         }
         return post
 
+    async def extract_url(self, json: dict) -> str:
+        return json.get("permalink_url", "")
+
     async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
@@ -77,7 +80,7 @@ class FacebookLib(SocialNetworkAbstract):
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
 
-        url = response.json().get("permalink_url")
+        url = await self.extract_url(response.json())
 
         logger.info(
             f"Success sent article - {self.article.title} for "
