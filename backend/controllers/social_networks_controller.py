@@ -106,6 +106,13 @@ class SocialNetworksController:
             publish_status.status_text = None
             publish_status.try_count += 1
 
+            # TODO: Investigate to optimize
+            config = await get_or_create(
+                session,
+                Setting,
+                id=network_config.id,
+            )
+
             await session.commit()
 
             try:
@@ -116,7 +123,7 @@ class SocialNetworksController:
                 url = await send_to_network(
                     session,
                     client,
-                    network_config,
+                    config,
                     article,
                 )
 
