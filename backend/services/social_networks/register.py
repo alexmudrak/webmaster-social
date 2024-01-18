@@ -37,7 +37,7 @@ async def send_to_network(
     client: AsyncClient,
     config: Setting,
     article: Article,
-):
+) -> str:
     network_lib = NETWORK_REGISTER.get(config.name)
 
     if not network_lib:
@@ -53,4 +53,4 @@ async def send_to_network(
     )
 
     # Start send to network
-    await network_object.post()
+    return await network_object.post()

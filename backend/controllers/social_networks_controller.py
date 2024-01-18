@@ -27,9 +27,11 @@ class SocialNetworksController:
         self,
         project_id: int,
         networks_count: int,
+        setting_exists: Optional[Setting] | None = None,
     ) -> Optional[Article]:
         # TODO: Add documentation
         # TODO: Need to refactoring
+
         query = (
             select(Article)
             .where(Article.project_id == project_id)
@@ -51,6 +53,20 @@ class SocialNetworksController:
                 )
             )
         )
+
+        if setting_exists:
+            query = (
+                select(Article)
+                .where(Article.project_id == project_id)
+                .outerjoin(PublishArticleStatus)
+                .group_by(text("Article.id"))
+                .having(
+                    func.count(
+                        PublishArticleStatus.setting_id == setting_exists.id
+                    )
+                    == 0
+                )
+            )
 
         result = await self.session.exec(query)
         article = result.unique().first()
@@ -97,7 +113,7 @@ class SocialNetworksController:
                     f"Try to send {article.id} to " f"`{network_config.name}`"
                 )
 
-                await send_to_network(
+                url = await send_to_network(
                     session,
                     client,
                     network_config,
@@ -105,6 +121,7 @@ class SocialNetworksController:
                 )
 
                 publish_status.status = "DONE"
+                publish_status.publish_article_link = url
             except Exception as error:
                 publish_status.status = "ERROR"
                 publish_status.status_text = str(error)
@@ -187,11 +204,15 @@ class SocialNetworksController:
         # TODO: Add documentation
         try:
             networks_config = await self.get_networks_config(project_id)
-            article = await self.get_article(project_id, len(networks_config))
-
             setting_exists = await self.get_setting_by_name(
                 networks_config,
                 network_name,
+            )
+
+            article = await self.get_article(
+                project_id,
+                len(networks_config),
+                setting_exists=setting_exists,
             )
 
             if network_name and not setting_exists:
