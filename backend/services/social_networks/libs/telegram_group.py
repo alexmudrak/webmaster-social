@@ -39,8 +39,8 @@ class TelegramGroupLib(SocialNetworkAbstract):
         }
 
     async def prepare_post(self) -> dict[str, Any]:
-        title = await escape_markdown(self.article.title)
-        message = await escape_markdown(self.article.body[:200])
+        title = escape_markdown(self.article.title)
+        message = escape_markdown(self.article.body[:200])
         link = self.article.url
 
         post = {
