@@ -55,7 +55,7 @@ class TelegraphLib(SocialNetworkAbstract):
         }
         return post
 
-    async def post(self):
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
@@ -87,7 +87,10 @@ class TelegraphLib(SocialNetworkAbstract):
         if response.json().get("ok") is False:
             raise ValueError(response.text)
 
+        url = response.json().get("result", {}).get("url", "")
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url
