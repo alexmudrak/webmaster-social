@@ -1,7 +1,8 @@
 from typing import Any
 
-from authlib.integrations.requests_client import OAuth2Session
+from authlib.integrations.requests_client import OAuth2Session, OAuthError
 from core.logger import get_logger
+from httpx import RequestError
 from services.social_networks.libs.abstract import SocialNetworkAbstract
 
 logger = get_logger(__name__)
@@ -59,15 +60,18 @@ class TwitterLib(SocialNetworkAbstract):
         self, client: OAuth2Session, config: dict
     ) -> dict:
         # TODO: Change to async session
-        new_token = client.refresh_token(
-            url=self.token_endpoint,
-            refresh_token=config["refresh_token"],
-        )
+        try:
+            new_token = client.refresh_token(
+                url=self.token_endpoint,
+                refresh_token=config["refresh_token"],
+            )
+        except OAuthError:
+            raise RequestError("Can't get refresh_token")
+
         config["refresh_token"] = new_token["refresh_token"]
         self.config.settings = config
 
         self.session.add(self.config)
-        await self.session.commit()
 
         return new_token
 
@@ -78,6 +82,11 @@ class TwitterLib(SocialNetworkAbstract):
             "message": f"{self.article.title}\n\n{link}",
         }
         return post
+
+    async def extract_url(self, json: dict) -> str:
+        tweet_id = json.get("data", {}).get("id")
+        url = f"https://twitter.com/crawler_post/status/{tweet_id}"
+        return url
 
     async def post(self):
         await self.config_validation(self.config.settings)
@@ -109,7 +118,10 @@ class TwitterLib(SocialNetworkAbstract):
         if response.status_code != 201 or response.json().get("error"):
             raise ValueError(response.text)
 
+        url = await self.extract_url(response.json())
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url
