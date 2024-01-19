@@ -61,7 +61,7 @@ class VkontakteLib(SocialNetworkAbstract):
 
         return url
 
-    async def post(self):
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()

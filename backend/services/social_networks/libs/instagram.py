@@ -345,7 +345,7 @@ class InstagramLib(SocialNetworkAbstract):
         url = f"https://www.instagram.com/p/{post_id}"
         return url
 
-    async def post(self):
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()

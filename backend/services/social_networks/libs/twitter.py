@@ -88,7 +88,7 @@ class TwitterLib(SocialNetworkAbstract):
         url = f"https://twitter.com/crawler_post/status/{tweet_id}"
         return url
 
-    async def post(self):
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
