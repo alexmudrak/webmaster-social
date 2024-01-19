@@ -1,4 +1,5 @@
 from api.v1_dashboard import router as dashboards_router
+from api.v1_logs import router as logs_router
 from api.v1_projects import router as projects_router
 from api.v1_settings import router as settings_router
 from api.v1_tasks import router as tasks_router
@@ -11,6 +12,7 @@ v1_endpoints = [
     projects_router,
     settings_router,
     tasks_router,
+    logs_router,
 ]
 
 for endpoint in v1_endpoints:
