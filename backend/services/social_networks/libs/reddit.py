@@ -76,7 +76,17 @@ class RedditLib(SocialNetworkAbstract):
 
         return response.json()["access_token"]
 
-    async def post(self):
+    async def extract_url(self, json: dict) -> str:
+        for item in json.get("jquery", []):
+            if (
+                isinstance(item[-1], list)
+                and item[-1]
+                and "http" in item[-1][0]
+            ):
+                return item[-1][0]
+        return ""
+
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
@@ -116,7 +126,10 @@ class RedditLib(SocialNetworkAbstract):
         if not response.json().get("success"):
             raise ValueError(response.text)
 
+        url = await self.extract_url(response.json())
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url

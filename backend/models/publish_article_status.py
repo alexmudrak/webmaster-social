@@ -15,6 +15,7 @@ class PublishArticleStatusBase(SQLModel):
     status: str = Field(nullable=False, default="PENDING")
     status_text: Optional[str] = Field(nullable=True, default=None)
     try_count: int = Field(nullable=False, default=0)
+    publish_article_link: Optional[str] = Field(nullable=True, default=None)
 
 
 class PublishArticleStatus(

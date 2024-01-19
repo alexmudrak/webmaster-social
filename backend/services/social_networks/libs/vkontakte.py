@@ -55,7 +55,13 @@ class VkontakteLib(SocialNetworkAbstract):
         }
         return post
 
-    async def post(self):
+    async def extract_url(self, json: dict, owner_id: int) -> str:
+        post_id = json.get("response", {}).get("post_id")
+        url = f"https://vk.com/feed?w=wall-{abs(owner_id)}_{post_id}"
+
+        return url
+
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
@@ -78,7 +84,10 @@ class VkontakteLib(SocialNetworkAbstract):
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
 
+        url = await self.extract_url(response.json(), config["owner_id"])
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url

@@ -10,8 +10,11 @@ logger = get_logger(__name__)
 
 
 class PinterestLib(SocialNetworkAbstract):
+    # TODO: Refactor CONST case
     post_endpoint = "https://www.pinterest.com/resource/PinResource/create/"
+    pin_url = "https://ru.pinterest.com/pin/{pin_id}/"
     auth_endpoint = ""
+
     headers = {
         "Referer": "https://www.pinterest.com/",
         "X-Requested-With": "XMLHttpRequest",
@@ -71,7 +74,13 @@ class PinterestLib(SocialNetworkAbstract):
         query = query.replace("+", "%20")
         return query
 
-    async def post(self):
+    async def extract_url(self, json: dict) -> str:
+        pin_id = (
+            json.get("resource_response", {}).get("data", {}).get("id", "")
+        )
+        return self.pin_url.format(pin_id=pin_id)
+
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
@@ -120,7 +129,10 @@ class PinterestLib(SocialNetworkAbstract):
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
 
+        url = await self.extract_url(response.json())
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url

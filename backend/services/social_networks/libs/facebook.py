@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 class FacebookLib(SocialNetworkAbstract):
     api_version = "v18.0"
     # TODO: Change format style to `.format`
-    endpoint = f"https://graph.facebook.com/{api_version}/%s/feed"
+    endpoint = f"https://graph.facebook.com/{api_version}/%s/feed?fields=permalink_url"
     auth_endpoint = ""
 
     max_message_length = 200
@@ -50,7 +50,10 @@ class FacebookLib(SocialNetworkAbstract):
         }
         return post
 
-    async def post(self):
+    async def extract_url(self, json: dict) -> str:
+        return json.get("permalink_url", "")
+
+    async def post(self) -> str:
         await self.config_validation(self.config.settings)
 
         config = await self.get_config()
@@ -77,7 +80,10 @@ class FacebookLib(SocialNetworkAbstract):
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
 
+        url = await self.extract_url(response.json())
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url
