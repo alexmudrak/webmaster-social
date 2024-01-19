@@ -340,6 +340,11 @@ class InstagramLib(SocialNetworkAbstract):
         )
         return response
 
+    async def extract_url(self, json: dict) -> str:
+        post_id = json.get("media", {}).get("code", "")
+        url = f"https://www.instagram.com/p/{post_id}"
+        return url
+
     async def post(self):
         await self.config_validation(self.config.settings)
 
@@ -379,7 +384,10 @@ class InstagramLib(SocialNetworkAbstract):
         if response.status_code != 200 or response.json().get("error"):
             raise ValueError(response.text)
 
+        url = await self.extract_url(response.json())
+
         logger.info(
             f"Success sent article - {self.article.title} for "
             f"{self.article.project.id}"
         )
+        return url
