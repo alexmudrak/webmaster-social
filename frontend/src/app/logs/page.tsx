@@ -19,6 +19,8 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
+// TODO: Need to Refactor
+
 interface TablePaginationActionsProps {
   count: number
   page: number
@@ -27,6 +29,15 @@ interface TablePaginationActionsProps {
     _event: React.MouseEvent<HTMLButtonElement>,
     _newPage: number
   ) => void
+}
+
+type LogEntry = {
+  id: number
+  created: string
+  level: string
+  logger_name: string
+  message: string
+  updated: string
 }
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
@@ -90,27 +101,32 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   )
 }
 
-function createData(
-  date: string,
-  level: string,
-  project: string,
-  data: string
-) {
-  return { date, level, project, data }
-}
-
-const rows = [
-  createData('2023-01-01', 'error', 'project 1', '{some: 1, some: 2}'),
-  createData('2023-01-02', 'info', 'project 1', '{some: 1, some: 2}'),
-  createData('2023-01-03', 'critical', 'project 2', '{some: 1, some: 2}'),
-  createData('2023-01-04', 'warning', 'project 2', '{some: 1, some: 2}'),
-  createData('2023-01-05', 'info', 'project 1', '{some: 1, some: 2}'),
-  createData('2023-01-06', 'error', 'project 2', '{some: 1, some: 2}')
-]
-
 export default function Logs() {
+  const errorRowStyle = { backgroundColor: 'rgba(255, 0, 0, 0.2)' }
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [rowsPerPage, setRowsPerPage] = React.useState(25)
+  const [rows, setRows] = React.useState<LogEntry[]>([])
+
+  // TODO: perhaps should to use request lib with SWR
+  React.useEffect(() => {
+    const fetchLogs = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/logs/')
+      if (response.ok) {
+        const data = await response.json()
+        setRows(data)
+      } else {
+        console.error('Failed to fetch logs:', response.statusText)
+      }
+    }
+
+    fetchLogs()
+  }, [page, rowsPerPage])
+
+  // TODO: move to date handler util lib
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    return date.toLocaleString('en-GB').replace(/,/, '')
+  }
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
@@ -128,6 +144,7 @@ export default function Logs() {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
+
   return (
     <Container maxWidth='xl' sx={{ marginTop: 2 }}>
       <div
@@ -148,7 +165,7 @@ export default function Logs() {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>Log level</TableCell>
-              <TableCell>Project name</TableCell>
+              <TableCell>Service name</TableCell>
               <TableCell>Log Data</TableCell>
             </TableRow>
           </TableHead>
@@ -161,15 +178,16 @@ export default function Logs() {
               : rows
             ).map((row) => (
               <TableRow
-                key={row.date}
+                key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                style={row.level === 'ERROR' ? errorRowStyle : {}}
               >
                 <TableCell component='th' scope='row'>
-                  {row.date}
+                  {formatDate(row.created)}
                 </TableCell>
                 <TableCell>{row.level}</TableCell>
-                <TableCell>{row.project}</TableCell>
-                <TableCell>{row.data}</TableCell>
+                <TableCell>{row.logger_name}</TableCell>
+                <TableCell>{row.message}</TableCell>
               </TableRow>
             ))}
             {emptyRows > 0 && (
