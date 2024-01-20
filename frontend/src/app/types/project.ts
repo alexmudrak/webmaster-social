@@ -16,7 +16,7 @@ export interface Project {
     selector: string;
     attrs: string[];
   };
-  id: number;
+  id?: number;
 }
 
 export interface ProjectModalProps {

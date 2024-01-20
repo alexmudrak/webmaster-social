@@ -42,13 +42,13 @@ export default function ProjectAppSettings({ data }: {data?: Project}) {
               color='text.secondary'
               gutterBottom
             >
-              {data?.url}
+              {`#` + data?.id}
             </Typography>
             <Typography variant='h5' component='div'>
               {data?.name}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-              {data?.parse_type}
+              {data?.url + ` (${data?.parse_type})`}
             </Typography>
           </CardContent>
         </Box>
