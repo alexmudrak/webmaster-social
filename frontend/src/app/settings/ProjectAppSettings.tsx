@@ -9,13 +9,10 @@ import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import ConfirmationModal from '../components/ConfirmationModal'
+import { Project } from '../types/project'
 import ProjectAppModal from './ProjectAppModal'
 
-interface ProjectAppSettingsProps {
-  title: string
-}
-
-export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
+export default function ProjectAppSettings({ data }: {data?: Project}) {
   const [openProjectModal, setOpenProjectModal] = React.useState(false)
   const [openDeleteConfirmationModal, setOpenDeleteConfirmationModal] =
     React.useState(false)
@@ -45,13 +42,13 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
               color='text.secondary'
               gutterBottom
             >
-              {'{added_project_date}'}
+              {data?.url}
             </Typography>
             <Typography variant='h5' component='div'>
-              {title}
+              {data?.name}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-              {'{project_url}'}
+              {data?.parse_type}
             </Typography>
           </CardContent>
         </Box>
@@ -71,7 +68,7 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
           Delete
         </Button>
         <ProjectAppModal
-          title={title}
+          data={data}
           open={openProjectModal}
           handleClose={handleProjectModalClose}
         />
@@ -80,7 +77,7 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
           handleConfirm={handleDeleteConfirmation}
           handleCancel={handleDeleteConfirmationCancel}
           title='Delete Project'
-          message={`Are you sure you want to delete the project "${title}"?`}
+          message={`Are you sure you want to delete the project "${data?.name}"?`}
         />
       </Card>
     </Grid>

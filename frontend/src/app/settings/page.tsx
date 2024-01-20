@@ -10,6 +10,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import TabPanel from '../components/TabPanel'
+import { Project } from '../types/project'
 import ProjectAppModal from './ProjectAppModal'
 import ProjectAppSettings from './ProjectAppSettings'
 import SocialAppSettings from './SocialAppSettings'
@@ -21,8 +22,31 @@ function a11yProps(index: number) {
   }
 }
 
-export default function Page() {
+export default function Settings() {
   const [value, setValue] = React.useState(0)
+
+  const [projectsData, setProjectsData] = React.useState<Project[]>([])
+  const [socialNetworksData, setSocialNetworksData] = React.useState([])
+
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/projects/')
+      const data: Project[] = await response.json()
+      setProjectsData(data)
+    }
+
+    const fetchSocialNetworks = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/settings/')
+      const data = await response.json()
+      setSocialNetworksData(data)
+    }
+
+    if (value === 0) {
+      fetchProjects()
+    } else if (value === 1) {
+      fetchSocialNetworks()
+    }
+  }, [value])
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -35,6 +59,8 @@ export default function Page() {
   const handleProjectModalClose = () => {
     setOpenProjectModal(false)
   }
+
+  console.log('PROJECTS', projectsData)
 
   return (
     <>
@@ -72,9 +98,9 @@ export default function Page() {
         <Divider sx={{ my: 1.5 }} />
 
         <Grid container spacing={2}>
-          <ProjectAppSettings title='Mock project 1' />
-          <ProjectAppSettings title='Mock project 2' />
-          <ProjectAppSettings title='Mock project 3' />
+          {projectsData.map((project) => (
+            <ProjectAppSettings key={project.id} data={project} />
+          ))}
         </Grid>
 
         <ProjectAppModal
@@ -83,11 +109,7 @@ export default function Page() {
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Typography
-          variant='h4'
-        >
-          Available networks
-        </Typography>
+        <Typography variant='h4'>Available networks</Typography>
 
         <Divider sx={{ my: 1.5 }} />
 

@@ -11,15 +11,10 @@ import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
 import { modalStyle } from '../styles/modalStyle'
-
-interface ProjectModalProps {
-  open: boolean
-  handleClose: () => void
-  title?: string
-}
+import { ProjectModalProps } from '../types/project'
 
 export default function ProjectAppModal({
-  title,
+  data,
   open,
   handleClose
 }: ProjectModalProps) {
@@ -46,7 +41,7 @@ export default function ProjectAppModal({
           }}
         >
           <Typography variant='h5' id='modal-project-title'>
-            {title || 'Add a new project'}
+            {data?.name || 'Add a new project'}
           </Typography>
           <FormControlLabel
             control={
@@ -68,13 +63,7 @@ export default function ProjectAppModal({
             fullWidth
             label='Project name'
             id='projectName'
-            value={title}
-            disabled={!isSwitchOn}
-          />
-          <TextField
-            fullWidth
-            label='Project URL'
-            id='projectUrl'
+            value={data?.name}
             disabled={!isSwitchOn}
           />
           <TextField
@@ -82,6 +71,7 @@ export default function ProjectAppModal({
             label='Aggregation page URL'
             id='projectAggregationUrl'
             disabled={!isSwitchOn}
+            value={data?.url}
           />
           <Button variant='contained' disabled={!isSwitchOn}>
             Save
