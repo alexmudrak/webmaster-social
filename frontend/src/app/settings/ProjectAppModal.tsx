@@ -174,6 +174,30 @@ export default function ProjectAppModal({
     []
   )
 
+  const handleSave = async () => {
+    const method = projectData.id ? 'PATCH' : 'POST'
+    const endpoint = projectData.id
+      ? `http://localhost:8000/api/v1/projects/${projectData.id}/`
+      : 'http://localhost:8000/api/v1/projects/'
+
+    try {
+      const response = await fetch(endpoint, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(projectData)
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+    } catch (error) {
+      console.error('Failed to save the project:', error)
+    }
+    handleClose()
+  }
+
   console.log(projectData)
 
   const switchLabel = projectData.active ? 'Active' : 'Not active'
@@ -346,7 +370,7 @@ export default function ProjectAppModal({
             </>
           )}
 
-          <Button variant='contained' fullWidth>
+          <Button variant='contained' fullWidth onClick={handleSave}>
             Save
           </Button>
         </Stack>
