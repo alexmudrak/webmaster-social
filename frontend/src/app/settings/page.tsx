@@ -60,8 +60,7 @@ export default function Settings() {
     setOpenProjectModal(false)
   }
 
-  console.log('PROJECTS', projectsData)
-
+  // TODO: Add updating Project item after Create/Update/Delete
   return (
     <>
       <Box>

@@ -198,8 +198,6 @@ export default function ProjectAppModal({
     handleClose()
   }
 
-  console.log(projectData)
-
   const switchLabel = projectData.active ? 'Active' : 'Not active'
   return (
     <Modal

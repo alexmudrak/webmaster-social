@@ -12,7 +12,7 @@ import ConfirmationModal from '../components/ConfirmationModal'
 import { Project } from '../types/project'
 import ProjectAppModal from './ProjectAppModal'
 
-export default function ProjectAppSettings({ data }: {data?: Project}) {
+export default function ProjectAppSettings({ data }: { data?: Project }) {
   const [openProjectModal, setOpenProjectModal] = React.useState(false)
   const [openDeleteConfirmationModal, setOpenDeleteConfirmationModal] =
     React.useState(false)
@@ -24,8 +24,20 @@ export default function ProjectAppSettings({ data }: {data?: Project}) {
     setOpenDeleteConfirmationModal(true)
   }
 
-  const handleDeleteConfirmation = () => {
+  const handleDeleteConfirmation = async () => {
     setOpenDeleteConfirmationModal(false)
+    if (data?.id) {
+      try {
+        const response = await fetch(`http://localhost:8000/api/v1/projects/${data.id}`, {
+          method: 'DELETE'
+        })
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+      } catch (error) {
+        console.error('Failed to delete the project:', error)
+      }
+    }
   }
 
   const handleDeleteConfirmationCancel = () => {
