@@ -43,7 +43,20 @@ export interface GroupedSettings {
 
 export interface SocialAppModalProps {
   title: string
+  data?: Setting[]
   open: boolean
   handleClose: () => void
-  data?: Setting[]
+  handlerSettingUpdate: (_: number, __: Setting) => void
+}
+
+export interface SocialAppProps {
+  title: string
+  data: Setting
+  handlerSettingUpdate: (_: number, __: Setting) => void
+  handlerCloseModal: () => void
+}
+
+export interface SocialAppSettingsProps {
+  title: string
+  data: Setting[]
 }

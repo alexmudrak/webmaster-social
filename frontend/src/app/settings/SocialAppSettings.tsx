@@ -9,13 +9,11 @@ import Switch from '@mui/material/Switch'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
-import { Setting } from '../types/social_network_settings'
+import {
+  Setting,
+  SocialAppSettingsProps
+} from '../types/social_network_settings'
 import SocialAppModal from './SocialAppModal'
-
-interface SocialAppSettingsProps {
-  title: string
-  data: Setting[]
-}
 
 export default function SocialAppSettings({
   title,
@@ -27,11 +25,20 @@ export default function SocialAppSettings({
   const handleSocialAppModalOpen = () => setOpenSocialAppModal(true)
   const handleSocialAppModalClose = () => setOpenSocialAppModal(false)
 
+  const handlerSettingUpdate = async (id: number, setting: Setting) => {
+    setSettings((prevSettings) =>
+      prevSettings.map((item) =>
+        item.id === id ? { ...item, ...setting } : item
+      )
+    )
+
+    await sendUpdateSetting(id, setting)
+  }
+
   const handleSettingActiveChange =
     (id: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
       const newActiveState = event.target.checked
       const updatedItem = settings.find((item) => item.id === id)
-
       if (!updatedItem) {
         return
       }
@@ -41,29 +48,31 @@ export default function SocialAppSettings({
         active: newActiveState
       }
 
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/v1/settings/${id}`,
-          {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedSettings)
-          }
-        )
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`)
-        }
-
-        setSettings((prevSettings) =>
-          prevSettings.map((item) => (item.id === id ? updatedSettings : item))
-        )
-      } catch (error) {
-        console.error('Failed to update setting:', error)
-      }
+      handlerSettingUpdate(id, updatedSettings)
     }
+
+  const sendUpdateSetting = async (id: number, updatedData: Setting) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/settings/${id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedData)
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`)
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Failed to update setting:', error)
+    }
+  }
 
   return (
     <Grid xs={12} sm={6} lg={3}>
@@ -98,9 +107,10 @@ export default function SocialAppSettings({
         </CardContent>
         <SocialAppModal
           title={title}
+          data={settings}
           open={openSocialAppModal}
           handleClose={handleSocialAppModalClose}
-          data={settings}
+          handlerSettingUpdate={handlerSettingUpdate}
         />
       </Card>
     </Grid>
