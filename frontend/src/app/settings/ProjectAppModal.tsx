@@ -1,4 +1,3 @@
-'use client'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -237,7 +236,7 @@ export default function ProjectAppModal({
           <TextField
             fullWidth
             label='Project name'
-            id='projectName'
+            id='project-name'
             value={projectData.name}
             disabled={!projectData.active}
             onChange={handleNameChange}
@@ -246,7 +245,7 @@ export default function ProjectAppModal({
           <TextField
             fullWidth
             label='Aggregation page URL'
-            id='projectAggregationUrl'
+            id='project-aggregation-url'
             disabled={!projectData.active}
             value={projectData.url}
             onChange={handleUrlChange}
@@ -255,7 +254,7 @@ export default function ProjectAppModal({
           <TextField
             fullWidth
             label='Parse article count'
-            id='projectParseArticleCount'
+            id='project-parse-article-count'
             disabled={!projectData.active}
             value={projectData.parse_last_article_count || 1}
             type='number'
@@ -296,14 +295,14 @@ export default function ProjectAppModal({
               />
               <TextField
                 label='XPath URL Selector'
-                id='projectParseUrlSelectorElement'
+                id='project-parse-url-selector-element'
                 value={projectData.parse_article_url_element.selector}
                 onChange={handleParseUrlSelectorChange}
                 sx={{ width: '48%' }}
               />
               <TextField
                 label='XPath URL Attribute'
-                id='projectParseUrlAttrElement'
+                id='project-parse-url-attr-element'
                 value={projectData.parse_article_url_element.attrs}
                 onChange={handleParseUrlAttrsChange}
                 sx={{ width: '48%' }}
@@ -319,14 +318,14 @@ export default function ProjectAppModal({
 
               <TextField
                 label='XPath IMAGE Selector'
-                id='projectParseImgSelectorElement'
+                id='project-parse-img-selector-element'
                 value={projectData.parse_article_img_element.selector}
                 onChange={handleParseImgSelectorChange}
                 sx={{ width: '48%' }}
               />
               <TextField
                 label='XPath IMAGE Attribute'
-                id='projectParseImgAttrElement'
+                id='project-parse-img-attr-element'
                 value={projectData.parse_article_img_element.attrs}
                 onChange={handleParseImgAttrsChange}
                 sx={{ width: '48%' }}
@@ -343,7 +342,7 @@ export default function ProjectAppModal({
               <TextField
                 fullWidth
                 label='XPath BODY Selector'
-                id='projectParseBodySelectorElement'
+                id='project-parse-body-selector-element'
                 value={projectData.parse_article_body_element.selector}
                 onChange={handleParseBodySelectorChange}
               />
@@ -352,7 +351,7 @@ export default function ProjectAppModal({
                 multiline
                 maxRows={4}
                 label='XPath BODY Attributes'
-                id='projectParseBodyAttrsElement'
+                id='project-parse-body-attrs-element'
                 value={projectData.parse_article_body_element.attrs}
                 onChange={handleParseBodyAttrsChange}
                 helperText='Separate by comma'
