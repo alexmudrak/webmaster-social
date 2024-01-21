@@ -100,6 +100,7 @@ export default function SocialAppSettings({
           title={title}
           open={openSocialAppModal}
           handleClose={handleSocialAppModalClose}
+          data={settings}
         />
       </Card>
     </Grid>

@@ -7,18 +7,48 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
+import { Setting } from '../../../types/social_network_settings'
+
 interface SocialOneProps {
-  title: string;
+  title: string
+  data: Setting
 }
 
-export default function SocialOne({ title }: SocialOneProps) {
-  const [isSwitchOn, setSwitchOn] = React.useState(false)
+export default function SocialOne({ title, data }: SocialOneProps) {
+  // TODO: Move data change handler from AppSetting
+  const [setting, changeSetting] = React.useState(data)
+  const switchLabel = setting?.active ? 'On' : 'Off'
 
-  const handleSwitchChange = () => {
-    setSwitchOn((prev) => !prev)
+  const handleActiveChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(event)
+      changeSetting((prevData) => ({
+        ...prevData,
+        active: event.target.checked
+      }))
+    },
+    []
+  )
+
+  // TODO: Move data change handler from AppSetting
+  const handleSave = async () => {
+    const response = await fetch(
+      `http://localhost:8000/api/v1/settings/${data?.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(setting)
+      }
+    )
+
+    if (!response.ok) {
+      console.error('Failed to update settings')
+    } else {
+      console.log('Settings updated successfully')
+    }
   }
-
-  const switchLabel = isSwitchOn ? 'On' : 'Off'
 
   return (
     <>
@@ -30,11 +60,11 @@ export default function SocialOne({ title }: SocialOneProps) {
         }}
       >
         <Typography variant='h5' id='modal-project-title'>
-          {title}
+          {`${title} settings for '${setting.project_name}'`}
         </Typography>
         <FormControlLabel
           control={
-            <Switch checked={isSwitchOn} onChange={handleSwitchChange} />
+            <Switch checked={setting?.active} onChange={handleActiveChange} />
           }
           label={switchLabel}
         />
@@ -48,25 +78,10 @@ export default function SocialOne({ title }: SocialOneProps) {
         }}
         spacing={2}
       >
-        <TextField
-          fullWidth
-          label='App ID'
-          id='appId'
-          disabled={!isSwitchOn}
-        />
-        <TextField
-          fullWidth
-          label='App Token'
-          id='appToken'
-          disabled={!isSwitchOn}
-        />
-        <TextField
-          fullWidth
-          label='App Secret'
-          id='appSecret'
-          disabled={!isSwitchOn}
-        />
-        <Button variant='contained' disabled={!isSwitchOn}>
+        <TextField fullWidth label='App ID' id='appId' />
+        <TextField fullWidth label='App Token' id='appToken' />
+        <TextField fullWidth label='App Secret' id='appSecret' />
+        <Button variant='contained' onClick={handleSave}>
           Save
         </Button>
       </Stack>

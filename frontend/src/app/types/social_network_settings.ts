@@ -40,3 +40,10 @@ export interface Setting {
 export interface GroupedSettings {
   [name: string]: Setting[]
 }
+
+export interface SocialAppModalProps {
+  title: string
+  open: boolean
+  handleClose: () => void
+  data?: Setting[]
+}
