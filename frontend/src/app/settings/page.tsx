@@ -11,6 +11,7 @@ import * as React from 'react'
 
 import TabPanel from '../components/TabPanel'
 import { Project } from '../types/project'
+import { GroupedSettings, Setting } from '../types/social_network_settings'
 import ProjectAppModal from './ProjectAppModal'
 import ProjectAppSettings from './ProjectAppSettings'
 import SocialAppSettings from './SocialAppSettings'
@@ -26,7 +27,8 @@ export default function Settings() {
   const [value, setValue] = React.useState(0)
 
   const [projectsData, setProjectsData] = React.useState<Project[]>([])
-  const [socialNetworksData, setSocialNetworksData] = React.useState([])
+  const [socialNetworksData, setSocialNetworksData] =
+    React.useState<GroupedSettings>({})
 
   React.useEffect(() => {
     const fetchProjects = async () => {
@@ -37,8 +39,19 @@ export default function Settings() {
 
     const fetchSocialNetworks = async () => {
       const response = await fetch('http://localhost:8000/api/v1/settings/')
-      const data = await response.json()
-      setSocialNetworksData(data)
+      const settings: Setting[] = await response.json()
+      const groupedData = settings.reduce(
+        (acc: GroupedSettings, setting: Setting) => {
+          const { name } = setting
+          if (!acc[name]) {
+            acc[name] = []
+          }
+          acc[name].push(setting)
+          return acc
+        },
+        {}
+      )
+      setSocialNetworksData(groupedData)
     }
 
     if (value === 0) {
@@ -113,10 +126,9 @@ export default function Settings() {
         <Divider sx={{ my: 1.5 }} />
 
         <Grid container spacing={2}>
-          <SocialAppSettings title='Mock social network 1' />
-          <SocialAppSettings title='Mock social network 2' />
-          <SocialAppSettings title='Mock social network 3' />
-          <SocialAppSettings title='Mock social network 4' />
+          {Object.entries(socialNetworksData).map(([title, settingsList]) => (
+            <SocialAppSettings key={title} title={title} data={settingsList} />
+          ))}
         </Grid>
       </TabPanel>
     </>
