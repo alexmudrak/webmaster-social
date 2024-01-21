@@ -2,7 +2,7 @@ from datetime import datetime
 
 from fastapi import HTTPException
 from models.setting import Setting
-from schemas.setting_schema import SettingCreate, SettingUpdate
+from schemas.setting_schema import SettingCreate, SettingRead, SettingUpdate
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -11,11 +11,18 @@ class SettingController:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_all_objects(self) -> list[Setting]:
+    async def get_all_objects(self) -> list[SettingRead]:
         query = select(Setting)
         result = await self.session.exec(query)
         db_objects = result.unique().all()
-        return list(db_objects)
+        settings_with_project_name = [
+            SettingRead(
+                **setting.model_dump(),
+                project_name=setting.project.name if setting.project else None,
+            )
+            for setting in db_objects
+        ]
+        return settings_with_project_name
 
     async def get_object(self, object_id: int) -> Setting:
         db_object = await self.session.get(Setting, object_id)

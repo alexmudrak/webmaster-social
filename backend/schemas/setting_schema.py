@@ -14,6 +14,7 @@ class SettingUpdate(SettingCreate):
 
 class SettingRead(SettingBase):
     id: int
+    project_name: Optional[str] = None
 
 
 class SettingReadWithProject(SettingRead):
