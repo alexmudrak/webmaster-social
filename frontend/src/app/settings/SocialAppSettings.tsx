@@ -91,7 +91,6 @@ export default function SocialAppSettings({
             </IconButton>
           }
           title={title}
-          subheader='{last_publish_date}'
         />
         <CardContent>
           {settings.map((setting, index) => (

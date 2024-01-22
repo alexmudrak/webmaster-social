@@ -53,14 +53,35 @@ export default function Settings() {
       socialNetworks: GroupedSettings
     ) => {
       // TODO: Need to implement iteration on available social networks list
+      const socialNetworksList = [
+        'facebook',
+        'instagram',
+        'linkedin',
+        'medium',
+        'pinterest',
+        'reddit',
+        'telegram_group',
+        'telegraph',
+        'twitter',
+        'vkontakte'
+      ]
+
       const updatedSocialNetworksData = { ...socialNetworks }
-      Object.keys(updatedSocialNetworksData).forEach((network) => {
+
+      console.log(updatedSocialNetworksData)
+
+      socialNetworksList.forEach((network) => {
+        if (!updatedSocialNetworksData[network]) {
+          updatedSocialNetworksData[network] = []
+        }
+
         projects.forEach((project) => {
           const projectExists = updatedSocialNetworksData[network].some(
             (setting) => setting.project_name === project.name
           )
+
           if (!projectExists) {
-            const defaultSetting = {
+            const defaultSetting: Setting = {
               name: network,
               settings: {},
               project_id: project.id,
@@ -93,7 +114,7 @@ export default function Settings() {
   const handleProjectModalClose = () => {
     setOpenProjectModal(false)
   }
-  console.log(socialNetworksData)
+
   // TODO: Add updating Project item after Create/Update/Delete
   return (
     <>
