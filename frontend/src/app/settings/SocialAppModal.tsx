@@ -13,6 +13,7 @@ import InstagramSettings from './libs/socials/InstagramSettings'
 import LinkedInSettings from './libs/socials/LinkedInSettings'
 import MediumSettings from './libs/socials/MediumSettings'
 import PinterestSettings from './libs/socials/PinterestSettings'
+import RedditSettings from './libs/socials/RedditSettings'
 import TelegramGroupSettings from './libs/socials/TelegramGroupSettings'
 import TelegraphSettings from './libs/socials/TelegraphSettings'
 import TwitterSettings from './libs/socials/TwitterSettings'
@@ -24,6 +25,7 @@ const InstagramSettingsMemo = React.memo(InstagramSettings)
 const LinkedInSettingsMemo = React.memo(LinkedInSettings)
 const MediumSettingsMemo = React.memo(MediumSettings)
 const PinterestSettingsMemo = React.memo(PinterestSettings)
+const RedditSettingsMemo = React.memo(RedditSettings)
 const TelegramGroupSettingsMemo = React.memo(TelegramGroupSettings)
 const TelegraphSettingsMemo = React.memo(TelegraphSettings)
 const TwitterSettingsMemo = React.memo(TwitterSettings)
@@ -111,6 +113,15 @@ const renderSocialComponent = ({
     case 'telegram_group':
       return (
         <TelegramGroupSettingsMemo
+          title={title}
+          data={data}
+          handlerSettingUpdate={handlerSettingUpdate}
+          handlerCloseModal={handlerCloseModal}
+        />
+      )
+    case 'reddit':
+      return (
+        <RedditSettingsMemo
           title={title}
           data={data}
           handlerSettingUpdate={handlerSettingUpdate}
