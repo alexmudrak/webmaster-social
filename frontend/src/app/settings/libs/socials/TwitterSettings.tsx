@@ -11,13 +11,13 @@ import * as React from 'react'
 
 import { SocialAppProps } from '../../../types/social_network_settings'
 
-export default function VkontakteSettings({
+export default function TwitterSettings({
   title,
   data,
   handlerSettingUpdate,
   handlerCloseModal
 }: SocialAppProps) {
-  // TODO: Change App ID to Client ID
+  // TODO: Change redirect_uri to redirect_url
   const [setting, updateSetting] = React.useState(data)
   const switchLabel = setting?.active ? 'On' : 'Off'
 
@@ -92,28 +92,36 @@ export default function VkontakteSettings({
       >
         <TextField
           fullWidth
-          label='App ID'
-          id='app-id'
-          name='app_id'
-          value={setting.settings.app_id}
+          label='Client ID'
+          id='client-id'
+          name='client_id'
+          value={setting.settings.client_id}
           onChange={handleInputChange}
         />
         <TextField
           fullWidth
-          label='Group ID'
-          id='group-id'
-          name='group_id'
-          value={setting.settings.group_id}
+          label='Client Secret'
+          id='client-secret'
+          name='client_secret'
+          value={setting.settings.client_secret}
+          onChange={handleInputChange}
+        />
+        <TextField
+          fullWidth
+          label='APP Redirect URL'
+          id='redirect-uri'
+          name='redirect_uri'
+          value={setting.settings.redirect_uri}
           onChange={handleInputChange}
         />
         <TextField
           fullWidth
           multiline
           maxRows={6}
-          label='Access Token'
-          id='access-token'
-          name='access_token'
-          value={setting.settings.access_token}
+          label='Refresh Token'
+          id='refresh-token'
+          name='refresh_token'
+          value={setting.settings.refresh_token}
           onChange={handleInputChange}
         />
 
