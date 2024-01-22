@@ -9,19 +9,30 @@ import {
   SocialAppProps
 } from '../types/social_network_settings'
 import InstagramSettings from './libs/socials/InstagramSettings'
+import PinterestSettings from './libs/socials/PinterestSettings'
 
 const InstagramSettingsMemo = React.memo(InstagramSettings)
+const PinterestSettingsMemo = React.memo(PinterestSettings)
 
 const renderSocialComponent = ({
   title,
   data,
   handlerSettingUpdate,
-  handlerCloseModal,
+  handlerCloseModal
 }: SocialAppProps) => {
   switch (title) {
     case 'instagram':
       return (
         <InstagramSettingsMemo
+          title={title}
+          data={data}
+          handlerSettingUpdate={handlerSettingUpdate}
+          handlerCloseModal={handlerCloseModal}
+        />
+      )
+    case 'pinterest':
+      return (
+        <PinterestSettingsMemo
           title={title}
           data={data}
           handlerSettingUpdate={handlerSettingUpdate}
@@ -56,6 +67,7 @@ export default function SocialAppModal({
       onClose={handleClose}
       aria-labelledby='modal-social-title'
       aria-describedby='modal-social-description'
+      style={{ overflow: 'scroll' }}
     >
       <Box sx={modalStyle}>
         <Tabs
@@ -80,7 +92,7 @@ export default function SocialAppModal({
               title: title,
               data: setting,
               handlerSettingUpdate: handlerSettingUpdate,
-              handlerCloseModal: handleClose,
+              handlerCloseModal: handleClose
             })}
           </TabPanel>
         ))}
