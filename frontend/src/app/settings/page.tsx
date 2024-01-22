@@ -1,15 +1,13 @@
 'use client'
+
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Divider } from '@mui/material'
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
-import Typography from '@mui/material/Typography'
+import { Box, Divider, IconButton, Tab, Tabs, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import TabPanel from '../components/TabPanel'
+import { Project } from '../types/project'
+import { GroupedSettings, Setting } from '../types/social_network_settings'
 import ProjectAppModal from './ProjectAppModal'
 import ProjectAppSettings from './ProjectAppSettings'
 import SocialAppSettings from './SocialAppSettings'
@@ -21,8 +19,89 @@ function a11yProps(index: number) {
   }
 }
 
-export default function Page() {
+export default function Settings() {
+  // TODO: Add list of available social networks
   const [value, setValue] = React.useState(0)
+
+  const [projectsData, setProjectsData] = React.useState<Project[]>([])
+  const [socialNetworksData, setSocialNetworksData] =
+    React.useState<GroupedSettings>({})
+
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/projects/')
+      const data: Project[] = await response.json()
+      setProjectsData(data)
+      return data
+    }
+
+    const fetchSocialNetworks = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/settings/')
+      const settings: Setting[] = await response.json()
+      return settings.reduce((acc: GroupedSettings, setting: Setting) => {
+        const { name } = setting
+        if (!acc[name]) {
+          acc[name] = []
+        }
+        acc[name].push(setting)
+        return acc
+      }, {})
+    }
+
+    const updateSocialNetworksData = (
+      projects: Project[],
+      socialNetworks: GroupedSettings
+    ) => {
+      // TODO: Need to implement iteration on available social networks list
+      const socialNetworksList = [
+        'facebook',
+        'instagram',
+        'linkedin',
+        'medium',
+        'pinterest',
+        'reddit',
+        'telegram_group',
+        'telegraph',
+        'twitter',
+        'vkontakte'
+      ]
+
+      const updatedSocialNetworksData = { ...socialNetworks }
+
+      console.log(updatedSocialNetworksData)
+
+      socialNetworksList.forEach((network) => {
+        if (!updatedSocialNetworksData[network]) {
+          updatedSocialNetworksData[network] = []
+        }
+
+        projects.forEach((project) => {
+          const projectExists = updatedSocialNetworksData[network].some(
+            (setting) => setting.project_name === project.name
+          )
+
+          if (!projectExists) {
+            const defaultSetting: Setting = {
+              name: network,
+              settings: {},
+              project_id: project.id,
+              active: false,
+              id: null,
+              project_name: project.name
+            }
+            updatedSocialNetworksData[network].push(defaultSetting)
+          }
+        })
+      })
+      setSocialNetworksData(updatedSocialNetworksData)
+    }
+
+    Promise.all([fetchProjects(), fetchSocialNetworks()]).then(
+      ([projects, socialNetworks]) => {
+        updateSocialNetworksData(projects, socialNetworks)
+      }
+    )
+  }, [value])
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -36,6 +115,7 @@ export default function Page() {
     setOpenProjectModal(false)
   }
 
+  // TODO: Add updating Project item after Create/Update/Delete
   return (
     <>
       <Box>
@@ -72,9 +152,9 @@ export default function Page() {
         <Divider sx={{ my: 1.5 }} />
 
         <Grid container spacing={2}>
-          <ProjectAppSettings title='Mock project 1' />
-          <ProjectAppSettings title='Mock project 2' />
-          <ProjectAppSettings title='Mock project 3' />
+          {projectsData.map((project) => (
+            <ProjectAppSettings key={project.id} data={project} />
+          ))}
         </Grid>
 
         <ProjectAppModal
@@ -83,19 +163,14 @@ export default function Page() {
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Typography
-          variant='h4'
-        >
-          Available networks
-        </Typography>
+        <Typography variant='h4'>Available networks</Typography>
 
         <Divider sx={{ my: 1.5 }} />
 
         <Grid container spacing={2}>
-          <SocialAppSettings title='Mock social network 1' />
-          <SocialAppSettings title='Mock social network 2' />
-          <SocialAppSettings title='Mock social network 3' />
-          <SocialAppSettings title='Mock social network 4' />
+          {Object.entries(socialNetworksData).map(([title, settingsList]) => (
+            <SocialAppSettings key={title} title={title} data={settingsList} />
+          ))}
         </Grid>
       </TabPanel>
     </>

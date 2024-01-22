@@ -1,21 +1,14 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
+import { Box, Button, Card, CardContent, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import ConfirmationModal from '../components/ConfirmationModal'
+import { Project } from '../types/project'
 import ProjectAppModal from './ProjectAppModal'
 
-interface ProjectAppSettingsProps {
-  title: string
-}
-
-export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
+export default function ProjectAppSettings({ data }: { data?: Project }) {
   const [openProjectModal, setOpenProjectModal] = React.useState(false)
   const [openDeleteConfirmationModal, setOpenDeleteConfirmationModal] =
     React.useState(false)
@@ -27,8 +20,23 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
     setOpenDeleteConfirmationModal(true)
   }
 
-  const handleDeleteConfirmation = () => {
+  const handleDeleteConfirmation = async () => {
     setOpenDeleteConfirmationModal(false)
+    if (data?.id) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/projects/${data.id}`,
+          {
+            method: 'DELETE'
+          }
+        )
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+      } catch (error) {
+        console.error('Failed to delete the project:', error)
+      }
+    }
   }
 
   const handleDeleteConfirmationCancel = () => {
@@ -45,13 +53,13 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
               color='text.secondary'
               gutterBottom
             >
-              {'{added_project_date}'}
+              {`#` + data?.id}
             </Typography>
             <Typography variant='h5' component='div'>
-              {title}
+              {data?.name}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-              {'{project_url}'}
+              {data?.url + ` (${data?.parse_type})`}
             </Typography>
           </CardContent>
         </Box>
@@ -71,7 +79,7 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
           Delete
         </Button>
         <ProjectAppModal
-          title={title}
+          data={data}
           open={openProjectModal}
           handleClose={handleProjectModalClose}
         />
@@ -80,7 +88,7 @@ export default function ProjectAppSettings({ title }: ProjectAppSettingsProps) {
           handleConfirm={handleDeleteConfirmation}
           handleCancel={handleDeleteConfirmationCancel}
           title='Delete Project'
-          message={`Are you sure you want to delete the project "${title}"?`}
+          message={`Are you sure you want to delete the project "${data?.name}"?`}
         />
       </Card>
     </Grid>

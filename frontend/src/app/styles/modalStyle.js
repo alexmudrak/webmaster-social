@@ -8,4 +8,5 @@ export const modalStyle = {
   borderRadius: 1,
   boxShadow: 24,
   p: 4,
+  overflow: 'auto',
 };
