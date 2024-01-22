@@ -30,9 +30,9 @@ type Settings = {
 
 export interface Setting {
   active: boolean
-  id: number
+  id: number | null
   name: string
-  project_id: number
+  project_id?: number
   project_name: string
   settings: Settings
 }
