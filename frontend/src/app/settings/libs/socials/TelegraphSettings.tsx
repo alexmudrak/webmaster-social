@@ -11,14 +11,13 @@ import * as React from 'react'
 
 import { SocialAppProps } from '../../../types/social_network_settings'
 
-export default function InstagramSettings({
+export default function TelegraphSettings({
   title,
   data,
   handlerSettingUpdate,
   handlerCloseModal
 }: SocialAppProps) {
-  // TODO: Change username to user_name
-  // TODO: Change password to user_password
+  // TODO: Change author_name to user_name
   const [setting, updateSetting] = React.useState(data)
   const switchLabel = setting?.active ? 'On' : 'Off'
 
@@ -93,52 +92,20 @@ export default function InstagramSettings({
       >
         <TextField
           fullWidth
-          label='Username'
-          id='username'
-          name='username'
-          value={setting.settings.username}
+          label='Author name'
+          id='author-name'
+          name='author_name'
+          value={setting.settings.author_name}
           onChange={handleInputChange}
         />
         <TextField
           fullWidth
-          label='Password'
-          id='password'
-          name='password'
-          value={setting.settings.password}
-          onChange={handleInputChange}
-          type='password'
-        />
-
-        <TextField
-          fullWidth
-          label='MID'
-          id='mid'
-          name='cookies.mid'
-          value={setting.settings.cookies?.mid}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='CSRF Token'
-          id='csrftoken'
-          name='cookies.csrftoken'
-          value={setting.settings.cookies?.csrftoken}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='DS User ID'
-          id='ds-user-id'
-          name='cookies.ds_user_id'
-          value={setting.settings.cookies?.ds_user_id}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='Session ID'
-          id='sessionid'
-          name='cookies.sessionid'
-          value={setting.settings.cookies?.sessionid}
+          multiline
+          maxRows={6}
+          label='Access Token'
+          id='access-token'
+          name='access_token'
+          value={setting.settings.access_token}
           onChange={handleInputChange}
         />
 

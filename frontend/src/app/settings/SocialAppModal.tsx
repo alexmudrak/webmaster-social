@@ -13,15 +13,17 @@ import InstagramSettings from './libs/socials/InstagramSettings'
 import LinkedInSettings from './libs/socials/LinkedInSettings'
 import MediumSettings from './libs/socials/MediumSettings'
 import PinterestSettings from './libs/socials/PinterestSettings'
+import TelegraphSettings from './libs/socials/TelegraphSettings'
 import TwitterSettings from './libs/socials/TwitterSettings'
 import VkontakteSettings from './libs/socials/VkontakteSettings'
 
 // TODO: Need to refactor
 const FacebookSettingsMemo = React.memo(FacebookSettings)
-const LinkedInSettingsMemo = React.memo(LinkedInSettings)
 const InstagramSettingsMemo = React.memo(InstagramSettings)
+const LinkedInSettingsMemo = React.memo(LinkedInSettings)
 const MediumSettingsMemo = React.memo(MediumSettings)
 const PinterestSettingsMemo = React.memo(PinterestSettings)
+const TelegraphSettingsMemo = React.memo(TelegraphSettings)
 const TwitterSettingsMemo = React.memo(TwitterSettings)
 const VkontakteSettingsMemo = React.memo(VkontakteSettings)
 
@@ -89,6 +91,15 @@ const renderSocialComponent = ({
     case 'twitter':
       return (
         <TwitterSettingsMemo
+          title={title}
+          data={data}
+          handlerSettingUpdate={handlerSettingUpdate}
+          handlerCloseModal={handlerCloseModal}
+        />
+      )
+case 'telegraph':
+      return (
+        <TelegraphSettingsMemo
           title={title}
           data={data}
           handlerSettingUpdate={handlerSettingUpdate}

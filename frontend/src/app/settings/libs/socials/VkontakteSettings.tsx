@@ -17,7 +17,7 @@ export default function VkontakteSettings({
   handlerSettingUpdate,
   handlerCloseModal
 }: SocialAppProps) {
-  // TODO: Change App ID to Client ID
+  // TODO: Change app_id to client_id
   const [setting, updateSetting] = React.useState(data)
   const switchLabel = setting?.active ? 'On' : 'Off'
 
