@@ -35,30 +35,53 @@ export default function Settings() {
       const response = await fetch('http://localhost:8000/api/v1/projects/')
       const data: Project[] = await response.json()
       setProjectsData(data)
+      return data
     }
 
     const fetchSocialNetworks = async () => {
       const response = await fetch('http://localhost:8000/api/v1/settings/')
       const settings: Setting[] = await response.json()
-      const groupedData = settings.reduce(
-        (acc: GroupedSettings, setting: Setting) => {
-          const { name } = setting
-          if (!acc[name]) {
-            acc[name] = []
-          }
-          acc[name].push(setting)
-          return acc
-        },
-        {}
-      )
-      setSocialNetworksData(groupedData)
+      return settings.reduce((acc: GroupedSettings, setting: Setting) => {
+        const { name } = setting
+        if (!acc[name]) {
+          acc[name] = []
+        }
+        acc[name].push(setting)
+        return acc
+      }, {})
     }
 
-    if (value === 0) {
-      fetchProjects()
-    } else if (value === 1) {
-      fetchSocialNetworks()
+    const updateSocialNetworksData = (
+      projects: Project[],
+      socialNetworks: GroupedSettings
+    ) => {
+      const updatedSocialNetworksData = { ...socialNetworks }
+      Object.keys(updatedSocialNetworksData).forEach((network) => {
+        projects.forEach((project) => {
+          const projectExists = updatedSocialNetworksData[network].some(
+            (setting) => setting.project_name === project.name
+          )
+          if (!projectExists) {
+            const defaultSetting = {
+              name: network,
+              settings: {},
+              project_id: project.id,
+              active: false,
+              id: null,
+              project_name: project.name
+            }
+            updatedSocialNetworksData[network].push(defaultSetting)
+          }
+        })
+      })
+      setSocialNetworksData(updatedSocialNetworksData)
     }
+
+    Promise.all([fetchProjects(), fetchSocialNetworks()]).then(
+      ([projects, socialNetworks]) => {
+        updateSocialNetworksData(projects, socialNetworks)
+      }
+    )
   }, [value])
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {

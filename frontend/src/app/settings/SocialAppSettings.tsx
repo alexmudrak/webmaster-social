@@ -52,17 +52,20 @@ export default function SocialAppSettings({
     }
 
   const sendUpdateSetting = async (id: number, updatedData: Setting) => {
+    const url =
+      id === null
+        ? 'http://localhost:8000/api/v1/settings/'
+        : `http://localhost:8000/api/v1/settings/${id}`
+    const method = id === null ? 'POST' : 'PATCH'
+
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/v1/settings/${id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updatedData)
-        }
-      )
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+      })
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`)
@@ -75,7 +78,7 @@ export default function SocialAppSettings({
   }
 
   return (
-    <Grid xs={12} sm={6} lg={3}>
+    <Grid xs={12} sm={6} lg={6}>
       <Card>
         <CardHeader
           action={
@@ -90,8 +93,8 @@ export default function SocialAppSettings({
           subheader='{last_publish_date}'
         />
         <CardContent>
-          {settings.map((setting) => (
-            <div key={setting.id}>
+          {settings.map((setting, index) => (
+            <div key={setting.id !== null ? setting.id : `setting-${index}`}>
               <FormControlLabel
                 control={
                   <Switch
