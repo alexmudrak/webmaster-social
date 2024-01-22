@@ -26,7 +26,7 @@ export default function SocialAppSettings({
   const handleSocialAppModalOpen = () => setOpenSocialAppModal(true)
   const handleSocialAppModalClose = () => setOpenSocialAppModal(false)
 
-  const handlerSettingUpdate = async (id: number, setting: Setting) => {
+  const handlerSettingUpdate = async (id: number | null, setting: Setting) => {
     setSettings((prevSettings) =>
       prevSettings.map((item) =>
         item.id === id ? { ...item, ...setting } : item
@@ -52,7 +52,7 @@ export default function SocialAppSettings({
       handlerSettingUpdate(id, updatedSettings)
     }
 
-  const sendUpdateSetting = async (id: number, updatedData: Setting) => {
+  const sendUpdateSetting = async (id: number | null, updatedData: Setting) => {
     const url =
       id === null
         ? 'http://localhost:8000/api/v1/settings/'

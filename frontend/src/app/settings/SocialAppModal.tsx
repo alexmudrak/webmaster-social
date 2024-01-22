@@ -4,10 +4,7 @@ import * as React from 'react'
 import a11yProps from '../components/a11Props'
 import TabPanel from '../components/TabPanel'
 import { modalStyle } from '../styles/modalStyle'
-import {
-  SocialAppModalProps,
-  SocialAppProps
-} from '../types/social_network_settings'
+import { SocialAppModalProps } from '../types/social_network_settings'
 import FacebookSettings from './libs/socials/FacebookSettings'
 import InstagramSettings from './libs/socials/InstagramSettings'
 import LinkedInSettings from './libs/socials/LinkedInSettings'
@@ -18,120 +15,6 @@ import TelegramGroupSettings from './libs/socials/TelegramGroupSettings'
 import TelegraphSettings from './libs/socials/TelegraphSettings'
 import TwitterSettings from './libs/socials/TwitterSettings'
 import VkontakteSettings from './libs/socials/VkontakteSettings'
-
-// TODO: Need to refactor
-const FacebookSettingsMemo = React.memo(FacebookSettings)
-const InstagramSettingsMemo = React.memo(InstagramSettings)
-const LinkedInSettingsMemo = React.memo(LinkedInSettings)
-const MediumSettingsMemo = React.memo(MediumSettings)
-const PinterestSettingsMemo = React.memo(PinterestSettings)
-const RedditSettingsMemo = React.memo(RedditSettings)
-const TelegramGroupSettingsMemo = React.memo(TelegramGroupSettings)
-const TelegraphSettingsMemo = React.memo(TelegraphSettings)
-const TwitterSettingsMemo = React.memo(TwitterSettings)
-const VkontakteSettingsMemo = React.memo(VkontakteSettings)
-
-const renderSocialComponent = ({
-  title,
-  data,
-  handlerSettingUpdate,
-  handlerCloseModal
-}: SocialAppProps) => {
-  switch (title) {
-    case 'instagram':
-      return (
-        <InstagramSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'pinterest':
-      return (
-        <PinterestSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'facebook':
-      return (
-        <FacebookSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'vkontakte':
-      return (
-        <VkontakteSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'medium':
-      return (
-        <MediumSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'linkedin':
-      return (
-        <LinkedInSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'twitter':
-      return (
-        <TwitterSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'telegraph':
-      return (
-        <TelegraphSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'telegram_group':
-      return (
-        <TelegramGroupSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    case 'reddit':
-      return (
-        <RedditSettingsMemo
-          title={title}
-          data={data}
-          handlerSettingUpdate={handlerSettingUpdate}
-          handlerCloseModal={handlerCloseModal}
-        />
-      )
-    default:
-      return null
-  }
-}
 
 export default function SocialAppModal({
   title,
@@ -145,6 +28,23 @@ export default function SocialAppModal({
   const handleChangeTab = (_: React.SyntheticEvent, newValue: number) => {
     setValueTab(newValue)
   }
+
+  const SocialComponent = React.useMemo(() => {
+    const components = {
+      instagram: InstagramSettings,
+      pinterest: PinterestSettings,
+      facebook: FacebookSettings,
+      vkontakte: VkontakteSettings,
+      medium: MediumSettings,
+      linkedin: LinkedInSettings,
+      twitter: TwitterSettings,
+      telegraph: TelegraphSettings,
+      telegram_group: TelegramGroupSettings,
+      reddit: RedditSettings
+    }
+
+    return components[title] || null
+  }, [title])
 
   if (!data) {
     return null
@@ -166,7 +66,7 @@ export default function SocialAppModal({
         >
           {data.map((setting, index) => (
             <Tab
-              key={setting.id !== null ? setting.id : `setting-${index}`}
+              key={setting.id || `setting-${index}`}
               label={setting.project_name}
               {...a11yProps(index)}
             />
@@ -177,16 +77,18 @@ export default function SocialAppModal({
 
         {data.map((setting, index) => (
           <TabPanel
-            key={setting.id !== null ? setting.id : `setting-${index}`}
+            key={setting.id || `setting-${index}`}
             value={valueTab}
             index={index}
           >
-            {renderSocialComponent({
-              title: title,
-              data: setting,
-              handlerSettingUpdate: handlerSettingUpdate,
-              handlerCloseModal: handleClose
-            })}
+            {SocialComponent ? (
+              <SocialComponent
+                title={title}
+                data={setting}
+                handlerSettingUpdate={handlerSettingUpdate}
+                handlerCloseModal={handleClose}
+              />
+            ) : null}
           </TabPanel>
         ))}
       </Box>

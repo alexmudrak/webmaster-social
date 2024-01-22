@@ -1,151 +1,74 @@
-import {
-  Button,
-  Divider,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-  Typography
-} from '@mui/material'
+import { TextField } from '@mui/material'
 import * as React from 'react'
 
 import { SocialAppProps } from '../../../types/social_network_settings'
+import { SocialSettingsLayout } from './core/SocialSettingsLayout'
+import { useSocialSettings } from './core/useSocialSettings'
 
-export default function InstagramSettings({
-  title,
-  data,
-  handlerSettingUpdate,
-  handlerCloseModal
-}: SocialAppProps) {
-  // TODO: Change username to user_name
-  // TODO: Change password to user_password
-  const [setting, updateSetting] = React.useState(data)
-  const switchLabel = setting?.active ? 'On' : 'Off'
-
-  const handleActiveChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      updateSetting((prevData) => ({
-        ...prevData,
-        active: event.target.checked
-      }))
-    },
-    []
-  )
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    const [field, subField] = name.split('.')
-
-    if (subField) {
-      updateSetting((prevData) => ({
-        ...prevData,
-        settings: {
-          ...prevData.settings,
-          cookies: {
-            ...prevData.settings.cookies,
-            [subField]: value
-          }
-        }
-      }))
-    } else {
-      updateSetting((prevData) => ({
-        ...prevData,
-        settings: {
-          ...prevData.settings,
-          [field]: value
-        }
-      }))
-    }
-  }
-
-  const handleSave = () => {
-    handlerSettingUpdate(setting.id, setting)
-    handlerCloseModal()
-  }
-
+export default function InstagramSettings(props: SocialAppProps) {
+  const { setting, handleActiveChange, handleInputChange, handleSave } =
+    useSocialSettings(
+      props.data,
+      props.handlerSettingUpdate,
+      props.handlerCloseModal
+    )
   return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <Typography variant='h5' id='modal-project-title'>
-          {`${title} settings for '${setting.project_name}'`}
-        </Typography>
-        <FormControlLabel
-          control={
-            <Switch checked={setting.active} onChange={handleActiveChange} />
-          }
-          label={switchLabel}
-        />
-      </div>
+    <SocialSettingsLayout
+      {...props}
+      setting={setting}
+      handleActiveChange={handleActiveChange}
+      handleSave={handleSave}
+    >
+      <TextField
+        fullWidth
+        label='Username'
+        id='username'
+        name='username'
+        value={setting.settings.username}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='Password'
+        id='password'
+        name='password'
+        value={setting.settings.password}
+        onChange={handleInputChange}
+        type='password'
+      />
 
-      <Divider sx={{ marginY: 2 }} />
-
-      <Stack
-        sx={{
-          width: '100%'
-        }}
-        spacing={2}
-      >
-        <TextField
-          fullWidth
-          label='Username'
-          id='username'
-          name='username'
-          value={setting.settings.username}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='Password'
-          id='password'
-          name='password'
-          value={setting.settings.password}
-          onChange={handleInputChange}
-          type='password'
-        />
-
-        <TextField
-          fullWidth
-          label='MID'
-          id='mid'
-          name='cookies.mid'
-          value={setting.settings.cookies?.mid}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='CSRF Token'
-          id='csrftoken'
-          name='cookies.csrftoken'
-          value={setting.settings.cookies?.csrftoken}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='DS User ID'
-          id='ds-user-id'
-          name='cookies.ds_user_id'
-          value={setting.settings.cookies?.ds_user_id}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='Session ID'
-          id='sessionid'
-          name='cookies.sessionid'
-          value={setting.settings.cookies?.sessionid}
-          onChange={handleInputChange}
-        />
-
-        <Button variant='contained' onClick={handleSave}>
-          Save
-        </Button>
-      </Stack>
-    </>
+      <TextField
+        fullWidth
+        label='MID'
+        id='mid'
+        name='cookies.mid'
+        value={setting.settings.cookies?.mid}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='CSRF Token'
+        id='csrftoken'
+        name='cookies.csrftoken'
+        value={setting.settings.cookies?.csrftoken}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='DS User ID'
+        id='ds-user-id'
+        name='cookies.ds_user_id'
+        value={setting.settings.cookies?.ds_user_id}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='Session ID'
+        id='sessionid'
+        name='cookies.sessionid'
+        value={setting.settings.cookies?.sessionid}
+        onChange={handleInputChange}
+      />
+    </SocialSettingsLayout>
   )
 }

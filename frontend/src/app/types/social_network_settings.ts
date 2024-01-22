@@ -1,3 +1,5 @@
+import * as React from 'react'
+
 type Cookies = {
   _auth?: string
   _pinterest_sess?: string
@@ -52,11 +54,26 @@ export interface SocialAppModalProps {
 export interface SocialAppProps {
   title: string
   data: Setting
-  handlerSettingUpdate: (_: number, __: Setting) => void
+  handlerSettingUpdate: (_: number | null, __: Setting) => void
   handlerCloseModal: () => void
 }
 
 export interface SocialAppSettingsProps {
   title: string
   data: Setting[]
+}
+
+export interface UseSocialSettingsHook {
+  setting: Setting
+  handleActiveChange: (_: React.ChangeEvent<HTMLInputElement>) => void
+  handleInputChange: (_: React.ChangeEvent<HTMLInputElement>) => void
+  handleSave: () => void
+}
+
+export interface SocialSettingsLayoutProps {
+  title: string
+  setting: Setting
+  handleActiveChange: (_: React.ChangeEvent<HTMLInputElement>) => void
+  handleSave: () => void
+  children: React.ReactNode
 }
