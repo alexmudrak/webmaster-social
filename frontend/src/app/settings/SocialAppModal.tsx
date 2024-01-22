@@ -8,9 +8,11 @@ import {
   SocialAppModalProps,
   SocialAppProps
 } from '../types/social_network_settings'
+import FacebookSettings from './libs/socials/FacebookSettings'
 import InstagramSettings from './libs/socials/InstagramSettings'
 import PinterestSettings from './libs/socials/PinterestSettings'
 
+const FacebookSettingsMemo = React.memo(FacebookSettings)
 const InstagramSettingsMemo = React.memo(InstagramSettings)
 const PinterestSettingsMemo = React.memo(PinterestSettings)
 
@@ -33,6 +35,15 @@ const renderSocialComponent = ({
     case 'pinterest':
       return (
         <PinterestSettingsMemo
+          title={title}
+          data={data}
+          handlerSettingUpdate={handlerSettingUpdate}
+          handlerCloseModal={handlerCloseModal}
+        />
+      )
+    case 'facebook':
+      return (
+        <FacebookSettingsMemo
           title={title}
           data={data}
           handlerSettingUpdate={handlerSettingUpdate}
@@ -77,7 +88,7 @@ export default function SocialAppModal({
         >
           {data.map((setting, index) => (
             <Tab
-              key={setting.id}
+              key={setting.id !== null ? setting.id : `setting-${index}`}
               label={setting.project_name}
               {...a11yProps(index)}
             />
@@ -87,7 +98,11 @@ export default function SocialAppModal({
         <Divider sx={{ my: 1.5 }} />
 
         {data.map((setting, index) => (
-          <TabPanel key={setting.id} value={valueTab} index={index}>
+          <TabPanel
+            key={setting.id !== null ? setting.id : `setting-${index}`}
+            value={valueTab}
+            index={index}
+          >
             {renderSocialComponent({
               title: title,
               data: setting,

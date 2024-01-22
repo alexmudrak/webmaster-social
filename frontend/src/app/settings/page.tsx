@@ -24,6 +24,7 @@ function a11yProps(index: number) {
 }
 
 export default function Settings() {
+  // TODO: Add list of available social networks
   const [value, setValue] = React.useState(0)
 
   const [projectsData, setProjectsData] = React.useState<Project[]>([])
@@ -55,6 +56,7 @@ export default function Settings() {
       projects: Project[],
       socialNetworks: GroupedSettings
     ) => {
+      // TODO: Need to implement iteration on available social networks list
       const updatedSocialNetworksData = { ...socialNetworks }
       Object.keys(updatedSocialNetworksData).forEach((network) => {
         projects.forEach((project) => {
@@ -95,7 +97,7 @@ export default function Settings() {
   const handleProjectModalClose = () => {
     setOpenProjectModal(false)
   }
-
+  console.log(socialNetworksData)
   // TODO: Add updating Project item after Create/Update/Delete
   return (
     <>
