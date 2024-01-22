@@ -1,10 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
+import { Box, Button, Card, CardContent, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
@@ -28,9 +24,12 @@ export default function ProjectAppSettings({ data }: { data?: Project }) {
     setOpenDeleteConfirmationModal(false)
     if (data?.id) {
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/projects/${data.id}`, {
-          method: 'DELETE'
-        })
+        const response = await fetch(
+          `http://localhost:8000/api/v1/projects/${data.id}`,
+          {
+            method: 'DELETE'
+          }
+        )
         if (!response.ok) {
           throw new Error('Network response was not ok')
         }

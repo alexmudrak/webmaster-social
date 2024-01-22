@@ -1,10 +1,12 @@
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Stack from '@mui/material/Stack'
-import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
+import {
+  Button,
+  Divider,
+  FormControlLabel,
+  Stack,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material'
 import * as React from 'react'
 
 import { SocialAppProps } from '../../../types/social_network_settings'

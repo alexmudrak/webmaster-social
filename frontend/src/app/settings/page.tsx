@@ -1,11 +1,7 @@
 'use client'
+
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Divider } from '@mui/material'
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
-import Typography from '@mui/material/Typography'
+import { Box, Divider, IconButton, Tab, Tabs, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 

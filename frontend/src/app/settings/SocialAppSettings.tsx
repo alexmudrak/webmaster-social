@@ -1,11 +1,12 @@
-'use client'
 import SettingsIcon from '@mui/icons-material/Settings'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import IconButton from '@mui/material/IconButton'
-import Switch from '@mui/material/Switch'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  FormControlLabel,
+  IconButton,
+  Switch
+} from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
