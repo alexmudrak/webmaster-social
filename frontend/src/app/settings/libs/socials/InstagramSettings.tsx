@@ -6,6 +6,8 @@ import { SocialSettingsLayout } from './core/SocialSettingsLayout'
 import { useSocialSettings } from './core/useSocialSettings'
 
 export default function InstagramSettings(props: SocialAppProps) {
+  // TODO: Change username to user_name
+  // TODO: Change password to user_password
   const { setting, handleActiveChange, handleInputChange, handleSave } =
     useSocialSettings(
       props.data,

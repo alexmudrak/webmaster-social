@@ -5,7 +5,8 @@ import { SocialAppProps } from '../../../types/social_network_settings'
 import { SocialSettingsLayout } from './core/SocialSettingsLayout'
 import { useSocialSettings } from './core/useSocialSettings'
 
-export default function FacebookSettings(props: SocialAppProps) {
+export default function TwitterSettings(props: SocialAppProps) {
+  // TODO: Change redirect_uri to redirect_url
   const { setting, handleActiveChange, handleInputChange, handleSave } =
     useSocialSettings(
       props.data,

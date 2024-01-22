@@ -5,7 +5,7 @@ import { SocialAppProps } from '../../../types/social_network_settings'
 import { SocialSettingsLayout } from './core/SocialSettingsLayout'
 import { useSocialSettings } from './core/useSocialSettings'
 
-export default function FacebookSettings(props: SocialAppProps) {
+export default function TelegraphSettings(props: SocialAppProps) {
   const { setting, handleActiveChange, handleInputChange, handleSave } =
     useSocialSettings(
       props.data,
