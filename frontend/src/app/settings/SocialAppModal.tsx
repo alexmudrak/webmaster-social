@@ -11,10 +11,12 @@ import {
 import FacebookSettings from './libs/socials/FacebookSettings'
 import InstagramSettings from './libs/socials/InstagramSettings'
 import PinterestSettings from './libs/socials/PinterestSettings'
+import VkontakteSettings from './libs/socials/VkontakteSettings'
 
 const FacebookSettingsMemo = React.memo(FacebookSettings)
 const InstagramSettingsMemo = React.memo(InstagramSettings)
 const PinterestSettingsMemo = React.memo(PinterestSettings)
+const VkontakteSettingsMemo = React.memo(VkontakteSettings)
 
 const renderSocialComponent = ({
   title,
@@ -44,6 +46,15 @@ const renderSocialComponent = ({
     case 'facebook':
       return (
         <FacebookSettingsMemo
+          title={title}
+          data={data}
+          handlerSettingUpdate={handlerSettingUpdate}
+          handlerCloseModal={handlerCloseModal}
+        />
+      )
+    case 'vkontakte':
+      return (
+        <VkontakteSettingsMemo
           title={title}
           data={data}
           handlerSettingUpdate={handlerSettingUpdate}

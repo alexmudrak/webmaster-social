@@ -11,7 +11,7 @@ import * as React from 'react'
 
 import { SocialAppProps } from '../../../types/social_network_settings'
 
-export default function FacebookSettings({
+export default function VkontakteSettings({
   title,
   data,
   handlerSettingUpdate,
@@ -56,7 +56,6 @@ export default function FacebookSettings({
     }
   }
 
-
   const handleSave = () => {
     handlerSettingUpdate(setting.id, setting)
     handlerCloseModal()
@@ -90,6 +89,14 @@ export default function FacebookSettings({
         }}
         spacing={2}
       >
+        <TextField
+          fullWidth
+          label='App ID'
+          id='app-id'
+          name='app_id'
+          value={setting.settings.app_id}
+          onChange={handleInputChange}
+        />
         <TextField
           fullWidth
           label='Group ID'
