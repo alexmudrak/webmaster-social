@@ -32,22 +32,30 @@ export default function FacebookSettings({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-    updateSetting((prevData) => {
-      const newData = { ...prevData }
-      const keys = name.split('.')
-      let current = newData
+    const [field, subField] = name.split('.')
 
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (current[keys[i]] === undefined) {
-          current[keys[i]] = {}
+    if (subField) {
+      updateSetting((prevData) => ({
+        ...prevData,
+        settings: {
+          ...prevData.settings,
+          cookies: {
+            ...prevData.settings.cookies,
+            [subField]: value
+          }
         }
-        current = current[keys[i]]
-      }
-
-      current[keys[keys.length - 1]] = value
-      return newData
-    })
+      }))
+    } else {
+      updateSetting((prevData) => ({
+        ...prevData,
+        settings: {
+          ...prevData.settings,
+          [field]: value
+        }
+      }))
+    }
   }
+
 
   const handleSave = () => {
     handlerSettingUpdate(setting.id, setting)
@@ -86,7 +94,7 @@ export default function FacebookSettings({
           fullWidth
           label='Group ID'
           id='group-id'
-          name='settings.group_id'
+          name='group_id'
           value={setting.settings.group_id}
           onChange={handleInputChange}
         />
@@ -94,7 +102,7 @@ export default function FacebookSettings({
           fullWidth
           label='Access Token'
           id='access-token'
-          name='settings.access_token'
+          name='access_token'
           value={setting.settings.access_token}
           onChange={handleInputChange}
         />

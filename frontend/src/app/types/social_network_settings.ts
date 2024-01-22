@@ -3,7 +3,7 @@ type Cookies = {
   _pinterest_sess?: string
   _routing_id?: string
   bei?: string
-  csrftoken: string
+  csrftoken?: string
   sessionFunnelEventLogged?: string
   ds_user_id?: string
   mid?: string

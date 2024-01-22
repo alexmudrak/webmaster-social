@@ -17,6 +17,7 @@ export default function PinterestSettings({
   handlerSettingUpdate,
   handlerCloseModal
 }: SocialAppProps) {
+  // TODO: Refactor and split common function with other libs
   const [setting, updateSetting] = React.useState(data)
   const switchLabel = setting?.active ? 'On' : 'Off'
 
@@ -32,26 +33,28 @@ export default function PinterestSettings({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-    const path = name.split('.')
+    const [field, subField] = name.split('.')
 
-    updateSetting((prevData) => {
-      let updatedData = { ...prevData }
-
-      if (path.length === 1) {
-        updatedData.settings[path[0]] = value
-      } else {
-        let current = updatedData.settings
-        for (let i = 0; i < path.length - 1; i++) {
-          if (current[path[i]] === undefined) {
-            current[path[i]] = {}
+    if (subField) {
+      updateSetting((prevData) => ({
+        ...prevData,
+        settings: {
+          ...prevData.settings,
+          cookies: {
+            ...prevData.settings.cookies,
+            [subField]: value
           }
-          current = current[path[i]]
         }
-        current[path[path.length - 1]] = value
-      }
-
-      return updatedData
-    })
+      }))
+    } else {
+      updateSetting((prevData) => ({
+        ...prevData,
+        settings: {
+          ...prevData.settings,
+          [field]: value
+        }
+      }))
+    }
   }
 
   const handleSave = () => {
