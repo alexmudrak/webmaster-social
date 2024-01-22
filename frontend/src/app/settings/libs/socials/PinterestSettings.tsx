@@ -1,158 +1,82 @@
-import {
-  Button,
-  Divider,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-  Typography
-} from '@mui/material'
+import { TextField } from '@mui/material'
 import * as React from 'react'
 
 import { SocialAppProps } from '../../../types/social_network_settings'
+import { SocialSettingsLayout } from './core/SocialSettingsLayout'
+import { useSocialSettings } from './core/useSocialSettings'
 
-export default function PinterestSettings({
-  title,
-  data,
-  handlerSettingUpdate,
-  handlerCloseModal
-}: SocialAppProps) {
-  // TODO: Refactor and split common function with other libs
-  const [setting, updateSetting] = React.useState(data)
-  const switchLabel = setting?.active ? 'On' : 'Off'
-
-  const handleActiveChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      updateSetting((prevData) => ({
-        ...prevData,
-        active: event.target.checked
-      }))
-    },
-    []
-  )
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    const [field, subField] = name.split('.')
-
-    if (subField) {
-      updateSetting((prevData) => ({
-        ...prevData,
-        settings: {
-          ...prevData.settings,
-          cookies: {
-            ...prevData.settings.cookies,
-            [subField]: value
-          }
-        }
-      }))
-    } else {
-      updateSetting((prevData) => ({
-        ...prevData,
-        settings: {
-          ...prevData.settings,
-          [field]: value
-        }
-      }))
-    }
-  }
-
-  const handleSave = () => {
-    handlerSettingUpdate(setting.id, setting)
-    handlerCloseModal()
-  }
-
+export default function FacebookSettings(props: SocialAppProps) {
+  const { setting, handleActiveChange, handleInputChange, handleSave } =
+    useSocialSettings(
+      props.data,
+      props.handlerSettingUpdate,
+      props.handlerCloseModal
+    )
   return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <Typography variant='h5' id='modal-project-title'>
-          {`${title} settings for '${setting.project_name}'`}
-        </Typography>
-        <FormControlLabel
-          control={
-            <Switch checked={setting.active} onChange={handleActiveChange} />
-          }
-          label={switchLabel}
-        />
-      </div>
-
-      <Divider sx={{ marginY: 2 }} />
-
-      <Stack
-        sx={{
-          width: '100%'
-        }}
-        spacing={2}
-      >
-        <TextField
-          fullWidth
-          label='Board ID'
-          id='board-id'
-          name='board_id'
-          value={setting.settings.board_id}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='Auth'
-          id='auth'
-          name='cookies._auth'
-          value={setting.settings.cookies?._auth}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          multiline
-          maxRows={6}
-          label='Pinterest Session'
-          id='pinterest-sess'
-          name='cookies._pinterest_sess'
-          value={setting.settings.cookies?._pinterest_sess}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='Routing ID'
-          id='routing-id'
-          name='cookies._routing_id'
-          value={setting.settings.cookies?._routing_id}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='BEI'
-          id='bei'
-          name='cookies.bei'
-          value={setting.settings.cookies?.bei}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='CSRF Token'
-          id='csrftoken'
-          name='cookies.csrftoken'
-          value={setting.settings.cookies?.csrftoken}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          label='Session Funnel Event Logged'
-          id='session-funnel-event-logged'
-          name='cookies.sessionFunnelEventLogged'
-          value={setting.settings.cookies?.sessionFunnelEventLogged}
-          onChange={handleInputChange}
-        />
-
-        <Button variant='contained' onClick={handleSave}>
-          Save
-        </Button>
-      </Stack>
-    </>
+    <SocialSettingsLayout
+      {...props}
+      setting={setting}
+      handleActiveChange={handleActiveChange}
+      handleSave={handleSave}
+    >
+      <TextField
+        fullWidth
+        label='Board ID'
+        id='board-id'
+        name='board_id'
+        value={setting.settings.board_id}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='Auth'
+        id='auth'
+        name='cookies._auth'
+        value={setting.settings.cookies?._auth}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        multiline
+        maxRows={6}
+        label='Pinterest Session'
+        id='pinterest-sess'
+        name='cookies._pinterest_sess'
+        value={setting.settings.cookies?._pinterest_sess}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='Routing ID'
+        id='routing-id'
+        name='cookies._routing_id'
+        value={setting.settings.cookies?._routing_id}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='BEI'
+        id='bei'
+        name='cookies.bei'
+        value={setting.settings.cookies?.bei}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='CSRF Token'
+        id='csrftoken'
+        name='cookies.csrftoken'
+        value={setting.settings.cookies?.csrftoken}
+        onChange={handleInputChange}
+      />
+      <TextField
+        fullWidth
+        label='Session Funnel Event Logged'
+        id='session-funnel-event-logged'
+        name='cookies.sessionFunnelEventLogged'
+        value={setting.settings.cookies?.sessionFunnelEventLogged}
+        onChange={handleInputChange}
+      />
+    </SocialSettingsLayout>
   )
 }
