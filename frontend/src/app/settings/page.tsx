@@ -6,6 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import TabPanel from '../components/TabPanel'
+import { socialNetworksList } from '../constants/SocialNetworks'
 import { Project } from '../types/project'
 import { GroupedSettings, Setting } from '../types/social_network_settings'
 import ProjectAppModal from './ProjectAppModal'
@@ -52,20 +53,6 @@ export default function Settings() {
       projects: Project[],
       socialNetworks: GroupedSettings
     ) => {
-      // TODO: Need to implement iteration on available social networks list
-      const socialNetworksList = [
-        'facebook',
-        'instagram',
-        'linkedin',
-        'medium',
-        'pinterest',
-        'reddit',
-        'telegram_group',
-        'telegraph',
-        'twitter',
-        'vkontakte'
-      ]
-
       const updatedSocialNetworksData = { ...socialNetworks }
 
       console.log(updatedSocialNetworksData)
