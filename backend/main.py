@@ -1,3 +1,4 @@
+from api.v1_articles import router as articles_router
 from api.v1_dashboard import router as dashboards_router
 from api.v1_logs import router as logs_router
 from api.v1_projects import router as projects_router
@@ -17,6 +18,7 @@ app.add_middleware(
 )
 
 v1_endpoints = [
+    articles_router,
     dashboards_router,
     projects_router,
     settings_router,
