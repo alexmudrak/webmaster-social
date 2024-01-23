@@ -55,8 +55,6 @@ export default function Settings() {
     ) => {
       const updatedSocialNetworksData = { ...socialNetworks }
 
-      console.log(updatedSocialNetworksData)
-
       socialNetworksList.forEach((network) => {
         if (!updatedSocialNetworksData[network]) {
           updatedSocialNetworksData[network] = []

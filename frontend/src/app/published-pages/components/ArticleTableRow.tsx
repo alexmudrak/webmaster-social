@@ -13,7 +13,6 @@ import formatDate from '../../utils/formatDate'
 import ArticleNetworkStatusIcon from './ArticleNetworkStatusIcons'
 
 export default function ArticleTableRow({ article }) {
-  console.log(article)
   return (
     <TableRow
       key={article.id}
