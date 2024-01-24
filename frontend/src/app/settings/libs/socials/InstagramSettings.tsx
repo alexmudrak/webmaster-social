@@ -41,26 +41,10 @@ export default function InstagramSettings(props: SocialAppProps) {
 
       <TextField
         fullWidth
-        label='MID'
-        id='mid'
-        name='cookies.mid'
-        value={setting.settings.cookies?.mid}
-        onChange={handleInputChange}
-      />
-      <TextField
-        fullWidth
         label='CSRF Token'
         id='csrftoken'
         name='cookies.csrftoken'
         value={setting.settings.cookies?.csrftoken}
-        onChange={handleInputChange}
-      />
-      <TextField
-        fullWidth
-        label='DS User ID'
-        id='ds-user-id'
-        name='cookies.ds_user_id'
-        value={setting.settings.cookies?.ds_user_id}
         onChange={handleInputChange}
       />
       <TextField

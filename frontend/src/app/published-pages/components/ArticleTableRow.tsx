@@ -1,7 +1,5 @@
 'use client'
-import CheckIcon from '@mui/icons-material/Check'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import StopIcon from '@mui/icons-material/Stop'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import TableCell from '@mui/material/TableCell'
@@ -34,12 +32,13 @@ export default function ArticleTableRow({ article }) {
         {socialNetworksList.map((networkName) => {
           const networkStatus = article.network_statuses.find(
             (network) => network.name === networkName
-          ) || { status: 'PENDING' }
+          ) || { status: 'PENDING', status_text: 'Pending', url: '' }
 
           return (
             <ArticleNetworkStatusIcon
               key={networkName}
-              status={networkStatus.status}
+              article_id={article.id}
+              status={networkStatus}
               name={networkName}
             />
           )
@@ -48,12 +47,6 @@ export default function ArticleTableRow({ article }) {
       <TableCell align='right'>
         <IconButton>
           <PlayArrowIcon />
-        </IconButton>
-        <IconButton>
-          <StopIcon />
-        </IconButton>
-        <IconButton>
-          <CheckIcon />
         </IconButton>
       </TableCell>
     </TableRow>
