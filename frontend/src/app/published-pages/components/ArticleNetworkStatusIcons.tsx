@@ -5,17 +5,8 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import { Tooltip } from '@mui/material'
 import * as React from 'react'
 
-interface NetworkStatusIconProps {
-  article_id: number
-  status: {
-    id: number
-    name: string
-    status: 'DONE' | 'ERROR' | 'PENDING'
-    status_text: string
-    url: string
-  }
-  name: string
-}
+import { NetworkStatusIconProps } from '../../types/articles'
+
 export default function ArticleNetworkStatusIcon({
   article_id,
   status,

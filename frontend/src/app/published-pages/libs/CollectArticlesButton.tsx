@@ -2,7 +2,7 @@
 
 import Button from '@mui/material/Button'
 
-import { CollectArticlesButtonProps } from '@/app/types/articles'
+import { CollectArticlesButtonProps } from '../../types/articles'
 
 export default function CollectArticlesButton({
   project_name,
