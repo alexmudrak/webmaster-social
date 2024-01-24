@@ -21,6 +21,22 @@ class ArticlesController:
     async def send_article_to_networks(
         self,
         article_id: int,
+    ):
+        async with self.db_manager as session:
+            article = await ArticlesReposotiry(session).retrieve_article_by_id(
+                article_id
+            )
+            networks_config = await SettingsReposotiry(
+                session
+            ).retrieve_settings_by_project_id(article.project.id)
+
+            await SocialNetworksController(
+                session
+            ).run_task_send_article_to_networks(article, networks_config)
+
+    async def send_article_to_network(
+        self,
+        article_id: int,
         network_name: str,
     ):
         async with self.db_manager as session:
@@ -34,4 +50,4 @@ class ArticlesController:
             )
             await SocialNetworksController(
                 session
-            ).run_task_send_article_and_by_network(article, network_config)
+            ).run_task_send_article_to_network(article, network_config)

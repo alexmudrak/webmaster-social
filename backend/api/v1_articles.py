@@ -1,5 +1,5 @@
 from controllers.articles_controller import ArticlesController
-from core.database import get_session, get_session_context
+from core.database import get_session_context
 from fastapi import APIRouter, BackgroundTasks, Depends
 from schemas.articles_schema import ArticleRead
 from schemas.task_schema import TaskResponse
@@ -26,12 +26,24 @@ async def get_all_articles(
 @router.post(
     "/task/{article_id}",
     summary="Task for sending article to all networks.",
+    tags=["Tasks"],
+    response_model=TaskResponse,
 )
 async def send_article_to_all_networks(
     article_id: int,
-    session: AsyncSession = Depends(get_session),
+    background_tasks: BackgroundTasks,
+    db_manager: AsyncSession = Depends(get_session_context),
 ):
-    pass
+    background_tasks.add_task(
+        ArticlesController(db_manager).send_article_to_networks,
+        article_id,
+    )
+
+    return TaskResponse(
+        task_type="send_article_to_networks",
+        networks="all",
+        status="success",
+    )
 
 
 @router.post(
@@ -47,7 +59,7 @@ async def send_article_to_all_specific(
     db_manager: AsyncSession = Depends(get_session_context),
 ):
     background_tasks.add_task(
-        ArticlesController(db_manager).send_article_to_networks,
+        ArticlesController(db_manager).send_article_to_network,
         article_id,
         network_name,
     )

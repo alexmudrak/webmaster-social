@@ -24,11 +24,21 @@ class SocialNetworksController:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    @staticmethod
-    async def run_task_single_network():
-        pass
+    async def run_task_send_article_to_networks(
+        self, article: Article, networks_setting: list[Setting]
+    ):
+        async with await get_request_client() as client:
+            tasks = [
+                self.send_to_single_network(client, network_config, article)
+                for network_config in networks_setting
+            ]
+            results_list = await asyncio.gather(*tasks)
+            results = {name: status for name, status in results_list}
 
-    async def run_task_send_article_and_by_network(
+        if results and article:
+            await self.send_notification(article, results)
+
+    async def run_task_send_article_to_network(
         self, article: Article, network_setting: Setting
     ):
         async with await get_request_client() as client:
