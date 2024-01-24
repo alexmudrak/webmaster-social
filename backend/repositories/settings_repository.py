@@ -30,3 +30,10 @@ class SettingsReposotiry:
         object = result.unique().first()
 
         return object
+
+    async def retrieve_unique_settings(self) -> list[str]:
+        query = select(Setting.name)
+        result = await self.session.exec(query)
+        objects = result.unique().all()
+
+        return objects
