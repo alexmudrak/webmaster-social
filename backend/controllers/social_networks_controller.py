@@ -19,9 +19,25 @@ from utils.request_client import get_request_client
 logger = get_logger(__name__)
 
 
+# TODO: Need to refactoring full class
 class SocialNetworksController:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
+
+    @staticmethod
+    async def run_task_single_network():
+        pass
+
+    async def run_task_send_article_and_by_network(
+        self, article: Article, network_setting: Setting
+    ):
+        async with await get_request_client() as client:
+            network_name, publish_status = await self.send_to_single_network(
+                client, network_setting, article
+            )
+
+            result = {network_name: publish_status}
+            await self.send_notification(article, result)
 
     async def get_article(
         self,
@@ -87,7 +103,7 @@ class SocialNetworksController:
         client: AsyncClient,
         network_config: Setting,
         article: Article,
-    ) -> tuple[str, str]:
+    ) -> tuple[str, PublishArticleStatus]:
         # Need to check status for network config
         # Active or not Active
         logger.info(

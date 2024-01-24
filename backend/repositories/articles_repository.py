@@ -29,3 +29,12 @@ class ArticlesReposotiry:
         ]
 
         return articles_with_project_name
+
+    async def retrieve_article_by_id(self, article_id: int) -> Article:
+        query = select(Article).where(
+            Article.id == article_id,
+        )
+        result = await self.session.exec(query)
+        object = result.unique().first()
+
+        return object
