@@ -11,6 +11,30 @@ import formatDate from '../../utils/formatDate'
 import ArticleNetworkStatusIcon from './ArticleNetworkStatusIcons'
 
 export default function ArticleTableRow({ article }) {
+  const handleSendArticleToNetworks = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/articles/task/${article.id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ articleId: article.id })
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Handle the response data as needed
+      const data = await response.json()
+      console.log('Play action initiated:', data)
+    } catch (error) {
+      console.error('Error during fetch:', error)
+    }
+  }
   return (
     <TableRow
       key={article.id}
@@ -45,7 +69,7 @@ export default function ArticleTableRow({ article }) {
         })}
       </TableCell>
       <TableCell align='right'>
-        <IconButton>
+        <IconButton onClick={handleSendArticleToNetworks}>
           <PlayArrowIcon />
         </IconButton>
       </TableCell>
