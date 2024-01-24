@@ -14,7 +14,10 @@ import RunStatusApp from './status/RunStatusApp'
 
 export default function Page() {
   const [expanded, setExpanded] = React.useState<string | false>(false)
-  const [cardData, setCardData] = React.useState<DashboardCardData | null>(null)
+  const [cardData, setCardData] = React.useState<DashboardCardData | null>(
+    null
+  )
+  const isMounted = React.useRef(false)
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +35,10 @@ export default function Page() {
       }
     }
 
-    fetchData()
+    if (!isMounted.current) {
+      isMounted.current = true
+      fetchData()
+    }
   }, [])
 
   const handleChange =
@@ -53,11 +59,8 @@ export default function Page() {
             published={cardData?.articles.published}
             with_error={cardData?.articles.with_error}
           />
-          <ProjectsCard
-          total={cardData?.projects.total}/>
-          <NetworksCard
-          total={cardData?.networks.total}
-          />
+          <ProjectsCard total={cardData?.projects.total} />
+          <NetworksCard total={cardData?.networks.total} />
         </Grid>
       </Box>
 
