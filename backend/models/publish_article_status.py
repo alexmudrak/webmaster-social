@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 
 class PublishArticleStatusBase(SQLModel):
+    # TODO: Rename `publish_article_link` to `url`
     article_id: int = Field(nullable=False, foreign_key="article.id")
     setting_id: int = Field(nullable=False, foreign_key="setting.id")
     status: str = Field(nullable=False, default="PENDING")
