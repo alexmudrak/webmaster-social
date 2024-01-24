@@ -9,6 +9,8 @@ class ArticleNetworkStatus(BaseModel):
     id: int
     name: str
     status: str
+    status_text: str | None
+    url: str | None
 
 
 class ArticleRead(ArticleBase):

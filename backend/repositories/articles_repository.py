@@ -21,6 +21,8 @@ class ArticlesReposotiry:
                         id=published.networks_setting.id,
                         name=published.networks_setting.name,
                         status=published.status,
+                        status_text=published.status_text,
+                        url=published.publish_article_link,
                     )
                     for published in object.published
                 ],
