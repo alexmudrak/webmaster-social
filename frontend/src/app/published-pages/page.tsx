@@ -38,6 +38,7 @@ export async function getProjects() {
   return response.json()
 }
 export default async function PublishedPages() {
+  // TODO: Add types
   const articles = await getArticles()
   const projects = await getProjects()
 
@@ -51,7 +52,7 @@ export default async function PublishedPages() {
         }}
       >
         <Typography variant='h4'>Published pages</Typography>
-        {projects.map(project => (
+        {projects.map((project) => (
           <CollectArticlesButton
             key={project.id}
             project_name={project.name}

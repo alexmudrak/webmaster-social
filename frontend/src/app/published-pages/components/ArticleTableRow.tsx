@@ -11,6 +11,7 @@ import formatDate from '../../utils/formatDate'
 import ArticleNetworkStatusIcon from './ArticleNetworkStatusIcons'
 
 export default function ArticleTableRow({ article }) {
+  // TODO: Add types
   const handleSendArticleToNetworks = async () => {
     try {
       const response = await fetch(
