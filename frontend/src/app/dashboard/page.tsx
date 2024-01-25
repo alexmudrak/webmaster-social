@@ -19,7 +19,7 @@ export default function Page() {
   )
 
   const [statusesData, setStatusesData] =
-    React.useState<DashboardStatusesData | null>(null)
+    React.useState<DashboardStatusesData[] | null>(null)
 
   const isMounted = React.useRef(false)
 

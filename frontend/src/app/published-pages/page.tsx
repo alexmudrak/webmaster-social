@@ -13,7 +13,7 @@ import * as React from 'react'
 import ArticleTableRow from './components/ArticleTableRow'
 import CollectArticlesButton from './libs/CollectArticlesButton'
 
-export async function getArticles() {
+async function getArticles() {
   // TODO: Set cache from .env
   const response = await fetch('http://127.0.0.1:8000/api/v1/articles/', {
     cache: 'no-cache'
@@ -25,7 +25,7 @@ export async function getArticles() {
 
   return response.json()
 }
-export async function getProjects() {
+async function getProjects() {
   // TODO: Set cache from .env
   const response = await fetch('http://127.0.0.1:8000/api/v1/projects/', {
     cache: 'no-cache'
