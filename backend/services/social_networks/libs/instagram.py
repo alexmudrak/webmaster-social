@@ -62,7 +62,7 @@ class InstagramLib(SocialNetworkAbstract):
         if not isinstance(settings, dict):
             raise ValueError("Invalid config format")
 
-        required_keys = ["username", "password", "cookies"]
+        required_keys = ["username", "cookies"]
 
         for key in required_keys:
             if key not in settings:
@@ -108,7 +108,7 @@ class InstagramLib(SocialNetworkAbstract):
             case "POST":
                 response = await self.client.post(
                     url,
-                    data=data,
+                    content=data,
                     headers=headers,
                     cookies=cookies,
                 )
@@ -130,7 +130,6 @@ class InstagramLib(SocialNetworkAbstract):
 
         config = {
             "username": self.config.settings.get("username"),
-            "password": self.config.settings.get("password"),
             "cookies": self.config.settings.get("cookies"),
         }
         return config
