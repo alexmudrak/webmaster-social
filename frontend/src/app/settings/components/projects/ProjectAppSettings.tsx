@@ -6,8 +6,9 @@ import { Box, Button, Card, CardContent, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
-import ConfirmationModal from '../components/ConfirmationModal'
-import { Project } from '../types/project'
+import ConfirmationModal from '../../../components/ConfirmationModal'
+import { Project } from '../../../types/project'
+import apiRequest from '../../../utils/apiRequest'
 import ProjectAppModal from './ProjectAppModal'
 
 export default function ProjectAppSettings({ data }: { data?: Project }) {
@@ -24,56 +25,23 @@ export default function ProjectAppSettings({ data }: { data?: Project }) {
 
   const handleCollectMaterials = async () => {
     if (data?.id) {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/v1/tasks/collect-articles/${data.id}`,
-          {
-            method: 'POST'
-          }
-        )
-        if (!response.ok) {
-          throw new Error('Collect article response was not ok')
-        }
-      } catch (error) {
-        console.error('Failed to delete the project:', error)
-      }
+      const endpoint = `tasks/collect-articles/${data.id}`
+      await apiRequest(endpoint, { method: 'POST' })
     }
   }
 
   const handlePublish = async () => {
     if (data?.id) {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/v1/tasks/send-article/${data.id}`,
-          {
-            method: 'POST'
-          }
-        )
-        if (!response.ok) {
-          throw new Error('Publish article response was not ok')
-        }
-      } catch (error) {
-        console.error('Failed to delete the project:', error)
-      }
+      const endpoint = `tasks/send-article/${data.id}`
+      await apiRequest(endpoint, { method: 'POST' })
     }
   }
 
   const handleDeleteConfirmation = async () => {
     setOpenDeleteConfirmationModal(false)
     if (data?.id) {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/v1/projects/${data.id}`,
-          {
-            method: 'DELETE'
-          }
-        )
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-      } catch (error) {
-        console.error('Failed to delete the project:', error)
-      }
+      const endpoint = `projects/${data.id}`
+      await apiRequest(endpoint, { method: 'DELETE' })
     }
   }
 

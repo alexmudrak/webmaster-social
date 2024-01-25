@@ -13,8 +13,9 @@ import {
 } from '@mui/material'
 import * as React from 'react'
 
-import { modalStyle } from '../styles/modalStyle'
-import { Project, ProjectModalProps } from '../types/project'
+import { modalStyle } from '../../../styles/modalStyle'
+import { Project, ProjectModalProps } from '../../../types/project'
+import apiRequest from '../../../utils/apiRequest'
 
 const defaultProjectData: Project = {
   name: '',
@@ -178,24 +179,15 @@ export default function ProjectAppModal({
   const handleSave = async () => {
     const method = projectData.id ? 'PATCH' : 'POST'
     const endpoint = projectData.id
-      ? `http://localhost:8000/api/v1/projects/${projectData.id}/`
-      : 'http://localhost:8000/api/v1/projects/'
+      ? `projects/${projectData.id}`
+      : 'projects/'
 
-    try {
-      const response = await fetch(endpoint, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(projectData)
-      })
+    await apiRequest(endpoint, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(projectData)
+    })
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-    } catch (error) {
-      console.error('Failed to save the project:', error)
-    }
     handleClose()
   }
 
