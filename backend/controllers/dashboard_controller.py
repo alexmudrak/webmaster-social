@@ -64,7 +64,7 @@ class DashboardController:
         async with self.db_manager as session:
             published_articles_id = await ArticlesStatusesReposotiry(
                 session
-            ).retrieve_last_id_articles_statuses()
+            ).retrieve_last_5_id_articles_statuses()
             articles = await ArticlesReposotiry(
                 session
             ).retrieve_article_by_list_id(published_articles_id)
@@ -78,6 +78,7 @@ class DashboardController:
                     network_statuses=[
                         DashboardNetworkStatusesData(
                             id=publish.id,
+                            date=publish.created,
                             name=publish.networks_setting.name,
                             status=publish.status,
                             status_text=publish.status_text,

@@ -6,7 +6,7 @@ class ArticlesStatusesReposotiry:
     def __init__(self, session):
         self.session = session
 
-    async def retrieve_last_id_articles_statuses(
+    async def retrieve_last_5_id_articles_statuses(
         self,
     ) -> list[int]:
         query = select(PublishArticleStatus.article_id).order_by(
@@ -15,4 +15,4 @@ class ArticlesStatusesReposotiry:
         result = await self.session.exec(query)
         objects = result.unique().all()
 
-        return objects
+        return objects[:5]

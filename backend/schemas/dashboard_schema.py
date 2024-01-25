@@ -25,6 +25,7 @@ class DashboardCardData(BaseModel):
 
 class DashboardNetworkStatusesData(BaseModel):
     id: int
+    date: datetime
     name: str
     status: str
     status_text: str | None
