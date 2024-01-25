@@ -28,6 +28,7 @@ export default function Settings() {
   const [socialNetworksData, setSocialNetworksData] =
     React.useState<GroupedSettings>({})
 
+  const isMounted = React.useRef(false)
   React.useEffect(() => {
     const fetchProjects = async () => {
       const response = await fetch('http://localhost:8000/api/v1/projects/')
@@ -81,11 +82,14 @@ export default function Settings() {
       setSocialNetworksData(updatedSocialNetworksData)
     }
 
-    Promise.all([fetchProjects(), fetchSocialNetworks()]).then(
-      ([projects, socialNetworks]) => {
-        updateSocialNetworksData(projects, socialNetworks)
-      }
-    )
+    if (!isMounted.current) {
+      isMounted.current = true
+      Promise.all([fetchProjects(), fetchSocialNetworks()]).then(
+        ([projects, socialNetworks]) => {
+          updateSocialNetworksData(projects, socialNetworks)
+        }
+      )
+    }
   }, [value])
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -110,7 +114,7 @@ export default function Settings() {
           aria-label='basic tabs example'
         >
           <Tab label='Projects' {...a11yProps(0)} />
-          <Tab label='Publishing networks' {...a11yProps(1)} />
+          <Tab label='Social networks' {...a11yProps(1)} />
         </Tabs>
       </Box>
 

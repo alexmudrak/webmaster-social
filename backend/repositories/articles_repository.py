@@ -40,3 +40,12 @@ class ArticlesReposotiry:
         object = result.unique().first()
 
         return object
+
+    async def retrieve_article_by_list_id(
+        self, articles_id: list[int]
+    ) -> list[Article]:
+        query = select(Article).where(Article.id.in_(articles_id))
+        result = await self.session.exec(query)
+        objects = result.unique().all()
+
+        return objects
