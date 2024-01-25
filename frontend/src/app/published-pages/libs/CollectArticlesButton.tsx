@@ -25,8 +25,6 @@ export default function CollectArticlesButton({
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json()
-      console.log('POST request successful:', data)
     } catch (error) {
       console.error('Error during POST request:', error)
     }

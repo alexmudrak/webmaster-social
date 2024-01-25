@@ -28,10 +28,7 @@ export default function ArticleTableRow({ article }) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-
       // Handle the response data as needed
-      const data = await response.json()
-      console.log('Play action initiated:', data)
     } catch (error) {
       console.error('Error during fetch:', error)
     }
