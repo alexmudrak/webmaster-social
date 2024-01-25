@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from models.article import Article
     from models.setting import Setting
 
+# TODO: Rename to `articles_status`
+
 
 class PublishArticleStatusBase(SQLModel):
     # TODO: Rename `publish_article_link` to `url`

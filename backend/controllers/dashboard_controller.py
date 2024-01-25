@@ -1,10 +1,15 @@
 from core.logger import get_logger
 from repositories.articles_repository import ArticlesReposotiry
+from repositories.articles_statuses_repository import (
+    ArticlesStatusesReposotiry,
+)
 from repositories.projects_repository import ProjectsReposotiry
 from repositories.settings_repository import SettingsReposotiry
 from schemas.dashboard_schema import (
     ArticleCard,
     DashboardCardData,
+    DashboardNetworkStatusesData,
+    DashboardStatusesData,
     NetworkCard,
     ProjectCard,
 )
@@ -54,3 +59,35 @@ class DashboardController:
             projects=ProjectCard(total=len(projects)),
             networks=NetworkCard(total=len(settings)),
         )
+
+    async def get_statuses_data(self) -> list[DashboardStatusesData]:
+        async with self.db_manager as session:
+            published_articles_id = await ArticlesStatusesReposotiry(
+                session
+            ).retrieve_last_id_articles_statuses()
+            articles = await ArticlesReposotiry(
+                session
+            ).retrieve_article_by_list_id(published_articles_id)
+
+            results = [
+                DashboardStatusesData(
+                    date=article.published[0].created,
+                    project_name=article.project.name,
+                    article_id=article.id,
+                    article_title=article.title,
+                    network_statuses=[
+                        DashboardNetworkStatusesData(
+                            id=publish.id,
+                            name=publish.networks_setting.name,
+                            status=publish.status,
+                            status_text=publish.status_text,
+                        )
+                        for publish in article.published
+                    ],
+                )
+                for article in articles
+            ]
+
+            results = sorted(results, key=lambda x: x.date, reverse=True)
+
+            return results
