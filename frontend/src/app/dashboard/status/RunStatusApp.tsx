@@ -5,38 +5,36 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
+import { RunStatusAppProps } from '../../types/dashboard'
+import formatDate from '../../utils/formatDate'
 import RunStatusAppDetail from './RunStatusAppDetail'
-
-interface RunStatusAppProps {
-  panel: string
-  expanded: string | false
-  handleChange: (
-    _panel: string
-  ) => (_event: React.SyntheticEvent, _isExpanded: boolean) => void
-}
 
 export default function RunStatusApp({
   panel,
   expanded,
-  handleChange
+  handleChange,
+  statusData
 }: RunStatusAppProps) {
   return (
     <>
-      <Accordion expanded={expanded === panel} onChange={handleChange(panel)}>
+      <Accordion expanded={expanded} onChange={handleChange(panel)}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1bh-content'
           id='panel1bh-header'
         >
-          <Typography sx={{ width: '33%', flexShrink: 0 }}>
-            {'{date}'}
+          <Typography sx={{ width: '23%', flexShrink: 0 }}>
+            {formatDate(statusData.date)}
+          </Typography>
+          <Typography sx={{ width: '10%', flexShrink: 0 }}>
+{statusData.project_name}
           </Typography>
           <Typography sx={{ color: 'text.secondary' }}>
-            {'{project_name} - {publish_name}'}
+            {statusData.article_title}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <RunStatusAppDetail />
+          <RunStatusAppDetail networkStatuses={statusData.network_statuses} />
         </AccordionDetails>
       </Accordion>
     </>

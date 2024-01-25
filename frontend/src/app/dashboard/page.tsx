@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
-import { DashboardCardData } from '../types/dashboard'
+import { DashboardCardData, DashboardStatusesData } from '../types/dashboard'
 import ArticlesCard from './components/cards/ArticlesCard'
 import NetworksCard from './components/cards/NetworksCard'
 import ProjectsCard from './components/cards/ProjectsCard'
@@ -17,10 +17,14 @@ export default function Page() {
   const [cardData, setCardData] = React.useState<DashboardCardData | null>(
     null
   )
+
+  const [statusesData, setStatusesData] =
+    React.useState<DashboardStatusesData | null>(null)
+
   const isMounted = React.useRef(false)
 
   React.useEffect(() => {
-    const fetchData = async () => {
+    const fetchCardData = async () => {
       try {
         const response = await fetch(
           'http://localhost:8000/api/v1/dashboards/cards'
@@ -34,10 +38,24 @@ export default function Page() {
         //
       }
     }
-
+    const fetchStatusesData = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8000/api/v1/dashboards/statuses'
+        )
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setStatusesData(data)
+      } catch (error) {
+        //
+      }
+    }
     if (!isMounted.current) {
       isMounted.current = true
-      fetchData()
+      fetchCardData()
+      fetchStatusesData()
     }
   }, [])
 
@@ -64,26 +82,20 @@ export default function Page() {
         </Grid>
       </Box>
 
-      <Typography variant='h4'>Run status</Typography>
+      <Typography variant='h4'>Last 5 status</Typography>
 
       <Divider sx={{ my: 1.5 }} />
 
       <Box sx={{ margin: 2 }}>
-        <RunStatusApp
-          panel='panel_1'
-          expanded={expanded}
-          handleChange={handleChange}
-        />
-        <RunStatusApp
-          panel='panel_2'
-          expanded={expanded}
-          handleChange={handleChange}
-        />
-        <RunStatusApp
-          panel='panel_3'
-          expanded={expanded}
-          handleChange={handleChange}
-        />
+        {statusesData?.map((status, index) => (
+          <RunStatusApp
+            key={status.article_id}
+            panel={`panel_${index}`}
+            expanded={expanded === `panel_${index}`}
+            handleChange={handleChange}
+            statusData={status}
+          />
+        ))}
       </Box>
     </Container>
   )
