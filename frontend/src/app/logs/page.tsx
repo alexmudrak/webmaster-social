@@ -19,6 +19,9 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
+import apiRequest from '../utils/apiRequest'
+import formatDate from '../utils/formatDate'
+
 // TODO: Need to Refactor
 
 interface TablePaginationActionsProps {
@@ -106,27 +109,25 @@ export default function Logs() {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(25)
   const [rows, setRows] = React.useState<LogEntry[]>([])
+  const fetchedRef = React.useRef(false)
 
   // TODO: perhaps should to use request lib with SWR
   React.useEffect(() => {
     const fetchLogs = async () => {
-      const response = await fetch('http://localhost:8000/api/v1/logs/')
-      if (response.ok) {
-        const data = await response.json()
-        setRows(data)
-      } else {
-        console.error('Failed to fetch logs:', response.statusText)
-      }
+      const method = 'GET'
+      const endpoint = `logs/`
+
+      const response = await apiRequest(endpoint, {
+        method: method
+      })
+      setRows(response)
     }
 
-    fetchLogs()
-  }, [page, rowsPerPage])
-
-  // TODO: move to date handler util lib
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString)
-    return date.toLocaleString('en-GB').replace(/,/, '')
-  }
+    if (!fetchedRef.current) {
+      fetchLogs()
+      fetchedRef.current = true
+    }
+  }, [])
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
