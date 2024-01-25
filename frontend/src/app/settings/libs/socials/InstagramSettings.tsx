@@ -31,16 +31,6 @@ export default function InstagramSettings(props: SocialAppProps) {
       />
       <TextField
         fullWidth
-        label='Password'
-        id='password'
-        name='password'
-        value={setting.settings.password}
-        onChange={handleInputChange}
-        type='password'
-      />
-
-      <TextField
-        fullWidth
         label='CSRF Token'
         id='csrftoken'
         name='cookies.csrftoken'
