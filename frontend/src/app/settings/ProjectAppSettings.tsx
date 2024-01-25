@@ -1,5 +1,7 @@
+import CollectIcon from '@mui/icons-material/Archive'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
+import PublishIcon from '@mui/icons-material/Publish'
 import { Box, Button, Card, CardContent, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
@@ -18,6 +20,42 @@ export default function ProjectAppSettings({ data }: { data?: Project }) {
 
   const handleDeleteProject = () => {
     setOpenDeleteConfirmationModal(true)
+  }
+
+  const handleCollectMaterials = async () => {
+    if (data?.id) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/tasks/collect-articles/${data.id}`,
+          {
+            method: 'POST'
+          }
+        )
+        if (!response.ok) {
+          throw new Error('Collect article response was not ok')
+        }
+      } catch (error) {
+        console.error('Failed to delete the project:', error)
+      }
+    }
+  }
+
+  const handlePublish = async () => {
+    if (data?.id) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/v1/tasks/send-article/${data.id}`,
+          {
+            method: 'POST'
+          }
+        )
+        if (!response.ok) {
+          throw new Error('Publish article response was not ok')
+        }
+      } catch (error) {
+        console.error('Failed to delete the project:', error)
+      }
+    }
   }
 
   const handleDeleteConfirmation = async () => {
@@ -64,15 +102,29 @@ export default function ProjectAppSettings({ data }: { data?: Project }) {
           </CardContent>
         </Box>
         <Button
+          startIcon={<CollectIcon />}
+          sx={{ paddingX: 4 }}
+          onClick={handleCollectMaterials}
+        >
+          Collect
+        </Button>
+        <Button
+          startIcon={<PublishIcon />}
+          sx={{ paddingX: 4 }}
+          onClick={handlePublish}
+        >
+          Publish
+        </Button>
+        <Button
           startIcon={<EditIcon />}
-          sx={{ paddingX: 2 }}
+          sx={{ paddingX: 4 }}
           onClick={handleEditProject}
         >
           Edit
         </Button>
         <Button
           endIcon={<DeleteIcon />}
-          sx={{ paddingX: 2 }}
+          sx={{ paddingX: 4 }}
           color='error'
           onClick={handleDeleteProject}
         >
