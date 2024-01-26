@@ -1,6 +1,6 @@
 import os
 from collections.abc import AsyncGenerator
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 import pytest_asyncio
@@ -175,4 +175,25 @@ def mock_article():
         ),
         url="http://test.com",
         img_url="http://test.com/image.jpg",
+    )
+
+
+@pytest.fixture
+def mock_session():
+    return MagicMock(spec=AsyncSession)
+
+
+@pytest.fixture
+def mock_client():
+    mock = AsyncMock(spec=AsyncClient)
+    mock.post = AsyncMock()
+    mock.get = AsyncMock()
+    return mock
+
+
+@pytest.fixture
+def mock_config(config_settings):
+    return MagicMock(
+        spec=Setting,
+        settings=config_settings,
     )

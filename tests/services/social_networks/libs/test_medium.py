@@ -1,15 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from core.database import AsyncSession
-from httpx import AsyncClient
-from models.setting import Setting
 from services.social_networks.libs.medium import MediumLib
-
-
-@pytest.fixture
-def mock_session():
-    return MagicMock(spec=AsyncSession)
 
 
 @pytest.fixture
@@ -18,22 +10,6 @@ def config_settings():
         "user_id": "testuserid",
         "access_token": "testtoken",
     }
-
-
-@pytest.fixture
-def mock_client():
-    mock = AsyncMock(spec=AsyncClient)
-    mock.post = AsyncMock()
-    mock.get = AsyncMock()
-    return mock
-
-
-@pytest.fixture
-def mock_config(config_settings):
-    return MagicMock(
-        spec=Setting,
-        settings=config_settings,
-    )
 
 
 @pytest.fixture
