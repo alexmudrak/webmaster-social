@@ -1,33 +1,20 @@
 'use client'
-
 import Button from '@mui/material/Button'
 
 import { CollectArticlesButtonProps } from '../../types/articles'
+import apiRequest from '../../utils/apiRequest'
 
 export default function CollectArticlesButton({
   project_name,
   project_id
 }: CollectArticlesButtonProps) {
   const handlePostRequest = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/v1/tasks/collect-articles/${project_id}/`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({})
-        }
-      )
+    const method = 'POST'
+    const endpoint = `tasks/collect-articles/${project_id}`
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-    } catch (error) {
-      console.error('Error during POST request:', error)
-    }
+    await apiRequest(endpoint, {
+      method: method
+    })
   }
 
   return (

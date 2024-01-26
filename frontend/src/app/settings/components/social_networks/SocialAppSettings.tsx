@@ -13,7 +13,8 @@ import * as React from 'react'
 import {
   Setting,
   SocialAppSettingsProps
-} from '../types/social_network_settings'
+} from '../../../types/social_network_settings'
+import apiRequest from '../../../utils/apiRequest'
 import SocialAppModal from './SocialAppModal'
 
 export default function SocialAppSettings({
@@ -52,30 +53,18 @@ export default function SocialAppSettings({
       handlerSettingUpdate(id, updatedSettings)
     }
 
-  const sendUpdateSetting = async (id: number | null, updatedData: Setting) => {
-    const url =
-      id === null
-        ? 'http://localhost:8000/api/v1/settings/'
-        : `http://localhost:8000/api/v1/settings/${id}`
-    const method = id === null ? 'POST' : 'PATCH'
+  const sendUpdateSetting = async (
+    id: number | null,
+    updatedData: Setting
+  ) => {
+    const method = id ? 'PATCH' : 'POST'
+    const endpoint = id ? `settings/${id}` : 'settings/'
 
-    try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedData)
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
-
-      return await response.json()
-    } catch (error) {
-      console.error('Failed to update setting:', error)
-    }
+    await apiRequest(endpoint, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData)
+    })
   }
 
   return (

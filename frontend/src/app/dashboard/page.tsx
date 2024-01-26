@@ -7,6 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import { DashboardCardData, DashboardStatusesData } from '../types/dashboard'
+import apiRequest from '../utils/apiRequest'
 import ArticlesCard from './components/cards/ArticlesCard'
 import NetworksCard from './components/cards/NetworksCard'
 import ProjectsCard from './components/cards/ProjectsCard'
@@ -18,40 +19,33 @@ export default function Page() {
     null
   )
 
-  const [statusesData, setStatusesData] =
-    React.useState<DashboardStatusesData[] | null>(null)
+  const [statusesData, setStatusesData] = React.useState<
+    DashboardStatusesData[] | null
+  >(null)
 
   const isMounted = React.useRef(false)
 
   React.useEffect(() => {
     const fetchCardData = async () => {
-      try {
-        const response = await fetch(
-          'http://localhost:8000/api/v1/dashboards/cards'
-        )
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        const data = await response.json()
-        setCardData(data)
-      } catch (error) {
-        //
-      }
+      const method = 'GET'
+      const endpoint = `dashboards/cards`
+
+      const response = await apiRequest(endpoint, {
+        method: method
+      })
+      setCardData(response)
     }
+
     const fetchStatusesData = async () => {
-      try {
-        const response = await fetch(
-          'http://localhost:8000/api/v1/dashboards/statuses'
-        )
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        const data = await response.json()
-        setStatusesData(data)
-      } catch (error) {
-        //
-      }
+      const method = 'GET'
+      const endpoint = `dashboards/statuses`
+
+      const response = await apiRequest(endpoint, {
+        method: method
+      })
+      setStatusesData(response)
     }
+
     if (!isMounted.current) {
       isMounted.current = true
       fetchCardData()

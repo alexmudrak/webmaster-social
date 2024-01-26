@@ -10,32 +10,33 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
+import apiRequest from '../utils/apiRequest'
 import ArticleTableRow from './components/ArticleTableRow'
 import CollectArticlesButton from './libs/CollectArticlesButton'
 
 async function getArticles() {
-  // TODO: Set cache from .env
-  const response = await fetch('http://127.0.0.1:8000/api/v1/articles/', {
-    cache: 'no-cache'
+  const method = 'GET'
+  const endpoint = 'articles/'
+  const cache_method = process.env.NEXT_SSR_CACHE_METHOD
+
+  const response = await apiRequest(endpoint, {
+    method: method,
+    cache: cache_method
   })
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch data')
-  }
-
-  return response.json()
+  return response
 }
 async function getProjects() {
-  // TODO: Set cache from .env
-  const response = await fetch('http://127.0.0.1:8000/api/v1/projects/', {
-    cache: 'no-cache'
+  const method = 'GET'
+  const endpoint = 'projects/'
+  const cache_method = process.env.NEXT_SSR_CACHE_METHOD
+
+  const response = await apiRequest(endpoint, {
+    method: method,
+    cache: cache_method
   })
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch data')
-  }
-
-  return response.json()
+  return response
 }
 export default async function PublishedPages() {
   // TODO: Add types

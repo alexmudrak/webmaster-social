@@ -9,9 +9,10 @@ import TabPanel from '../components/TabPanel'
 import { socialNetworksList } from '../constants/SocialNetworks'
 import { Project } from '../types/project'
 import { GroupedSettings, Setting } from '../types/social_network_settings'
-import ProjectAppModal from './ProjectAppModal'
-import ProjectAppSettings from './ProjectAppSettings'
-import SocialAppSettings from './SocialAppSettings'
+import apiRequest from '../utils/apiRequest'
+import ProjectAppModal from './components/projects/ProjectAppModal'
+import ProjectAppSettings from './components/projects/ProjectAppSettings'
+import SocialAppSettings from './components/social_networks/SocialAppSettings'
 
 function a11yProps(index: number) {
   return {
@@ -31,16 +32,17 @@ export default function Settings() {
   const isMounted = React.useRef(false)
   React.useEffect(() => {
     const fetchProjects = async () => {
-      const response = await fetch('http://localhost:8000/api/v1/projects/')
-      const data: Project[] = await response.json()
-      setProjectsData(data)
-      return data
+      const endpoint = 'projects/'
+      const response = await apiRequest(endpoint, { method: 'GET' })
+      setProjectsData(response)
+      return response
     }
 
     const fetchSocialNetworks = async () => {
-      const response = await fetch('http://localhost:8000/api/v1/settings/')
-      const settings: Setting[] = await response.json()
-      return settings.reduce((acc: GroupedSettings, setting: Setting) => {
+      const endpoint = 'settings/'
+      const response = await apiRequest(endpoint, { method: 'GET' })
+
+      return response.reduce((acc: GroupedSettings, setting: Setting) => {
         const { name } = setting
         if (!acc[name]) {
           acc[name] = []

@@ -7,32 +7,21 @@ import TableRow from '@mui/material/TableRow'
 import * as React from 'react'
 
 import { socialNetworksList } from '../../constants/SocialNetworks'
+import apiRequest from '../../utils/apiRequest'
 import formatDate from '../../utils/formatDate'
 import ArticleNetworkStatusIcon from './ArticleNetworkStatusIcons'
 
 export default function ArticleTableRow({ article }) {
   // TODO: Add types
   const handleSendArticleToNetworks = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/v1/articles/task/${article.id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ articleId: article.id })
-        }
-      )
+    const method = 'POST'
+    const endpoint = `articles/task/${article.id}`
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      // Handle the response data as needed
-    } catch (error) {
-      console.error('Error during fetch:', error)
-    }
+    await apiRequest(endpoint, {
+      method: method
+    })
   }
+
   return (
     <TableRow
       key={article.id}

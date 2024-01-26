@@ -6,6 +6,7 @@ import { Tooltip } from '@mui/material'
 import * as React from 'react'
 
 import { NetworkStatusIconProps } from '../../types/articles'
+import apiRequest from '../../utils/apiRequest'
 
 export default function ArticleNetworkStatusIcon({
   article_id,
@@ -18,23 +19,13 @@ export default function ArticleNetworkStatusIcon({
   const handleMouseLeave = () => setHovered(false)
 
   const handleClick = async () => {
-    // TODO: Need to refactor. Move to separate helper component
     if (status.status !== 'DONE') {
-      try {
-        await fetch(
-          `http://localhost:8000/api/v1/articles/task/${article_id}/${name}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: status.id })
-          }
-        )
-        // Handle the successful response here
-      } catch (error) {
-        // Handle the error here
-      }
+      const method = 'POST'
+      const endpoint = `articles/task/${article_id}/${name}`
+
+      await apiRequest(endpoint, {
+        method: method
+      })
     }
   }
 

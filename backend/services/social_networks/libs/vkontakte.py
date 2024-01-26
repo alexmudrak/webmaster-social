@@ -57,7 +57,7 @@ class VkontakteLib(SocialNetworkAbstract):
 
     async def extract_url(self, json: dict, owner_id: int) -> str:
         post_id = json.get("response", {}).get("post_id")
-        url = f"https://vk.com/feed?w=wall-{abs(owner_id)}_{post_id}"
+        url = f"https://vk.com/feed?w=wall-{abs(int(owner_id))}_{post_id}"
 
         return url
 
