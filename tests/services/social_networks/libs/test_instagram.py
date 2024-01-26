@@ -15,6 +15,11 @@ def mock_session():
 
 
 @pytest.fixture
+def config_settings():
+    return {"username": "testuser", "cookies": "testcookies"}
+
+
+@pytest.fixture
 def mock_client():
     mock = AsyncMock(spec=AsyncClient)
     mock.post = AsyncMock()
@@ -23,13 +28,10 @@ def mock_client():
 
 
 @pytest.fixture
-def mock_config():
+def mock_config(config_settings):
     return MagicMock(
         spec=Setting,
-        settings={
-            "username": "testuser",
-            "cookies": "testcookies",
-        },
+        settings=config_settings,
     )
 
 
@@ -46,11 +48,6 @@ def instagram_lib(
         config=mock_config,
         article=mock_article,
     )
-
-
-@pytest.fixture
-def config_settings():
-    return {"username": "testuser", "cookies": "testcookies"}
 
 
 @pytest.mark.asyncio
