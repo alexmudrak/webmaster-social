@@ -1,13 +1,12 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from services.social_networks.libs.vkontakte import VkontakteLib as Lib
+from services.social_networks.libs.facebook import FacebookLib as Lib
 
 
 @pytest.fixture
 def config_settings():
     return {
-        "app_id": "testappid",
         "group_id": "123",
         "access_token": "testtoken",
     }
@@ -45,7 +44,7 @@ async def test_config_validation(social_lib, config_settings):
 async def test_get_config(social_lib):
     config = await social_lib.get_config()
 
-    assert config["owner_id"] == "123"
+    assert config["page_id"] == "123"
     assert config["access_token"] == "testtoken"
 
 
@@ -77,18 +76,11 @@ async def test_prepare_post(social_lib):
 
 @pytest.mark.asyncio
 async def test_extract_url_from_public(social_lib, config_settings):
-    expected_url = (
-        f"https://vk.com/feed?w=wall-{config_settings['group_id']}_123456"
-    )
-    json_data = {
-        "response": {
-            "post_id": "123456",
-        }
-    }
+    expected_url = "https://facebook-permalink/"
+    json_data = {"permalink_url": expected_url}
 
     result_url = await social_lib.extract_url(
         json=json_data,
-        owner_id=config_settings["group_id"],
     )
 
     assert result_url == expected_url
@@ -96,9 +88,7 @@ async def test_extract_url_from_public(social_lib, config_settings):
 
 @pytest.mark.asyncio
 async def test_post_successful(social_lib, config_settings):
-    expected_url = (
-        f"https://vk.com/feed?w=wall-{config_settings['group_id']}_123456"
-    )
+    expected_url = "https://facebook-permalink/"
 
     with patch.object(
         social_lib.client,
@@ -108,9 +98,7 @@ async def test_post_successful(social_lib, config_settings):
         mock_response = AsyncMock()
         mock_response.json = MagicMock(
             return_value={
-                "response": {
-                    "post_id": "123456",
-                },
+                "permalink_url": expected_url,
             }
         )
         mock_response.status_code = 200
