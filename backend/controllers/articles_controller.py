@@ -1,7 +1,7 @@
 from controllers.social_networks_controller import SocialNetworksController
 from core.logger import get_logger
-from repositories.articles_repository import ArticlesReposotiry
-from repositories.settings_repository import SettingsReposotiry
+from repositories.articles_repository import ArticlesRepository
+from repositories.settings_repository import SettingsRepository
 from schemas.articles_schema import ArticleRead
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -14,7 +14,7 @@ class ArticlesController:
 
     async def get_all_objects(self) -> list[ArticleRead]:
         async with self.db_manager as session:
-            logs = await ArticlesReposotiry(session).retrieve_all_articles()
+            logs = await ArticlesRepository(session).retrieve_all_articles()
 
         return logs
 
@@ -23,10 +23,10 @@ class ArticlesController:
         article_id: int,
     ):
         async with self.db_manager as session:
-            article = await ArticlesReposotiry(session).retrieve_article_by_id(
+            article = await ArticlesRepository(session).retrieve_article_by_id(
                 article_id
             )
-            networks_config = await SettingsReposotiry(
+            networks_config = await SettingsRepository(
                 session
             ).retrieve_settings_by_project_id(article.project.id)
 
@@ -40,10 +40,10 @@ class ArticlesController:
         network_name: str,
     ):
         async with self.db_manager as session:
-            article = await ArticlesReposotiry(session).retrieve_article_by_id(
+            article = await ArticlesRepository(session).retrieve_article_by_id(
                 article_id
             )
-            network_config = await SettingsReposotiry(
+            network_config = await SettingsRepository(
                 session
             ).retrieve_setting_by_project_id_and_network_name(
                 article.project.id, network_name

@@ -3,7 +3,7 @@ from schemas.articles_schema import ArticleNetworkStatus, ArticleRead
 from sqlmodel import desc, select
 
 
-class ArticlesReposotiry:
+class ArticlesRepository:
     def __init__(self, session):
         self.session = session
 

@@ -2,7 +2,7 @@ from models.setting import Setting
 from sqlmodel import select
 
 
-class SettingsReposotiry:
+class SettingsRepository:
     def __init__(self, session):
         self.session = session
 
