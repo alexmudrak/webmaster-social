@@ -75,7 +75,7 @@ async def test_prepare_post(social_lib):
 
 
 @pytest.mark.asyncio
-async def test_extract_url_from_public(social_lib, config_settings):
+async def test_extract_url_from_public(social_lib):
     expected_url = "https://facebook-permalink/"
     json_data = {"permalink_url": expected_url}
 
@@ -87,7 +87,7 @@ async def test_extract_url_from_public(social_lib, config_settings):
 
 
 @pytest.mark.asyncio
-async def test_post_successful(social_lib, config_settings):
+async def test_post_successful(social_lib):
     expected_url = "https://facebook-permalink/"
 
     with patch.object(
