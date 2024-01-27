@@ -11,7 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 @pytest.fixture
-async def async_session():
+async def mock_async_session():
     session = AsyncMock(spec=AsyncSession)
     yield session
 
@@ -33,7 +33,7 @@ def publish_article_status():
 
 @pytest.mark.asyncio
 async def test_run_task_send_article_to_networks(
-    async_session, article, setting
+    mock_async_session, article, setting
 ):
     with patch(
         "controllers.social_networks_controller.get_request_client"
@@ -50,7 +50,7 @@ async def test_run_task_send_article_to_networks(
             AsyncMock(spec=AsyncClient)
         )
 
-        controller = SocialNetworksController(async_session)
+        controller = SocialNetworksController(mock_async_session)
         await controller.run_task_send_article_to_networks(article, [setting])
 
         mock_get_request_client.assert_called_once()
@@ -61,7 +61,7 @@ async def test_run_task_send_article_to_networks(
 
 @pytest.mark.asyncio
 async def test_run_task_send_article_to_network(
-    async_session, article, setting
+    mock_async_session, article, setting
 ):
     with patch(
         "controllers.social_networks_controller.get_request_client"
@@ -78,7 +78,7 @@ async def test_run_task_send_article_to_network(
             AsyncMock(spec=AsyncClient)
         )
 
-        controller = SocialNetworksController(async_session)
+        controller = SocialNetworksController(mock_async_session)
         await controller.run_task_send_article_to_network(article, setting)
 
         mock_get_request_client.assert_called_once()
