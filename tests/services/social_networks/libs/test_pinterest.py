@@ -1,16 +1,14 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from services.social_networks.libs.twitter import TwitterLib as Lib
+from services.social_networks.libs.pinterest import PinterestLib as Lib
 
 
 @pytest.fixture
 def config_settings():
     return {
-        "client_id": "testclientid",
-        "client_secret": "testclientsecret",
-        "refresh_token": "testtoken",
-        "redirect_uri": "testredirecturi",
+        "board_id": "testboardid",
+        "cookies": {"csrftoken": "testtoken"},
     }
 
 
@@ -45,28 +43,8 @@ async def test_config_validation(social_lib, config_settings):
 @pytest.mark.asyncio
 async def test_get_config(social_lib):
     config = await social_lib.get_config()
-    assert config["client_id"] == "testclientid"
-    assert config["refresh_token"] == "testtoken"
-
-
-@pytest.mark.asyncio
-async def test_get_updated_token_success(social_lib, config_settings):
-    new_token = {
-        "refresh_token": "new_refresh_token",
-        "access_token": "new_access_token",
-    }
-    client_mock = AsyncMock()
-    client_mock.refresh_token = MagicMock(return_value=new_token)
-    session_mock = MagicMock()
-
-    social_lib.session = session_mock
-
-    result = await social_lib.get_updated_token(client_mock, config_settings)
-
-    assert result == new_token
-    assert config_settings["refresh_token"] == new_token["refresh_token"]
-    assert social_lib.config.settings == config_settings
-    session_mock.add.assert_called_with(social_lib.config)
+    assert config["board_id"] == "testboardid"
+    assert config["cookies"] == {"csrftoken": "testtoken"}
 
 
 @pytest.mark.asyncio
@@ -82,16 +60,20 @@ async def test_get_config_invalid_format(social_lib):
 @pytest.mark.asyncio
 async def test_prepare_post(social_lib):
     expected_message = (
-        f"{social_lib.article.title}\n\n" f"{social_lib.article.url}"
+        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. "
+        "Aeneancommodo ligula eget dolor. Aenean massa. Cum sociis "
+        "natoquepenatibus et magnis dis parturient montes, nascetur "
+        "ridiculus. Donec quam..."
     )
     post = await social_lib.prepare_post()
+
     assert post["message"] == expected_message
 
 
 @pytest.mark.asyncio
 async def test_extract_url(social_lib):
-    expected_url = "https://twitter.com/crawler_post/status/123456"
-    json_data = {"data": {"id": "123456"}}
+    expected_url = "https://ru.pinterest.com/pin/123456/"
+    json_data = {"resource_response": {"data": {"id": "123456"}}}
 
     result_url = await social_lib.extract_url(json=json_data)
 
@@ -100,15 +82,9 @@ async def test_extract_url(social_lib):
 
 @pytest.mark.asyncio
 async def test_post_successful(social_lib):
-    expected_url = "https://twitter.com/crawler_post/status/123456"
+    expected_url = "https://ru.pinterest.com/pin/123456/"
 
     with patch.object(
-        social_lib,
-        "get_updated_token",
-        return_value=MagicMock(
-            return_value={"access_token": 123},
-        ),
-    ), patch.object(
         social_lib.client,
         "post",
         new=AsyncMock(),
@@ -116,10 +92,10 @@ async def test_post_successful(social_lib):
         mock_response = AsyncMock()
         mock_response.json = MagicMock(
             return_value={
-                "data": {"id": "123456"},
+                "resource_response": {"data": {"id": "123456"}},
             }
         )
-        mock_response.status_code = 201
+        mock_response.status_code = 200
         mock_post.return_value = mock_response
 
         url = await social_lib.post()
