@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from services.social_networks.libs.reddit import RedditLib
+from services.social_networks.libs.reddit import RedditLib as Lib
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def social_lib(
     mock_config,
     mock_article,
 ):
-    return RedditLib(
+    return Lib(
         session=mock_session,
         client=mock_client,
         config=mock_config,

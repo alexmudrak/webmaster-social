@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from PIL import Image
-from services.social_networks.libs.instagram import InstagramLib
+from services.social_networks.libs.instagram import InstagramLib as Lib
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def instagram_lib(
     mock_config,
     mock_article,
 ):
-    return InstagramLib(
+    return Lib(
         session=mock_session,
         client=mock_client,
         config=mock_config,
@@ -238,25 +238,25 @@ async def test_extract_url(instagram_lib):
 @pytest.mark.asyncio
 async def test_post_success(instagram_lib):
     with patch.object(
-        InstagramLib, "config_validation", new=AsyncMock()
+        Lib, "config_validation", new=AsyncMock()
     ) as mock_config_validation, patch.object(
-        InstagramLib, "get_config", new=AsyncMock(return_value="config")
+        Lib, "get_config", new=AsyncMock(return_value="config")
     ) as mock_get_config, patch.object(
-        InstagramLib, "prepare_post", new=AsyncMock(return_value="post")
+        Lib, "prepare_post", new=AsyncMock(return_value="post")
     ) as mock_prepare_post, patch.object(
-        InstagramLib, "prepare_image", new=AsyncMock(return_value="image")
+        Lib, "prepare_image", new=AsyncMock(return_value="image")
     ) as mock_prepare_image, patch.object(
-        InstagramLib,
+        Lib,
         "prepare_login_data",
         new=AsyncMock(return_value="login_data"),
     ) as mock_prepare_login_data, patch.object(
-        InstagramLib, "get_cookies", new=AsyncMock(return_value="cookies")
+        Lib, "get_cookies", new=AsyncMock(return_value="cookies")
     ) as mock_get_cookies, patch.object(
-        InstagramLib, "upload_image", new=AsyncMock()
+        Lib, "upload_image", new=AsyncMock()
     ) as mock_upload_image, patch.object(
-        InstagramLib, "publish_post", new=AsyncMock()
+        Lib, "publish_post", new=AsyncMock()
     ) as mock_publish_post, patch.object(
-        InstagramLib, "extract_url", new=AsyncMock(return_value="url")
+        Lib, "extract_url", new=AsyncMock(return_value="url")
     ) as mock_extract_url, patch(
         "asyncio.sleep", new=AsyncMock()
     ) as mock_sleep:
