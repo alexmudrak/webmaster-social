@@ -60,11 +60,13 @@ async def test_send_message(
         article_url="",
         message="",
         publish_statuses={
-            "network1": MagicMock(spec=PublishArticleStatus, status="DONE"),
-            "network2": MagicMock(spec=PublishArticleStatus, status="FAIL"),
+            "network1": AsyncMock(spec=PublishArticleStatus, status="DONE"),
+            "network2": AsyncMock(spec=PublishArticleStatus, status="FAIL"),
         },
     )
+
     prepared_data = await notification_sender.prepare_message(data)
+
 
     await notification_sender.send_message(prepared_data)
 
