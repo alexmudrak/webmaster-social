@@ -232,7 +232,10 @@ async def test_get_setting_by_name_none():
     mock_setting.name = "TestNetwork"
     settings = [mock_setting]
 
-    result = await controller.get_setting_by_name(settings, None)
+    result = await controller.get_setting_by_name(
+        settings,
+        None,
+    )
     assert result is None
 
 
@@ -244,7 +247,10 @@ async def test_get_setting_by_name_exists():
     mock_setting.name = "TestNetwork"
     settings = [mock_setting]
 
-    result = await controller.get_setting_by_name(settings, "TestNetwork")
+    result = await controller.get_setting_by_name(
+        settings,
+        "TestNetwork",
+    )
     assert result == mock_setting
 
 
@@ -256,7 +262,10 @@ async def test_get_setting_by_name_not_exists():
     mock_setting.name = "TestNetwork"
     settings = [mock_setting]
 
-    result = await controller.get_setting_by_name(settings, "OtherNetwork")
+    result = await controller.get_setting_by_name(
+        settings,
+        "OtherNetwork",
+    )
     assert result is None
 
 
@@ -265,13 +274,22 @@ def test_get_done_status():
     controller = SocialNetworksController(session=mock_session)
     mock_article = MagicMock(spec=Article)
     mock_published_done = MagicMock(
-        spec=PublishArticleStatus, status="DONE", try_count=1, setting_id=1
+        spec=PublishArticleStatus,
+        status="DONE",
+        try_count=1,
+        setting_id=1,
     )
     mock_published_error = MagicMock(
-        spec=PublishArticleStatus, status="ERROR", try_count=3, setting_id=2
+        spec=PublishArticleStatus,
+        status="ERROR",
+        try_count=3,
+        setting_id=2,
     )
     mock_published_retry = MagicMock(
-        spec=PublishArticleStatus, status="ERROR", try_count=2, setting_id=3
+        spec=PublishArticleStatus,
+        status="ERROR",
+        try_count=2,
+        setting_id=3,
     )
     mock_article.published = [
         mock_published_done,
