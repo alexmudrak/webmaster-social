@@ -67,7 +67,7 @@ async def test_send_message(
 
     prepared_data = await notification_sender.prepare_message(data)
 
-
+    notification_sender.senders = [TelegramBotSender("1", "2")]
     await notification_sender.send_message(prepared_data)
 
     mock_telegram_bot_send.assert_awaited_with(prepared_data)
