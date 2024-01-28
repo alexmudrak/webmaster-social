@@ -1,10 +1,10 @@
 from core.logger import get_logger
-from repositories.articles_repository import ArticlesReposotiry
+from repositories.articles_repository import ArticlesRepository
 from repositories.articles_statuses_repository import (
-    ArticlesStatusesReposotiry,
+    ArticlesStatusesRepository,
 )
-from repositories.projects_repository import ProjectsReposotiry
-from repositories.settings_repository import SettingsReposotiry
+from repositories.projects_repository import ProjectsRepository
+from repositories.settings_repository import SettingsRepository
 from schemas.dashboard_schema import (
     ArticleCard,
     DashboardCardData,
@@ -24,7 +24,7 @@ class DashboardController:
 
     async def get_cards_data(self) -> DashboardCardData:
         async with self.db_manager as session:
-            articles = await ArticlesReposotiry(
+            articles = await ArticlesRepository(
                 session
             ).retrieve_all_articles()
 
@@ -42,11 +42,11 @@ class DashboardController:
                 )
             )
 
-            projects = await ProjectsReposotiry(
+            projects = await ProjectsRepository(
                 session
             ).retrieve_all_project_objects()
 
-            settings = await SettingsReposotiry(
+            settings = await SettingsRepository(
                 session
             ).retrieve_unique_settings()
 
@@ -62,10 +62,10 @@ class DashboardController:
 
     async def get_statuses_data(self) -> list[DashboardStatusesData]:
         async with self.db_manager as session:
-            published_articles_id = await ArticlesStatusesReposotiry(
+            published_articles_id = await ArticlesStatusesRepository(
                 session
             ).retrieve_last_5_id_articles_statuses()
-            articles = await ArticlesReposotiry(
+            articles = await ArticlesRepository(
                 session
             ).retrieve_article_by_list_id(published_articles_id)
 

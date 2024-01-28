@@ -2,7 +2,7 @@ from models.log_entry import LogEntry
 from sqlmodel import desc, select
 
 
-class LogsReposotiry:
+class LogsRepository:
     def __init__(self, session):
         self.session = session
 

@@ -2,7 +2,7 @@ from models.publish_article_status import PublishArticleStatus
 from sqlmodel import desc, select
 
 
-class ArticlesStatusesReposotiry:
+class ArticlesStatusesRepository:
     def __init__(self, session):
         self.session = session
 

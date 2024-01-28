@@ -3,7 +3,7 @@ from schemas.project_schema import ProjectRead
 from sqlmodel import desc, select
 
 
-class ProjectsReposotiry:
+class ProjectsRepository:
     def __init__(self, session):
         self.session = session
 
