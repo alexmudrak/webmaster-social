@@ -8,14 +8,6 @@ from services.notification.senders.telegram_bot_sender import TelegramBotSender
 
 
 @pytest.fixture
-def settings_with_telegram():
-    with patch("core.settings.Settings") as mock_settings:
-        mock_settings.TELEGRAM_ADMIN_ID = "admin_id"
-        mock_settings.TELEGRAM_BOT_TOKEN = "token"
-        yield mock_settings
-
-
-@pytest.fixture
 def mock_telegram_bot_send():
     with patch.object(
         TelegramBotSender, "send", new_callable=AsyncMock
@@ -24,9 +16,16 @@ def mock_telegram_bot_send():
 
 
 @pytest.fixture
-def notification_sender(settings_with_telegram, mock_telegram_bot_send):
-    _ = settings_with_telegram, mock_telegram_bot_send
-    return NotificationSender()
+def notification_sender(mock_telegram_bot_send):
+    _ = mock_telegram_bot_send
+    with patch(
+        "services.notification.notification_service.Settings"
+    ) as mock_settings:
+        mock_variables = MagicMock()
+        mock_variables.TELEGRAM_ADMIN_ID = "admin_id"
+        mock_variables.TELEGRAM_BOT_TOKEN = "token"
+        mock_settings.return_value = mock_variables
+        yield NotificationSender()
 
 
 @pytest.mark.asyncio
@@ -66,7 +65,6 @@ async def test_send_message(
     )
 
     prepared_data = await notification_sender.prepare_message(data)
-
 
     await notification_sender.send_message(prepared_data)
 
