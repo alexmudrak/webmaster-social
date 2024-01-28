@@ -180,7 +180,7 @@ def mock_article():
 
 @pytest.fixture
 def mock_session():
-    return MagicMock(spec=AsyncSession)
+    return AsyncMock(spec=AsyncSession)
 
 
 @pytest.fixture

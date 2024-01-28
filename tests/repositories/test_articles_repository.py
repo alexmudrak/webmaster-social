@@ -15,7 +15,7 @@ def mock_async_session():
 
 
 @pytest.mark.asyncio
-async def test_retrieve_all_articles(mock_session):
+async def test_retrieve_all_articles(mock_async_session):
     mock_articles = [
         Article(
             id=i,
@@ -35,9 +35,9 @@ async def test_retrieve_all_articles(mock_session):
 
     mock_exec = MagicMock()
     mock_exec.unique.return_value.all.return_value = mock_articles
-    mock_session.exec.return_value = mock_exec
+    mock_async_session.exec.return_value = mock_exec
 
-    articles_repo = ArticlesRepository(session=mock_session)
+    articles_repo = ArticlesRepository(session=mock_async_session)
     result = await articles_repo.retrieve_all_articles()
 
     assert len(result) == len(mock_articles)
@@ -47,7 +47,7 @@ async def test_retrieve_all_articles(mock_session):
 
 
 @pytest.mark.asyncio
-async def test_retrieve_article_by_id(mock_session):
+async def test_retrieve_article_by_id(mock_async_session):
     article_id = 1
     mock_article = MagicMock(
         spec=Article,
@@ -60,9 +60,9 @@ async def test_retrieve_article_by_id(mock_session):
 
     mock_exec = MagicMock()
     mock_exec.unique.return_value.first.return_value = mock_article
-    mock_session.exec.return_value = mock_exec
+    mock_async_session.exec.return_value = mock_exec
 
-    articles_repo = ArticlesRepository(session=mock_session)
+    articles_repo = ArticlesRepository(session=mock_async_session)
     result = await articles_repo.retrieve_article_by_id(article_id=article_id)
 
     assert isinstance(result, Article)
@@ -70,7 +70,7 @@ async def test_retrieve_article_by_id(mock_session):
 
 
 @pytest.mark.asyncio
-async def test_retrieve_article_by_list_id(mock_session):
+async def test_retrieve_article_by_list_id(mock_async_session):
     article_ids = [1, 2, 3]
     mock_articles = [
         Article(
@@ -91,9 +91,9 @@ async def test_retrieve_article_by_list_id(mock_session):
 
     mock_exec = MagicMock()
     mock_exec.unique.return_value.all.return_value = mock_articles
-    mock_session.exec.return_value = mock_exec
+    mock_async_session.exec.return_value = mock_exec
 
-    articles_repo = ArticlesRepository(session=mock_session)
+    articles_repo = ArticlesRepository(session=mock_async_session)
     result = await articles_repo.retrieve_article_by_list_id(
         articles_id=article_ids
     )
