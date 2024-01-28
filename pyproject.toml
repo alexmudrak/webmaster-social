@@ -37,7 +37,7 @@ coverage-report-html = "pytest --cov=backend --cov-report=html tests/"
 dev = [
     "pytest>=7.4.3",
     "pytest-cov>=4.1.0",
-    "pytest-asyncio>=0.23.2",
+    "pytest-asyncio==0.23.4a2",
 ]
 
 [tool.pyright]
