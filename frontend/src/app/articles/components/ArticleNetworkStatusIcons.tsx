@@ -6,7 +6,7 @@ import { Tooltip } from '@mui/material'
 import * as React from 'react'
 
 import { NetworkStatusIconProps } from '../../types/articles'
-import apiRequest from '../../utils/apiRequest'
+import { apiRequest } from '../../utils/apiRequest'
 
 export default function ArticleNetworkStatusIcon({
   article_id,

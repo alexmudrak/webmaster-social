@@ -14,7 +14,7 @@ import {
   Setting,
   SocialAppSettingsProps
 } from '../../../types/social_network_settings'
-import apiRequest from '../../../utils/apiRequest'
+import { apiRequest } from '../../../utils/apiRequest'
 import SocialAppModal from './SocialAppModal'
 
 export default function SocialAppSettings({

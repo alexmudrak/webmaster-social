@@ -15,7 +15,7 @@ import * as React from 'react'
 
 import { modalStyle } from '../../../styles/modalStyle'
 import { Project, ProjectModalProps } from '../../../types/project'
-import apiRequest from '../../../utils/apiRequest'
+import { apiRequest } from '../../../utils/apiRequest'
 
 const defaultProjectData: Project = {
   name: '',

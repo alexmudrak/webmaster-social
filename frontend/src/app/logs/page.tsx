@@ -19,7 +19,7 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
-import apiRequest from '../utils/apiRequest'
+import { apiRequest } from '../utils/apiRequest'
 import formatDate from '../utils/formatDate'
 
 // TODO: Need to Refactor

@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow'
 import * as React from 'react'
 
 import { socialNetworksList } from '../../constants/SocialNetworks'
-import apiRequest from '../../utils/apiRequest'
+import { apiRequest } from '../../utils/apiRequest'
 import formatDate from '../../utils/formatDate'
 import ArticleNetworkStatusIcon from './ArticleNetworkStatusIcons'
 
