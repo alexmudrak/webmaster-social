@@ -152,7 +152,7 @@ class SocialNetworksController:
                 )
 
                 publish_status.status = "DONE"
-                publish_status.publish_article_link = url
+                publish_status.url = url
             except Exception as error:
                 publish_status.status = "ERROR"
                 publish_status.status_text = str(error)
