@@ -4,7 +4,7 @@ import pytest
 from controllers.social_networks_controller import SocialNetworksController
 from httpx import AsyncClient
 from models.article import Article
-from models.publish_article_status import PublishArticleStatus
+from models.article_status import ArticleStatus
 from models.setting import Setting
 from services.notification.notification_service import NotificationSender
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -28,7 +28,7 @@ def setting():
 
 @pytest.fixture
 def publish_article_status():
-    return MagicMock(spec=PublishArticleStatus)
+    return MagicMock(spec=ArticleStatus)
 
 
 @pytest.mark.asyncio
@@ -274,19 +274,19 @@ def test_get_done_status():
     controller = SocialNetworksController(session=mock_session)
     mock_article = MagicMock(spec=Article)
     mock_published_done = MagicMock(
-        spec=PublishArticleStatus,
+        spec=ArticleStatus,
         status="DONE",
         try_count=1,
         setting_id=1,
     )
     mock_published_error = MagicMock(
-        spec=PublishArticleStatus,
+        spec=ArticleStatus,
         status="ERROR",
         try_count=3,
         setting_id=2,
     )
     mock_published_retry = MagicMock(
-        spec=PublishArticleStatus,
+        spec=ArticleStatus,
         status="ERROR",
         try_count=2,
         setting_id=3,

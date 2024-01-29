@@ -5,7 +5,7 @@ from core.database import get_or_create, get_session_context
 from core.logger import get_logger
 from httpx import AsyncClient
 from models.article import Article
-from models.publish_article_status import PublishArticleStatus
+from models.article_status import ArticleStatus
 from models.setting import Setting
 from services.notification.notification_service import (
     NotificationData,
@@ -61,20 +61,20 @@ class SocialNetworksController:
         query = (
             select(Article)
             .where(Article.project_id == project_id)
-            .outerjoin(PublishArticleStatus)
+            .outerjoin(ArticleStatus)
             .group_by(text("Article.id"))
             .having(
                 or_(
-                    func.count(PublishArticleStatus.id) is None,
-                    func.count(distinct(PublishArticleStatus.setting_id))
+                    func.count(ArticleStatus.id) is None,
+                    func.count(distinct(ArticleStatus.setting_id))
                     < networks_count,
                     and_(
-                        func.count(distinct(PublishArticleStatus.setting_id))
+                        func.count(distinct(ArticleStatus.setting_id))
                         >= networks_count,
                         # TODO: Perhaps get this value max `try_count` from
                         # project config for network
-                        func.every(PublishArticleStatus.try_count < 3),
-                        func.bool_or(PublishArticleStatus.status == "ERROR"),
+                        func.every(ArticleStatus.try_count < 3),
+                        func.bool_or(ArticleStatus.status == "ERROR"),
                     ),
                 )
             )
@@ -84,12 +84,10 @@ class SocialNetworksController:
             query = (
                 select(Article)
                 .where(Article.project_id == project_id)
-                .outerjoin(PublishArticleStatus)
+                .outerjoin(ArticleStatus)
                 .group_by(text("Article.id"))
                 .having(
-                    func.count(
-                        PublishArticleStatus.setting_id == setting_exists.id
-                    )
+                    func.count(ArticleStatus.setting_id == setting_exists.id)
                     == 0
                 )
             )
@@ -113,7 +111,7 @@ class SocialNetworksController:
         client: AsyncClient,
         network_config: Setting,
         article: Article,
-    ) -> tuple[str, PublishArticleStatus]:
+    ) -> tuple[str, ArticleStatus]:
         # Need to check status for network config
         # Active or not Active
         logger.info(
@@ -123,7 +121,7 @@ class SocialNetworksController:
         async with get_session_context() as session:
             publish_status = await get_or_create(
                 session,
-                PublishArticleStatus,
+                ArticleStatus,
                 article_id=article.id,
                 setting_id=network_config.id,
             )
@@ -219,7 +217,7 @@ class SocialNetworksController:
         return tasks
 
     async def send_notification(
-        self, article: Article, results: dict[str, PublishArticleStatus]
+        self, article: Article, results: dict[str, ArticleStatus]
     ):
         result_data = NotificationData(
             project_name=article.project.name,
