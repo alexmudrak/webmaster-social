@@ -5,8 +5,8 @@ from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from models.article_status import ArticleStatus
     from models.project import Project
-    from models.publish_article_status import PublishArticleStatus
 
 
 class ArticleBase(SQLModel):
@@ -25,7 +25,7 @@ class Article(ArticleBase, BaseTimestampMixin, table=True):
         back_populates="articles",
         sa_relationship_kwargs={"lazy": "joined"},
     )
-    published: List["PublishArticleStatus"] = Relationship(
+    published: List["ArticleStatus"] = Relationship(
         back_populates="article",
         sa_relationship_kwargs={"lazy": "joined"},
     )

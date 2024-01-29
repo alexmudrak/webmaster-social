@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from models.publish_article_status import PublishArticleStatus
+from models.article_status import ArticleStatus
 from services.notification.notification_data import NotificationData
 from services.notification.senders.telegram_bot_sender import TelegramBotSender
 
@@ -29,8 +29,8 @@ async def test_telegram_bot_sender_send(mock_request_client):
         done_status_count=1,
         fail_status_count=0,
         publish_statuses={
-            "network1": MagicMock(spec=PublishArticleStatus, status="DONE"),
-            "network2": MagicMock(spec=PublishArticleStatus, status="FAIL"),
+            "network1": MagicMock(spec=ArticleStatus, status="DONE"),
+            "network2": MagicMock(spec=ArticleStatus, status="FAIL"),
         },
     )
 

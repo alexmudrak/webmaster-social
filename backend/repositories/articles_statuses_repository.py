@@ -1,4 +1,4 @@
-from models.publish_article_status import PublishArticleStatus
+from models.article_status import ArticleStatus
 from sqlmodel import desc, select
 
 
@@ -9,8 +9,8 @@ class ArticlesStatusesRepository:
     async def retrieve_last_5_id_articles_statuses(
         self,
     ) -> list[int]:
-        query = select(PublishArticleStatus.article_id).order_by(
-            desc(PublishArticleStatus.created)
+        query = select(ArticleStatus.article_id).order_by(
+            desc(ArticleStatus.created)
         )
         result = await self.session.exec(query)
         objects = result.unique().all()

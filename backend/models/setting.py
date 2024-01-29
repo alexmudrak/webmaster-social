@@ -5,8 +5,8 @@ from sqlalchemy import Column, UniqueConstraint
 from sqlmodel import JSON, Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from models.article_status import ArticleStatus
     from models.project import Project
-    from models.publish_article_status import PublishArticleStatus
 
 
 class SettingBase(SQLModel):
@@ -26,7 +26,7 @@ class Setting(SettingBase, BaseTimestampMixin, table=True):
         back_populates="networks_setting",
         sa_relationship_kwargs={"lazy": "joined"},
     )
-    published: Optional["PublishArticleStatus"] = Relationship(
+    published: Optional["ArticleStatus"] = Relationship(
         back_populates="networks_setting",
         sa_relationship_kwargs={"lazy": "joined"},
     )
