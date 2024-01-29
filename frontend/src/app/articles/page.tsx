@@ -52,7 +52,7 @@ export default async function PublishedPages() {
           alignItems: 'center'
         }}
       >
-        <Typography variant='h4'>Published pages</Typography>
+        <Typography variant='h4'>Collected Articles</Typography>
         {projects.map((project) => (
           <CollectArticlesButton
             key={project.id}

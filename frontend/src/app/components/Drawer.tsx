@@ -48,11 +48,11 @@ export default function AppDrawer() {
           </ListItemButton>
         </ListItem>
         <ListItem key='publishedPages' disablePadding>
-          <ListItemButton component='a' href='/published-pages'>
+          <ListItemButton component='a' href='/articles'>
             <ListItemIcon>
               <LayersIcon />
             </ListItemIcon>
-            <ListItemText primary='Published pages' />
+            <ListItemText primary='Collected articles' />
           </ListItemButton>
         </ListItem>
       </List>
