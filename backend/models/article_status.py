@@ -8,22 +8,17 @@ if TYPE_CHECKING:
     from models.article import Article
     from models.setting import Setting
 
-# TODO: Rename to `articles_status`
 
-
-class PublishArticleStatusBase(SQLModel):
-    # TODO: Rename `publish_article_link` to `url`
+class ArticleStatusBase(SQLModel):
     article_id: int = Field(nullable=False, foreign_key="article.id")
     setting_id: int = Field(nullable=False, foreign_key="setting.id")
     status: str = Field(nullable=False, default="PENDING")
     status_text: Optional[str] = Field(nullable=True, default=None)
     try_count: int = Field(nullable=False, default=0)
-    publish_article_link: Optional[str] = Field(nullable=True, default=None)
+    url: Optional[str] = Field(nullable=True, default=None)
 
 
-class PublishArticleStatus(
-    PublishArticleStatusBase, BaseTimestampMixin, table=True
-):
+class ArticleStatus(ArticleStatusBase, BaseTimestampMixin, table=True):
     # type: ignore
     article: "Article" = Relationship(
         back_populates="published",
@@ -34,7 +29,7 @@ class PublishArticleStatus(
         sa_relationship_kwargs={"lazy": "joined"},
     )
 
-    __tablename__ = "publish_article_status"
+    __tablename__ = "article_status"
     __table_args__ = (
         UniqueConstraint(
             "article_id", "setting_id", name="unique_article_setting"
