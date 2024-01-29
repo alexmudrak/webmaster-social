@@ -8,7 +8,11 @@ import * as React from 'react'
 import TabPanel from '../components/TabPanel'
 import { socialNetworksList } from '../constants/SocialNetworks'
 import { Project } from '../types/project'
-import { GroupedSettings, Setting } from '../types/social_network_settings'
+import {
+  GroupedSettings,
+  Setting,
+  SocialAppTitleKey
+} from '../types/social_network_settings'
 import { apiRequest } from '../utils/apiRequest'
 import ProjectAppModal from './components/projects/ProjectAppModal'
 import ProjectAppSettings from './components/projects/ProjectAppSettings'
@@ -159,9 +163,16 @@ export default function Settings() {
         <Divider sx={{ my: 1.5 }} />
 
         <Grid container spacing={2}>
-          {Object.entries(socialNetworksData).map(([title, settingsList]) => (
-            <SocialAppSettings key={title} title={title} data={settingsList} />
-          ))}
+          {Object.entries(socialNetworksData).map(([key, settingsList]) => {
+            const title = key as SocialAppTitleKey
+            return (
+              <SocialAppSettings
+                key={title}
+                title={title}
+                data={settingsList}
+              />
+            )
+          })}
         </Grid>
       </TabPanel>
     </>

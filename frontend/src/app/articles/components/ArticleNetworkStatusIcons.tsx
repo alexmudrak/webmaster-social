@@ -43,19 +43,17 @@ export default function ArticleNetworkStatusIcon({
       )
   }
 
-  let tooltipContent = `#${status.id} - ${name}`
-  if (status.status === 'DONE') {
-    tooltipContent = (
-      <React.Fragment>
-        {tooltipContent} -{' '}
+  const tooltipContent: string | React.ReactNode =
+    status.status === 'DONE' ? (
+      <>
+        #{status.id} - {name} -{' '}
         <a href={status.url} target='_blank' rel='noopener noreferrer'>
           {status.url}
         </a>
-      </React.Fragment>
+      </>
+    ) : (
+      `#${status.id} - ${name} - ${status.status_text}`
     )
-  } else {
-    tooltipContent = `${tooltipContent} - ${status.status_text}`
-  }
 
   return (
     <Tooltip title={tooltipContent} placement='top'>

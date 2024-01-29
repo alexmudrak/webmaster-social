@@ -10,6 +10,8 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
+import { ArticlePageResponse } from '../types/articles'
+import { Project } from '../types/project'
 import { apiRenderRequest } from '../utils/apiRequest'
 import ArticleTableRow from './components/ArticleTableRow'
 import CollectArticlesButton from './libs/CollectArticlesButton'
@@ -40,8 +42,8 @@ async function getProjects() {
 }
 export default async function PublishedPages() {
   // TODO: Add types
-  const articles = await getArticles()
-  const projects = await getProjects()
+  const articles: ArticlePageResponse[] = await getArticles()
+  const projects: Project[] = await getProjects()
 
   return (
     <Container maxWidth='xl' sx={{ marginTop: 2 }}>

@@ -27,7 +27,7 @@ export default function SocialAppSettings({
   const handleSocialAppModalOpen = () => setOpenSocialAppModal(true)
   const handleSocialAppModalClose = () => setOpenSocialAppModal(false)
 
-  const handlerSettingUpdate = async (id: number | null, setting: Setting) => {
+  const handlerSettingUpdate = async (id: number | null, setting: Setting | null) => {
     setSettings((prevSettings) =>
       prevSettings.map((item) =>
         item.id === id ? { ...item, ...setting } : item
@@ -38,7 +38,7 @@ export default function SocialAppSettings({
   }
 
   const handleSettingActiveChange =
-    (id: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
+    (id: number | null) => async (event: React.ChangeEvent<HTMLInputElement>) => {
       const newActiveState = event.target.checked
       const updatedItem = settings.find((item) => item.id === id)
       if (!updatedItem) {
@@ -55,7 +55,7 @@ export default function SocialAppSettings({
 
   const sendUpdateSetting = async (
     id: number | null,
-    updatedData: Setting
+    updatedData: Setting | null
   ) => {
     const method = id ? 'PATCH' : 'POST'
     const endpoint = id ? `settings/${id}` : 'settings/'

@@ -31,19 +31,19 @@ export default function SocialAppModal({
 
   const SocialComponent = React.useMemo(() => {
     const components = {
-      instagram: InstagramSettings,
-      pinterest: PinterestSettings,
-      facebook: FacebookSettings,
-      vkontakte: VkontakteSettings,
-      medium: MediumSettings,
-      linkedin: LinkedInSettings,
-      twitter: TwitterSettings,
-      telegraph: TelegraphSettings,
-      telegram_group: TelegramGroupSettings,
-      reddit: RedditSettings
+      "instagram": InstagramSettings,
+      "pinterest": PinterestSettings,
+      "facebook": FacebookSettings,
+      "vkontakte": VkontakteSettings,
+      "medium": MediumSettings,
+      "linkedin": LinkedInSettings,
+      "twitter": TwitterSettings,
+      "telegraph": TelegraphSettings,
+      "telegram_group": TelegramGroupSettings,
+      "reddit": RedditSettings
     }
 
-    return components[title] || null
+    return components[title]
   }, [title])
 
   if (!data) {
