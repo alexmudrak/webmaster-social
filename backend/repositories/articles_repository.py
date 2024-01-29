@@ -22,7 +22,7 @@ class ArticlesRepository:
                         name=published.networks_setting.name,
                         status=published.status,
                         status_text=published.status_text,
-                        url=published.publish_article_link,
+                        url=published.url,
                     )
                     for published in object.published
                 ],
