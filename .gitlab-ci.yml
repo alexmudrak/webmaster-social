@@ -46,6 +46,8 @@ code_quality:
 deploy-job:
   stage: deploy
   environment: production
+  only:
+    - master
   script:
     - echo "Deploying application..."
     - mkdir -p ~/.ssh
@@ -70,4 +72,4 @@ deploy-job:
         -X POST \
         https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
         -d "chat_id=$TELEGRAM_CHAT_ID" \
-        -d "text=[Webmaster Helper] Deployment to production was successful."
+        -d "text=$TELEGRAM_TEXT"
