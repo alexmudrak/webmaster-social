@@ -98,6 +98,9 @@ _MANDATORY_
 ```markdown
 PYTHONPATH=backend
 LOG_LEVEL=DEBUG
+API_URL=                # Public API URL
+LOCAL_API_URL=          # Local API URL
+SSR_CACHE=              # Method for SSR chache
 
 # DATABASE
 DB_HOST=                # Database host
@@ -123,7 +126,7 @@ After setting the mandatory parameters, run:
 
 Once all containers are ready, go to:
 
-- `http://localhost/`
+- `http://localhost:3000/`
 
 ## Tech stack
 

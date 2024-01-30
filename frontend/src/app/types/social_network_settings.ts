@@ -43,12 +43,24 @@ export interface GroupedSettings {
   [name: string]: Setting[]
 }
 
+export type SocialAppTitleKey =
+  | 'instagram'
+  | 'pinterest'
+  | 'facebook'
+  | 'vkontakte'
+  | 'medium'
+  | 'linkedin'
+  | 'twitter'
+  | 'telegraph'
+  | 'telegram_group'
+  | 'reddit'
+
 export interface SocialAppModalProps {
-  title: string
+  title: SocialAppTitleKey
   data?: Setting[]
   open: boolean
   handleClose: () => void
-  handlerSettingUpdate: (_: number, __: Setting) => void
+  handlerSettingUpdate: (_: number | null, __: Setting | null) => void
 }
 
 export interface SocialAppProps {
@@ -59,7 +71,7 @@ export interface SocialAppProps {
 }
 
 export interface SocialAppSettingsProps {
-  title: string
+  title: SocialAppTitleKey
   data: Setting[]
 }
 

@@ -7,7 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 import * as React from 'react'
 
 import { DashboardCardData, DashboardStatusesData } from '../types/dashboard'
-import apiRequest from '../utils/apiRequest'
+import { apiRequest } from '../utils/apiRequest'
 import ArticlesCard from './components/cards/ArticlesCard'
 import NetworksCard from './components/cards/NetworksCard'
 import ProjectsCard from './components/cards/ProjectsCard'

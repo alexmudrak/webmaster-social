@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./database:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: always
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=postgres
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app/backend
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn main:app --host 0.0.0.0 --port 80"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NEXT_PUBLIC_API_URL=$API_URL
+      - NEXT_RENDER_PUBLIC_API_URL=$LOCAL_API_URL
+      - NEXT_SSR_CACHE_METHOD=$SSR_CACHE
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    command: >
+      sh -c "bun next telemetry disable &&
+             bun run build && bun run start"

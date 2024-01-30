@@ -2,7 +2,7 @@
 import Button from '@mui/material/Button'
 
 import { CollectArticlesButtonProps } from '../../types/articles'
-import apiRequest from '../../utils/apiRequest'
+import { apiRequest } from '../../utils/apiRequest'
 
 export default function CollectArticlesButton({
   project_name,

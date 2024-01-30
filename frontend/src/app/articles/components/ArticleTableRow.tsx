@@ -7,12 +7,12 @@ import TableRow from '@mui/material/TableRow'
 import * as React from 'react'
 
 import { socialNetworksList } from '../../constants/SocialNetworks'
-import apiRequest from '../../utils/apiRequest'
+import { Article } from '../../types/articles'
+import { apiRequest } from '../../utils/apiRequest'
 import formatDate from '../../utils/formatDate'
 import ArticleNetworkStatusIcon from './ArticleNetworkStatusIcons'
 
-export default function ArticleTableRow({ article }) {
-  // TODO: Add types
+export default function ArticleTableRow({ article }: { article: Article }) {
   const handleSendArticleToNetworks = async () => {
     const method = 'POST'
     const endpoint = `articles/task/${article.id}`
@@ -43,7 +43,13 @@ export default function ArticleTableRow({ article }) {
         {socialNetworksList.map((networkName) => {
           const networkStatus = article.network_statuses.find(
             (network) => network.name === networkName
-          ) || { status: 'PENDING', status_text: 'Pending', url: '' }
+          ) || {
+            id: null,
+            name: '',
+            status: 'PENDING',
+            status_text: 'Pending',
+            url: ''
+          }
 
           return (
             <ArticleNetworkStatusIcon

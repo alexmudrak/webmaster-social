@@ -10,7 +10,9 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 
-import apiRequest from '../utils/apiRequest'
+import { ArticlePageResponse } from '../types/articles'
+import { Project } from '../types/project'
+import { apiRenderRequest } from '../utils/apiRequest'
 import ArticleTableRow from './components/ArticleTableRow'
 import CollectArticlesButton from './libs/CollectArticlesButton'
 
@@ -19,7 +21,7 @@ async function getArticles() {
   const endpoint = 'articles/'
   const cache_method = process.env.NEXT_SSR_CACHE_METHOD
 
-  const response = await apiRequest(endpoint, {
+  const response = await apiRenderRequest(endpoint, {
     method: method,
     cache: cache_method
   })
@@ -31,7 +33,7 @@ async function getProjects() {
   const endpoint = 'projects/'
   const cache_method = process.env.NEXT_SSR_CACHE_METHOD
 
-  const response = await apiRequest(endpoint, {
+  const response = await apiRenderRequest(endpoint, {
     method: method,
     cache: cache_method
   })
@@ -40,8 +42,8 @@ async function getProjects() {
 }
 export default async function PublishedPages() {
   // TODO: Add types
-  const articles = await getArticles()
-  const projects = await getProjects()
+  const articles: ArticlePageResponse[] = await getArticles()
+  const projects: Project[] = await getProjects()
 
   return (
     <Container maxWidth='xl' sx={{ marginTop: 2 }}>

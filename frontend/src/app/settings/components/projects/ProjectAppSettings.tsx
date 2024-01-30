@@ -8,7 +8,7 @@ import * as React from 'react'
 
 import ConfirmationModal from '../../../components/ConfirmationModal'
 import { Project } from '../../../types/project'
-import apiRequest from '../../../utils/apiRequest'
+import { apiRequest } from '../../../utils/apiRequest'
 import ProjectAppModal from './ProjectAppModal'
 
 export default function ProjectAppSettings({ data }: { data?: Project }) {

@@ -1,0 +1,8 @@
+# Stage 1: Building the code
+FROM oven/bun:latest as builder
+WORKDIR /app
+COPY frontend/package.json frontend/bun.lockb ./
+COPY frontend/ ./
+RUN bun install --production
+
+EXPOSE 3000
