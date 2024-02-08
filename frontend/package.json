@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint --fix",
+    "format:all": "prettier --write ./src"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -28,6 +29,7 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-unused-imports": "^3.0.0",
+    "prettier": "^3.2.5",
     "typescript": "5.3.3"
   }
 }

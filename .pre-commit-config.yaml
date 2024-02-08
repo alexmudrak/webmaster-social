@@ -52,7 +52,7 @@ repos:
   - repo: local
     hooks:
       - id: pytest
-        name: '[BE] pytest'
+        name: '[BE] Pytest'
         stages: [commit]
         language: system
         entry: pdm run coverage
