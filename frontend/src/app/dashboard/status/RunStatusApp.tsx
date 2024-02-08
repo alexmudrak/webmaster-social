@@ -27,7 +27,7 @@ export default function RunStatusApp({
             {formatDate(statusData.date)}
           </Typography>
           <Typography sx={{ width: '10%', flexShrink: 0 }}>
-{statusData.project_name}
+            {statusData.project_name}
           </Typography>
           <Typography sx={{ color: 'text.secondary' }}>
             {statusData.article_title}

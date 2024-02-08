@@ -8,7 +8,6 @@ import * as React from 'react'
 
 import NavBar from './components/NavBar'
 
-
 export const metadata: Metadata = {
   title: 'Webmaster Social App',
   description: '...'
@@ -30,7 +29,7 @@ export default function RootLayout({
           sx={{
             py: 3,
             px: 2,
-            mt: 'auto',
+            mt: 'auto'
           }}
         >
           <Container maxWidth='sm'>
