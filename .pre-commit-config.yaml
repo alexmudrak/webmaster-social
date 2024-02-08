@@ -54,4 +54,3 @@ repos:
           types: [ python ]
           verbose: true
           pass_filenames: false
-          always_run: true

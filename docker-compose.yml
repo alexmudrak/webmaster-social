@@ -49,6 +49,3 @@ services:
       - NODE_ENV=production
     depends_on:
       - backend
-    command: >
-      sh -c "bun next telemetry disable &&
-             bun run build && bun run start"
