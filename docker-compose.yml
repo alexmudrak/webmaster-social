@@ -48,4 +48,4 @@ services:
     env_file:
       - .env
     depends_on:
-      - backen
+      - backend
