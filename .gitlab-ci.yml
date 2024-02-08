@@ -61,7 +61,6 @@ deploy-job:
       -d --build"
     - running_containers=$(ssh $SSH_USER@$SSH_HOST "docker ps --format '{{.Names}}'")
     - expected_containers=("app-frontend-1" "app-backend-1" "app-postgres-1")
-    - sleep 60
     - |
       for container in "${expected_containers[@]}"; do
         if [[ "$running_containers" != *"$container"* ]]; then
