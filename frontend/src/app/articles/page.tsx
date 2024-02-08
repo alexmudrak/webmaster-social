@@ -1,3 +1,5 @@
+'use client'
+
 import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
 import Paper from '@mui/material/Paper'
@@ -12,38 +14,45 @@ import * as React from 'react'
 
 import { ArticlePageResponse } from '../types/articles'
 import { Project } from '../types/project'
-import { apiRenderRequest } from '../utils/apiRequest'
+import { apiRequest } from '../utils/apiRequest'
 import ArticleTableRow from './components/ArticleTableRow'
 import CollectArticlesButton from './libs/CollectArticlesButton'
 
-async function getArticles() {
-  const method = 'GET'
-  const endpoint = 'articles/'
-  const cache_method = process.env.NEXT_SSR_CACHE_METHOD
+export default function PublishedPages() {
+  const [articles, setArticles] = React.useState<ArticlePageResponse[] | []>(
+    []
+  )
+  const [projects, setProjects] = React.useState<Project[] | []>([])
 
-  const response = await apiRenderRequest(endpoint, {
-    method: method,
-    cache: cache_method
-  })
+  const isMounted = React.useRef(false)
 
-  return response
-}
-async function getProjects() {
-  const method = 'GET'
-  const endpoint = 'projects/'
-  const cache_method = process.env.NEXT_SSR_CACHE_METHOD
+  React.useEffect(() => {
+    const fetchArticles = async () => {
+      const method = 'GET'
+      const endpoint = `articles/`
 
-  const response = await apiRenderRequest(endpoint, {
-    method: method,
-    cache: cache_method
-  })
+      const response = await apiRequest(endpoint, {
+        method: method
+      })
+      setArticles(response)
+    }
 
-  return response
-}
-export default async function PublishedPages() {
-  // TODO: Add types
-  const articles: ArticlePageResponse[] = await getArticles()
-  const projects: Project[] = await getProjects()
+    const fetchProjects = async () => {
+      const method = 'GET'
+      const endpoint = `projects/`
+
+      const response = await apiRequest(endpoint, {
+        method: method
+      })
+      setProjects(response)
+    }
+
+    if (!isMounted.current) {
+      isMounted.current = true
+      fetchArticles()
+      fetchProjects()
+    }
+  }, [])
 
   return (
     <Container maxWidth='xl' sx={{ marginTop: 2 }}>
