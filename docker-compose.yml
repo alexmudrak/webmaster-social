@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile.backend
     restart: always
     ports:
-      - "8080:80"
+      - '8080:80'
     env_file:
       - .env
     environment:
@@ -37,15 +37,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      args:
+        - NEXT_PUBLIC_API_URL=$API_URL
+        - NEXT_RENDER_PUBLIC_API_URL=$LOCAL_API_URL
+        - NEXT_SSR_CACHE_METHOD=$SSR_CACHE
+        - NODE_ENV=production
     restart: always
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env
-    environment:
-      - NEXT_PUBLIC_API_URL=$API_URL
-      - NEXT_RENDER_PUBLIC_API_URL=$LOCAL_API_URL
-      - NEXT_SSR_CACHE_METHOD=$SSR_CACHE
-      - NODE_ENV=production
     depends_on:
-      - backend
+      - backen
