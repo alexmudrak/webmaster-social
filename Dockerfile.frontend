@@ -5,6 +5,17 @@ WORKDIR /app
 COPY frontend/package.json frontend/bun.lockb frontend/yarn.lock ./
 COPY frontend/ ./
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+ARG NEXT_RENDER_PUBLIC_API_URL
+ENV NEXT_RENDER_PUBLIC_API_URL=${NEXT_RENDER_PUBLIC_API_URL}
+
+ARG NEXT_SSR_CACHE_METHOD
+ENV NEXT_SSR_CACHE_METHOD=${NEXT_SSR_CACHE_METHO}
+
+ENV NODE_ENV=production
+
 RUN yarn install --frozen-lockfile
 RUN yarn run build
 RUN npm prune --production
