@@ -1,56 +1,73 @@
-
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
         exclude: '\.lock.*'
-    -   id: debug-statements
+      - id: debug-statements
 
--   repo: https://github.com/pdm-project/pdm
+  - repo: https://github.com/pdm-project/pdm
     rev: 2.11.1
     hooks:
-    -   id: pdm-export
+      - id: pdm-export
+        name: '[BE] PDM export requirements.txt'
         args: ['-o', 'requirements.txt', '--without-hashes']
         files: ^pdm.lock$
 
--   repo: https://github.com/pdm-project/pdm
+  - repo: https://github.com/pdm-project/pdm
     rev: 2.11.1
     hooks:
-    -   id: pdm-lock-check
+      - id: pdm-lock-check
+        name: '[BE] PDM check lock file'
 
--   repo: https://github.com/astral-sh/ruff-pre-commit
+  - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.0.291
     hooks:
-    -   id: ruff
+      - id: ruff
+        name: '[BE] Ruff'
         args: ['--fix', '--exit-non-zero-on-fix']
 
--   repo: https://github.com/psf/black
+  - repo: https://github.com/psf/black
     rev: 23.9.1
     hooks:
-    -   id: black
+      - id: black
+        name: '[BE] Black formatter'
 
--   repo: https://github.com/pycqa/isort
+  - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
-    -   id: isort
+      - id: isort
+        name: '[BE] Isort imports'
 
--   repo: https://github.com/pre-commit/mirrors-mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v1.5.1'
     hooks:
-    -   id: mypy
+      - id: mypy
+        name: '[BE] Mypy types'
         additional_dependencies: [types-python-dateutil]
 
--   repo: local
+  - repo: local
     hooks:
-      -   id: pytest
-          name: pytest
-          stages: [ commit ]
-          language: system
-          entry: pdm run coverage
-          types: [ python ]
-          verbose: true
-          pass_filenames: false
+      - id: pytest
+        name: '[BE] pytest'
+        stages: [commit]
+        language: system
+        entry: pdm run coverage
+        types: [python]
+        verbose: true
+        pass_filenames: false
+
+      - id: bun-format
+        name: '[FE] Bun Format'
+        entry: bash -c 'cd frontend && bun run format:all'
+        language: system
+        files: 'frontend/.*\.(js|jsx|ts|tsx)$'
+
+      - id: bun-lint
+        name: '[FE] Bun Lint'
+        entry: bash -c 'cd frontend && bun run lint'
+        language: system
+        files: 'frontend/.*\.(js|jsx|ts|tsx)$'
