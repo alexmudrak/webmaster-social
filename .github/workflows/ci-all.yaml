@@ -1,4 +1,4 @@
-name: CI BE
+name: CI All
 on:
   push:
     branches:
@@ -50,6 +50,20 @@ jobs:
 
       - name: Install dependencies
         run: pdm install --dev
+
+      - name: Install Node.js and npm
+        run: sudo apt-get install -y nodejs npm
+
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: Install npm dependencies in frontend
+        run: |
+          cd frontend
+          npm install --dev
+          cd -
 
       - name: Install pre-commit
         uses: pre-commit/action@v3.0.0
