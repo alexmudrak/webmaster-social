@@ -40,7 +40,7 @@ const apiRequest = async (
 const apiRenderRequest = async (
   path: string,
   options: RequestOptions,
-  retries: number = 3
+  retries: number = 0
 ): Promise<any> => {
   const api_url = `${apiRenderUrl}/${path}`
   return fetchWithRetry(api_url, options, retries)
