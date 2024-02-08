@@ -5,8 +5,8 @@
 <hr />
 
 <p align="center">
-	<a href="https://github.com/alexmudrak/webmaster-social/actions/workflows/ci-backend.yaml" target="_blank">
-    <img src="https://github.com/alexmudrak/webmaster-social/actions/workflows/ci-backend.yaml/badge.svg?branch=master" alt="CI Status">
+	<a href="https://github.com/alexmudrak/webmaster-social/actions/workflows/ci-all.yaml" target="_blank">
+    <img src="https://github.com/alexmudrak/webmaster-social/actions/workflows/ci-all.yaml/badge.svg?branch=master" alt="CI Status">
 	</a>
 </p>
 
