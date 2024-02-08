@@ -4,12 +4,9 @@ import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import * as React from 'react'
 
 import NavBar from './components/NavBar'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Webmaster Social App',
@@ -23,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={inter.className} suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true}>
         <NavBar />
         <Container>{children}</Container>
 
@@ -32,7 +29,7 @@ export default function RootLayout({
           sx={{
             py: 3,
             px: 2,
-            mt: 'auto',
+            mt: 'auto'
           }}
         >
           <Container maxWidth='sm'>

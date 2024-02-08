@@ -1,8 +1,20 @@
 # Stage 1: Building the code
-FROM oven/bun:latest as builder
+FROM node:alpine as BUILD_IMAGE
+
 WORKDIR /app
-COPY frontend/package.json frontend/bun.lockb ./
+COPY frontend/package.json frontend/bun.lockb frontend/yarn.lock ./
 COPY frontend/ ./
-RUN bun install --production
+
+RUN yarn install --frozen-lockfile
+RUN yarn run build
+RUN npm prune --production
+
+FROM node:alpine
+WORKDIR /app
+
+COPY --from=BUILD_IMAGE /app/package.json ./package.json
+COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /app/.next ./.next
 
 EXPOSE 3000
+CMD ["yarn", "run", "start"]

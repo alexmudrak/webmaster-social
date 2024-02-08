@@ -8,5 +8,5 @@ export const socialNetworksList = [
   'telegram_group',
   'telegraph',
   'twitter',
-  'vkontakte',
-];
+  'vkontakte'
+]

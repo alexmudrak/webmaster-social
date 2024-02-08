@@ -16,7 +16,7 @@ export default function ArticlesCard({
 }: ArticlesCardProps) {
   return (
     <Grid xs={4}>
-      <Card sx={{ display: 'flex', }}>
+      <Card sx={{ display: 'flex' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <CardContent sx={{ flex: '1 0 auto' }}>
             <Typography color='text.secondary' gutterBottom>
