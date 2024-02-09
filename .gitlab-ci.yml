@@ -25,15 +25,14 @@ services:
 
 lint-format-tests:
   stage: test
-  image: python:3.11
+  image: nikolaik/python-nodejs:python3.11-nodejs21-slim
   script:
-  - apt-get update -qy
-  - apt-get install -y python3.11 nodejs npm
+  - apt update -y
+  - apt install -y unzip git postgresql-client
+  - psql --host=$APP_DB_HOST --username=$APP_DB_USER --dbname=$APP_DB_NAME -c "CREATE DATABASE $APP_TEST_DB_NAME;"
   - curl -sSL https://pdm-project.org/install-pdm.py | python3 -
   - export PATH=/root/.local/bin:$PATH
   - pdm install --dev
-  - apt-get install -y postgresql-client
-  - psql --host=$APP_DB_HOST --username=$APP_DB_USER --dbname=$APP_DB_NAME -c "CREATE DATABASE $APP_TEST_DB_NAME;"
   - curl -fsSL https://bun.sh/install | bash
   - source /root/.bashrc
   - cd frontend && npm install --dev && cd -
