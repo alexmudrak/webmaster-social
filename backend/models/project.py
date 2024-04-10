@@ -32,7 +32,6 @@ class Project(ProjectBase, BaseTimestampMixin, table=True):
     # type: ignore
     networks_setting: List["Setting"] = Relationship(
         back_populates="project",
-        sa_relationship_kwargs={"lazy": "joined"},
     )
     articles: List["Article"] = Relationship(
         back_populates="project",

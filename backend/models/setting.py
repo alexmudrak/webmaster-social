@@ -28,7 +28,6 @@ class Setting(SettingBase, BaseTimestampMixin, table=True):
     )
     published: Optional["ArticleStatus"] = Relationship(
         back_populates="networks_setting",
-        sa_relationship_kwargs={"lazy": "joined"},
     )
 
     __tableargs__ = (

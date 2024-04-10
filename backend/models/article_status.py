@@ -22,7 +22,6 @@ class ArticleStatus(ArticleStatusBase, BaseTimestampMixin, table=True):
     # type: ignore
     article: "Article" = Relationship(
         back_populates="published",
-        sa_relationship_kwargs={"lazy": "joined"},
     )
     networks_setting: List["Setting"] = Relationship(
         back_populates="published",
