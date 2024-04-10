@@ -36,7 +36,7 @@ class Project(ProjectBase, BaseTimestampMixin, table=True):
     )
     articles: List["Article"] = Relationship(
         back_populates="project",
-        sa_relationship_kwargs={"lazy": "joined"},
+        # sa_relationship_kwargs={"lazy": "joined"},
     )
 
     __table_args__ = (
