@@ -52,7 +52,7 @@ jobs:
         run: pdm install --dev
 
       - name: Install Node.js and npm
-        run: sudo apt-get install -y nodejs npm
+        run: sudo apt-get update -y && sudo apt-get install -y nodejs npm
 
       - name: Install Bun
         run: |

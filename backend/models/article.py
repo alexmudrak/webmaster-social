@@ -23,11 +23,10 @@ class Article(ArticleBase, BaseTimestampMixin, table=True):
     # type: ignore
     project: "Project" = Relationship(
         back_populates="articles",
-        sa_relationship_kwargs={"lazy": "joined"},
     )
     published: List["ArticleStatus"] = Relationship(
         back_populates="article",
-        sa_relationship_kwargs={"lazy": "joined"},
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
 
     __table_args__ = (
