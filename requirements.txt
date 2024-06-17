@@ -42,5 +42,5 @@ sqlalchemy==2.0.28
 sqlmodel==0.0.16
 starlette==0.37.2
 typing-extensions==4.10.0
-urllib3==2.2.1
+urllib3==2.2.2
 uvicorn==0.29.0
